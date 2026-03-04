@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'server/**'
+      - '.github/workflows/deploy-backend.yml'
   workflow_dispatch:  # manual trigger
 
 jobs:
@@ -34,11 +35,11 @@ jobs:
         run: |
           sam deploy --no-confirm-changeset --no-fail-on-empty-changeset \
             --parameter-overrides \
-              DatabaseUrl="${{ secrets.DATABASE_URL }}" \
-              SecretKey="${{ secrets.SECRET_KEY }}" \
-              FrontendUrl="${{ secrets.FRONTEND_URL }}" \
-              SmtpHost="${{ secrets.SMTP_HOST }}" \
-              SmtpPort="${{ secrets.SMTP_PORT }}" \
-              SmtpUser="${{ secrets.SMTP_USER }}" \
-              SmtpPassword="${{ secrets.SMTP_PASSWORD }}" \
-              FromEmail="${{ secrets.FROM_EMAIL }}"
+              "DatabaseUrl=${{ secrets.DATABASE_URL }}" \
+              "SecretKey=${{ secrets.SECRET_KEY }}" \
+              "FrontendUrl=${{ secrets.FRONTEND_URL || 'http://localhost:5173' }}" \
+              "SmtpHost=${{ secrets.SMTP_HOST || 'smtp.gmail.com' }}" \
+              "SmtpPort=${{ secrets.SMTP_PORT || '587' }}" \
+              "SmtpUser=${{ secrets.SMTP_USER || 'noop' }}" \
+              "SmtpPassword=${{ secrets.SMTP_PASSWORD || 'noop' }}" \
+              "FromEmail=${{ secrets.FROM_EMAIL || 'noreply@bharatselleros.com' }}"
