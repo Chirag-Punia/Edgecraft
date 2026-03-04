@@ -77,7 +77,7 @@ Parameters:
     Default: "noreply@bharatselleros.com"
   SpApiRedirectUri:
     Type: String
-    Default: "https://y1wd16n840.execute-api.ap-south-1.amazonaws.com/Prod/api/v1/amazon/callback"
+    Default: ""
   SpApiAppId:
     Type: String
     Default: ""
