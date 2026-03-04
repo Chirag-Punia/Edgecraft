@@ -31,7 +31,7 @@ Resources:
           FROM_EMAIL: !Ref FromEmail
           USE_MOCK_DATA: "true"
           SP_API_APP_ID: !Ref SpApiAppId
-          SP_API_REDIRECT_URI: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/v1/amazon/callback"
+          SP_API_REDIRECT_URI: !Ref SpApiRedirectUri
           SP_API_LWA_APP_ID: !Ref SpApiLwaAppId
           SP_API_LWA_CLIENT_SECRET: !Ref SpApiLwaClientSecret
           SP_API_AWS_ACCESS_KEY: !Ref SpApiAwsAccessKey
@@ -75,6 +75,9 @@ Parameters:
   FromEmail:
     Type: String
     Default: "noreply@bharatselleros.com"
+  SpApiRedirectUri:
+    Type: String
+    Default: "https://y1wd16n840.execute-api.ap-south-1.amazonaws.com/Prod/api/v1/amazon/callback"
   SpApiAppId:
     Type: String
     Default: ""
