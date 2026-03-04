@@ -7,8 +7,6 @@ interface AuthState {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string, fullName: string) => Promise<void>;
-  verifyOtp: (email: string, code: string) => Promise<void>;
-  resendOtp: (email: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -52,16 +50,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await api.post("/auth/signup", { email, password, full_name: fullName });
   };
 
-  const verifyOtp = async (email: string, code: string) => {
-    await api.post("/auth/verify-otp", { email, code });
-    // After verification, refresh the user so is_email_verified updates
-    await fetchUser();
-  };
-
-  const resendOtp = async (email: string) => {
-    await api.post("/auth/resend-otp", { email });
-  };
-
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -71,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = fetchUser;
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, verifyOtp, resendOtp, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -1,21 +1,13 @@
-import random
-import string
 from datetime import datetime, timedelta, timezone
 
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.models.user import User
-from app.models.email_otp import EmailOTP
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
-from app.services.email_service import send_otp_email
 
 
-def generate_otp() -> str:
-    return "".join(random.choices(string.digits, k=6))
-
-
-async def signup_user(db: Session, email: str, password: str, full_name: str) -> User:
+def signup_user(db: Session, email: str, password: str, full_name: str) -> User:
     existing = db.query(User).filter(User.email == email).first()
     if existing:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
@@ -25,22 +17,11 @@ async def signup_user(db: Session, email: str, password: str, full_name: str) ->
         hashed_password=hash_password(password),
         full_name=full_name,
         auth_provider="local",
+        is_email_verified=True,
     )
     db.add(user)
     db.commit()
     db.refresh(user)
-
-    # Generate and send OTP
-    code = generate_otp()
-    otp = EmailOTP(
-        user_id=user.id,
-        code=code,
-        expires_at=datetime.now(timezone.utc) + timedelta(minutes=10),
-    )
-    db.add(otp)
-    db.commit()
-
-    await send_otp_email(email, code)
     return user
 
 
@@ -57,49 +38,6 @@ def login_user(db: Session, email: str, password: str) -> dict:
     }
 
 
-def verify_otp(db: Session, email: str, code: str) -> User:
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    otp = (
-        db.query(EmailOTP)
-        .filter(
-            EmailOTP.user_id == user.id,
-            EmailOTP.code == code,
-            EmailOTP.is_used == False,
-            EmailOTP.expires_at > datetime.now(timezone.utc),
-        )
-        .order_by(EmailOTP.created_at.desc())
-        .first()
-    )
-    if not otp:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired OTP")
-
-    otp.is_used = True
-    user.is_email_verified = True
-    db.commit()
-    db.refresh(user)
-    return user
-
-
-async def resend_otp(db: Session, email: str) -> None:
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    code = generate_otp()
-    otp = EmailOTP(
-        user_id=user.id,
-        code=code,
-        expires_at=datetime.now(timezone.utc) + timedelta(minutes=10),
-    )
-    db.add(otp)
-    db.commit()
-
-    await send_otp_email(email, code)
-
-
 def refresh_tokens(db: Session, refresh_token: str) -> dict:
     payload = decode_token(refresh_token)
     if payload is None or payload.get("type") != "refresh":
@@ -114,5 +52,3 @@ def refresh_tokens(db: Session, refresh_token: str) -> dict:
         "access_token": create_access_token({"sub": str(user.id)}),
         "refresh_token": create_refresh_token({"sub": str(user.id)}),
     }
-
-

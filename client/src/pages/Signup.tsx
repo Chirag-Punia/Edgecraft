@@ -22,9 +22,8 @@ export function SignupPage() {
     setLoading(true);
     try {
       await signup(email, password, fullName);
-      // Auto-login after signup to set auth state
       await login(email, password);
-      navigate("/verify-email");
+      navigate("/onboarding/business-info");
     } catch (err: any) {
       setError(err.response?.data?.detail || "Signup failed");
     } finally {
