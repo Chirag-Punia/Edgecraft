@@ -30,6 +30,13 @@ Resources:
           SMTP_PASSWORD: !Ref SmtpPassword
           FROM_EMAIL: !Ref FromEmail
           USE_MOCK_DATA: "true"
+          SP_API_APP_ID: !Ref SpApiAppId
+          SP_API_REDIRECT_URI: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/v1/amazon/callback"
+          SP_API_LWA_APP_ID: !Ref SpApiLwaAppId
+          SP_API_LWA_CLIENT_SECRET: !Ref SpApiLwaClientSecret
+          SP_API_AWS_ACCESS_KEY: !Ref SpApiAwsAccessKey
+          SP_API_AWS_SECRET_KEY: !Ref SpApiAwsSecretKey
+          SP_API_ROLE_ARN: !Ref SpApiRoleArn
       Events:
         ApiCatchAll:
           Type: Api
@@ -68,6 +75,26 @@ Parameters:
   FromEmail:
     Type: String
     Default: "noreply@bharatselleros.com"
+  SpApiAppId:
+    Type: String
+    Default: ""
+  SpApiLwaAppId:
+    Type: String
+    Default: ""
+  SpApiLwaClientSecret:
+    Type: String
+    NoEcho: true
+    Default: ""
+  SpApiAwsAccessKey:
+    Type: String
+    Default: ""
+  SpApiAwsSecretKey:
+    Type: String
+    NoEcho: true
+    Default: ""
+  SpApiRoleArn:
+    Type: String
+    Default: ""
 
 Outputs:
   ApiUrl:
