@@ -6,7 +6,11 @@ from sqlalchemy import pool
 from alembic import context
 from app.config import get_settings
 from app.db.session import Base
-from app.models import Seller, User, EmailOTP, MarketplaceAccount  # noqa: F401
+from app.models import (  # noqa: F401
+    Seller, User, EmailOTP, MarketplaceAccount,
+    SyncRun, ProductMaster, ListingMap, Order,
+    OrderItem, InventorySnapshot, PriceSnapshot,
+)
 
 config = context.config
 
