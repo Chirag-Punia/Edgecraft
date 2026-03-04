@@ -43,9 +43,9 @@ jobs:
               "SmtpUser=${{ secrets.SMTP_USER || 'noop' }}" \
               "SmtpPassword=${{ secrets.SMTP_PASSWORD || 'noop' }}" \
               "FromEmail=${{ secrets.FROM_EMAIL || 'noreply@bharatselleros.com' }}" \
-              "SpApiAppId=${{ secrets.SP_API_APP_ID || '' }}" \
-              "SpApiLwaAppId=${{ secrets.SP_API_LWA_APP_ID || '' }}" \
-              "SpApiLwaClientSecret=${{ secrets.SP_API_LWA_CLIENT_SECRET || '' }}" \
-              "SpApiAwsAccessKey=${{ secrets.SP_API_AWS_ACCESS_KEY || '' }}" \
-              "SpApiAwsSecretKey=${{ secrets.SP_API_AWS_SECRET_KEY || '' }}" \
-              "SpApiRoleArn=${{ secrets.SP_API_ROLE_ARN || '' }}"
+              "SpApiAppId=${{ secrets.SP_API_APP_ID || 'none' }}" \
+              "SpApiLwaAppId=${{ secrets.SP_API_LWA_APP_ID || 'none' }}" \
+              "SpApiLwaClientSecret=${{ secrets.SP_API_LWA_CLIENT_SECRET || 'none' }}" \
+              "SpApiAwsAccessKey=${{ secrets.SP_API_AWS_ACCESS_KEY || 'none' }}" \
+              "SpApiAwsSecretKey=${{ secrets.SP_API_AWS_SECRET_KEY || 'none' }}" \
+              "SpApiRoleArn=${{ secrets.SP_API_ROLE_ARN || 'none' }}"
