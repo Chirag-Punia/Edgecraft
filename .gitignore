@@ -24,6 +24,10 @@ server/.env
 .DS_Store
 Thumbs.db
 
+# SAM
+.aws-sam/
+raw_dumps/
+
 # Logs
 *.log
 
