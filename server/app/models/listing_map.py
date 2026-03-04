@@ -12,7 +12,7 @@ class ListingMap(Base):
     asin = Column(String(20), nullable=True)
     fnsku = Column(String(20), nullable=True)
     listing_title = Column(String(500), nullable=True)
-    listing_status = Column(String(30), nullable=True)  # active | inactive | incomplete
+    listing_status = Column(String(30), nullable=True)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 

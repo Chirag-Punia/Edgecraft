@@ -13,7 +13,7 @@ async def send_otp_email(email: str, code: str) -> None:
     # import smtplib
     # from email.mime.text import MIMEText
     # msg = MIMEText(f"Your verification code is: {code}")
-    # msg["Subject"] = "Bharat Seller OS - Email Verification"
+    # msg["Subject"] = "RetailSutra - Email Verification"
     # msg["From"] = settings.FROM_EMAIL
     # msg["To"] = email
     # with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:

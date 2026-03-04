@@ -1,17 +1,19 @@
 from pydantic import BaseModel
 from datetime import datetime
 
+from app.enums import Marketplace, AccountStatus
+
 
 class MarketplaceCreate(BaseModel):
-    marketplace: str  # amazon | flipkart | shopify | facebook
+    marketplace: Marketplace
     credentials: dict | None = None
 
 
 class MarketplaceResponse(BaseModel):
     id: int
     seller_id: int
-    marketplace: str
-    status: str
+    marketplace: Marketplace
+    status: AccountStatus
     last_sync_at: datetime | None
     created_at: datetime
 

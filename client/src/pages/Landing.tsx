@@ -88,7 +88,7 @@ export function LandingPage() {
       {/* Footer */}
       <footer className="border-t bg-gray-50 py-8">
         <div className="mx-auto max-w-7xl px-4 text-center text-sm text-muted-foreground">
-          © 2026 Bharat Seller OS. All rights reserved.
+          © 2026 RetailSutra. All rights reserved.
         </div>
       </footer>
     </div>

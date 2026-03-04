@@ -1,31 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
-  ShoppingCart,
-  Truck,
-  Package,
-  Tags,
-  DollarSign,
-  Users,
-  TrendingUp,
-  FileText,
   Bot,
   Settings,
+  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 
 const NAV_ITEMS = [
-  { label: "Command Center", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Orders", icon: ShoppingCart, href: "/dashboard/orders" },
-  { label: "Shipments", icon: Truck, href: "/dashboard/shipments" },
-  { label: "Inventory", icon: Package, href: "/dashboard/inventory" },
-  { label: "Listings", icon: Tags, href: "/dashboard/listings" },
-  { label: "Pricing", icon: DollarSign, href: "/dashboard/pricing" },
-  { label: "Customer Insights", icon: Users, href: "/dashboard/customers" },
-  { label: "Demand Forecasting", icon: TrendingUp, href: "/dashboard/forecasting" },
-  { label: "Reports", icon: FileText, href: "/dashboard/reports" },
+  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
   { label: "AI Assistant", icon: Bot, href: "/dashboard/assistant" },
+  { label: "Marketplaces", icon: Store, href: "/dashboard/marketplaces" },
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
@@ -37,11 +23,9 @@ export function Sidebar() {
     <aside className="flex h-screen w-64 flex-col border-r bg-sidebar text-sidebar-foreground">
       {/* Logo */}
       <div className="flex h-16 items-center gap-2 border-b border-sidebar-border px-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-pink-500">
-          <span className="text-lg font-bold text-white">✦</span>
-        </div>
+        <img src="/abc.png" alt="RetailSutra" className="h-9 w-9 rounded-lg object-contain" />
         <div className="flex flex-col">
-          <span className="text-sm font-bold text-white">Bharat Seller OS</span>
+          <span className="text-sm font-bold text-white">RetailSutra</span>
           <span className="text-xs text-sidebar-foreground/60">
             {user?.full_name || "Seller"}
           </span>

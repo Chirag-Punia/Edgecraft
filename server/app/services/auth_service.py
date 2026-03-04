@@ -52,8 +52,8 @@ def login_user(db: Session, email: str, password: str) -> dict:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
 
     return {
-        "access_token": create_access_token({"sub": user.id}),
-        "refresh_token": create_refresh_token({"sub": user.id}),
+        "access_token": create_access_token({"sub": str(user.id)}),
+        "refresh_token": create_refresh_token({"sub": str(user.id)}),
     }
 
 
@@ -111,45 +111,8 @@ def refresh_tokens(db: Session, refresh_token: str) -> dict:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
 
     return {
-        "access_token": create_access_token({"sub": user.id}),
-        "refresh_token": create_refresh_token({"sub": user.id}),
+        "access_token": create_access_token({"sub": str(user.id)}),
+        "refresh_token": create_refresh_token({"sub": str(user.id)}),
     }
 
 
-async def google_auth(db: Session, credential: str) -> dict:
-    """Exchange Google ID token for our JWT tokens."""
-    import httpx
-
-    # Verify Google ID token
-    async with httpx.AsyncClient() as client:
-        resp = await client.get(f"https://oauth2.googleapis.com/tokeninfo?id_token={credential}")
-        if resp.status_code != 200:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Google token")
-        google_data = resp.json()
-
-    email = google_data.get("email")
-    google_id = google_data.get("sub")
-    name = google_data.get("name", email.split("@")[0])
-
-    # Find or create user
-    user = db.query(User).filter(User.email == email).first()
-    if not user:
-        user = User(
-            email=email,
-            full_name=name,
-            auth_provider="google",
-            google_id=google_id,
-            is_email_verified=True,
-        )
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-    elif not user.google_id:
-        user.google_id = google_id
-        user.is_email_verified = True
-        db.commit()
-
-    return {
-        "access_token": create_access_token({"sub": user.id}),
-        "refresh_token": create_refresh_token({"sub": user.id}),
-    }

@@ -9,7 +9,6 @@ from app.schemas.auth import (
     LoginRequest,
     VerifyOTPRequest,
     ResendOTPRequest,
-    GoogleAuthRequest,
     RefreshRequest,
     TokenResponse,
     UserResponse,
@@ -42,12 +41,6 @@ def verify_otp(body: VerifyOTPRequest, db: Session = Depends(get_db)):
 async def resend_otp(body: ResendOTPRequest, db: Session = Depends(get_db)):
     await auth_service.resend_otp(db, body.email)
     return {"message": "OTP resent"}
-
-
-@router.post("/google", response_model=TokenResponse)
-async def google_auth(body: GoogleAuthRequest, db: Session = Depends(get_db)):
-    tokens = await auth_service.google_auth(db, body.credential)
-    return {**tokens, "token_type": "bearer"}
 
 
 @router.post("/refresh", response_model=TokenResponse)

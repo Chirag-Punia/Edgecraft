@@ -2,10 +2,13 @@
 
 Generates realistic Indian e-commerce data with deterministic seeding.
 Same interface as AmazonConnector so the sync worker can swap freely.
+All response shapes match the real SP-API JSON exactly.
 """
 import random
 from datetime import datetime, timedelta, date
 from decimal import Decimal
+
+from app.enums import OrderStatus, FulfillmentChannel
 
 
 # Indian product catalog for realistic demo data
@@ -38,12 +41,28 @@ INDIAN_CITIES = [
     ("Indore", "Madhya Pradesh"), ("Coimbatore", "Tamil Nadu"), ("Kochi", "Kerala"),
 ]
 
-ORDER_STATUSES = ["Shipped", "Shipped", "Shipped", "Delivered", "Delivered", "Delivered",
-                  "Delivered", "Pending", "Cancelled"]
+# Weighted to match real Amazon.in distribution
+ORDER_STATUSES = [
+    OrderStatus.SHIPPED, OrderStatus.SHIPPED, OrderStatus.SHIPPED,
+    OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.DELIVERED,
+    OrderStatus.UNSHIPPED, OrderStatus.PENDING, OrderStatus.CANCELED,
+]
+
+EASYSHIP_STATUSES = [
+    "PendingSchedule", "PendingPickUp", "PickedUp", "AtOriginFC",
+    "AtDestinationFC", "OutForDelivery", "Delivered", None, None, None,
+]
+
+PAYMENT_METHODS = ["Other", "Other", "Other", "COD", "COD"]
+
+
+def _money(amount, currency="INR") -> dict:
+    """Create an SP-API Money object."""
+    return {"CurrencyCode": currency, "Amount": str(round(amount, 2))}
 
 
 class MockAmazonConnector:
-    """Generates deterministic mock data matching the real SP-API response shape."""
+    """Generates deterministic mock data matching the real SP-API response shape exactly."""
 
     def __init__(self, credentials: dict | None = None):
         self._rng = random.Random(42)
@@ -60,23 +79,70 @@ class MockAmazonConnector:
 
         for i in range(num_orders):
             order_time = created_after + timedelta(seconds=self._rng.uniform(0, time_span))
+            last_update = order_time + timedelta(hours=self._rng.uniform(1, 48))
             city, state = self._rng.choice(INDIAN_CITIES)
             num_items = self._rng.choices([1, 2, 3], weights=[60, 30, 10])[0]
             items_for_order = self._rng.sample(PRODUCTS, min(num_items, len(PRODUCTS)))
             total = sum(p["price"] * self._rng.randint(1, 3) for p in items_for_order)
             shipping = self._rng.choice([0, 0, 0, 40, 60, 99])
+            status = self._rng.choice(ORDER_STATUSES)
+            fulfillment = self._rng.choice([FulfillmentChannel.AFN, FulfillmentChannel.AFN, FulfillmentChannel.MFN])
+            is_prime = self._rng.random() < 0.35
+            payment_method = self._rng.choice(PAYMENT_METHODS)
+            items_shipped = num_items if status in (OrderStatus.SHIPPED, OrderStatus.DELIVERED) else 0
+            items_unshipped = num_items - items_shipped
 
-            orders.append({
+            # Delivery window: 2-7 days from order
+            earliest_delivery = order_time + timedelta(days=self._rng.randint(2, 4))
+            latest_delivery = earliest_delivery + timedelta(days=self._rng.randint(1, 3))
+            # Ship window: 0-2 days from order
+            earliest_ship = order_time + timedelta(hours=self._rng.randint(4, 24))
+            latest_ship = earliest_ship + timedelta(hours=self._rng.randint(12, 48))
+
+            order = {
                 "AmazonOrderId": f"408-{self._rng.randint(1000000, 9999999)}-{self._rng.randint(1000000, 9999999)}",
                 "PurchaseDate": order_time.isoformat() + "Z",
-                "OrderStatus": self._rng.choice(ORDER_STATUSES),
-                "FulfillmentChannel": self._rng.choice(["AFN", "AFN", "MFN"]),
-                "OrderTotal": {"CurrencyCode": "INR", "Amount": str(total + shipping)},
-                "ShippingAddress": {"City": city, "StateOrRegion": state},
-                "NumberOfItemsShipped": num_items if self._rng.random() > 0.2 else 0,
-                "ShippingPrice": str(shipping),
+                "LastUpdateDate": last_update.isoformat() + "Z",
+                "OrderStatus": status,
+                "FulfillmentChannel": fulfillment,
+                "SalesChannel": "Amazon.in",
+                "OrderType": "StandardOrder",
+                "ShipServiceLevel": "Expedited" if is_prime else "Standard",
+                "ShipmentServiceLevelCategory": "Expedited" if is_prime else "Standard",
+                "OrderTotal": _money(total + shipping),
+                "NumberOfItemsShipped": items_shipped,
+                "NumberOfItemsUnshipped": items_unshipped,
+                "PaymentMethod": payment_method,
+                "PaymentMethodDetails": [payment_method],
+                "MarketplaceId": "A21TJRUUN4KGV",
+                "ShippingAddress": {
+                    "City": city,
+                    "StateOrRegion": state,
+                    "CountryCode": "IN",
+                    "PostalCode": str(self._rng.randint(100000, 999999)),
+                },
+                "IsBusinessOrder": self._rng.random() < 0.10,
+                "IsPrime": is_prime,
+                "IsGlobalExpressEnabled": False,
+                "IsPremiumOrder": False,
+                "IsSoldByAB": False,
+                "IsISPU": False,
+                "IsReplacementOrder": False,
+                "EarliestShipDate": earliest_ship.isoformat() + "Z",
+                "LatestShipDate": latest_ship.isoformat() + "Z",
+                "EarliestDeliveryDate": earliest_delivery.isoformat() + "Z",
+                "LatestDeliveryDate": latest_delivery.isoformat() + "Z",
+                "ElectronicInvoiceStatus": "NotRequired",
+                # EasyShip for MFN orders on Amazon.in
                 "_mock_items": items_for_order,
-            })
+            }
+
+            if fulfillment == FulfillmentChannel.MFN:
+                easyship = self._rng.choice(EASYSHIP_STATUSES)
+                if easyship:
+                    order["EasyShipShipmentStatus"] = easyship
+
+            orders.append(order)
 
         return orders
 
@@ -88,43 +154,102 @@ class MockAmazonConnector:
             price = product["price"] * (1 + self._rng.uniform(-0.1, 0.1))
             tax = round(price * 0.18, 2)  # 18% GST
             discount = round(price * self._rng.choice([0, 0, 0.05, 0.10, 0.15]), 2)
-            result.append({
+            shipping_price = self._rng.choice([0, 0, 0, 40, 60])
+            shipping_tax = round(shipping_price * 0.18, 2)
+            is_cod = self._rng.random() < 0.20
+            qty_shipped = qty if self._rng.random() > 0.15 else 0
+
+            item = {
                 "OrderItemId": f"{order_id}-{idx + 1:02d}",
                 "ASIN": product["asin"],
                 "SellerSKU": product["sku"],
                 "Title": product["name"],
                 "QuantityOrdered": qty,
-                "QuantityShipped": qty if self._rng.random() > 0.15 else 0,
-                "ItemPrice": {"CurrencyCode": "INR", "Amount": str(round(price * qty, 2))},
-                "ItemTax": {"CurrencyCode": "INR", "Amount": str(round(tax * qty, 2))},
-                "PromotionDiscount": {"CurrencyCode": "INR", "Amount": str(round(discount * qty, 2))},
-            })
+                "QuantityShipped": qty_shipped,
+                "ItemPrice": _money(price * qty),
+                "ItemTax": _money(tax * qty),
+                "ShippingPrice": _money(shipping_price),
+                "ShippingTax": _money(shipping_tax),
+                "ShippingDiscount": _money(0),
+                "ShippingDiscountTax": _money(0),
+                "PromotionDiscount": _money(discount * qty),
+                "PromotionDiscountTax": _money(round(discount * qty * 0.18, 2)),
+                "PromotionIds": [],
+                "ConditionId": "New",
+                "ConditionSubtypeId": "New",
+                "IsGift": False,
+                "IsTransparency": False,
+                "ProductInfo": {"NumberOfItems": str(qty)},
+            }
+
+            # COD fields — common in India
+            if is_cod:
+                cod_fee = self._rng.choice([20, 30, 50])
+                item["CODFee"] = _money(cod_fee)
+                item["CODFeeDiscount"] = _money(0)
+
+            result.append(item)
         return result
 
     def get_inventory_summaries(self) -> list[dict]:
         summaries = []
         for product in PRODUCTS:
             fulfillable = self._rng.randint(0, 200)
-            inbound = self._rng.randint(0, 50)
-            reserved = self._rng.randint(0, 20)
-            unfulfillable = self._rng.randint(0, 5)
+            inbound_working = self._rng.randint(0, 30)
+            inbound_shipped = self._rng.randint(0, 20)
+            inbound_receiving = self._rng.randint(0, 10)
+            pending_customer = self._rng.randint(0, 15)
+            pending_transship = self._rng.randint(0, 5)
+            fc_processing = self._rng.randint(0, 3)
+            total_reserved = pending_customer + pending_transship + fc_processing
+            customer_damaged = self._rng.randint(0, 2)
+            warehouse_damaged = self._rng.randint(0, 1)
+            defective = self._rng.randint(0, 2)
+            expired = 0
+            total_unfulfillable = customer_damaged + warehouse_damaged + defective + expired
+            total = fulfillable + inbound_working + inbound_shipped + total_reserved + total_unfulfillable
+
+            last_updated = datetime.utcnow() - timedelta(hours=self._rng.randint(1, 72))
+
             summaries.append({
-                "sellerSku": product["sku"],
                 "asin": product["asin"],
                 "fnSku": f"X00{product['asin'][3:]}",
+                "sellerSku": product["sku"],
+                "condition": "NewItem",
                 "productName": product["name"],
+                "totalQuantity": total,
+                "lastUpdatedTime": last_updated.isoformat() + "Z",
+                "stores": [],
                 "inventoryDetails": {
                     "fulfillableQuantity": fulfillable,
-                    "inboundWorkingQuantity": inbound,
-                    "inboundShippedQuantity": 0,
-                    "reservedQuantity": {"totalReservedQuantity": reserved},
-                    "unfulfillableQuantity": {"totalUnfulfillableQuantity": unfulfillable},
+                    "inboundWorkingQuantity": inbound_working,
+                    "inboundShippedQuantity": inbound_shipped,
+                    "inboundReceivingQuantity": inbound_receiving,
+                    "reservedQuantity": {
+                        "totalReservedQuantity": total_reserved,
+                        "pendingCustomerOrderQuantity": pending_customer,
+                        "pendingTransshipmentQuantity": pending_transship,
+                        "fcProcessingQuantity": fc_processing,
+                    },
+                    "researchingQuantity": {
+                        "totalResearchingQuantity": 0,
+                        "researchingQuantityBreakdown": [],
+                    },
+                    "unfulfillableQuantity": {
+                        "totalUnfulfillableQuantity": total_unfulfillable,
+                        "customerDamagedQuantity": customer_damaged,
+                        "warehouseDamagedQuantity": warehouse_damaged,
+                        "distributorDamagedQuantity": 0,
+                        "carrierDamagedQuantity": 0,
+                        "defectiveQuantity": defective,
+                        "expiredQuantity": expired,
+                    },
                 },
-                "totalQuantity": fulfillable + inbound + reserved + unfulfillable,
             })
         return summaries
 
     def get_competitive_pricing(self, asin_list: list[str] | None = None) -> list[dict]:
+        """Returns flattened pricing — same shape as AmazonConnector output."""
         targets = [p for p in PRODUCTS if asin_list is None or p["asin"] in asin_list]
         results = []
         for product in targets:

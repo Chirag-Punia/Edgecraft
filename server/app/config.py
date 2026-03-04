@@ -3,14 +3,11 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "mysql+pymysql://root:password@localhost:3306/bharat_seller_os"
+    DATABASE_URL: str = "mysql+pymysql://root:password@localhost:3306/retailsutra"
     SECRET_KEY: str = "change-me-to-a-random-secret"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-
-    GOOGLE_CLIENT_ID: str = ""
-    GOOGLE_CLIENT_SECRET: str = ""
 
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
@@ -21,6 +18,8 @@ class Settings(BaseSettings):
     FRONTEND_URL: str = "http://localhost:5173"
 
     # Amazon SP-API
+    SP_API_APP_ID: str = ""  # Application ID from Seller Central Developer Console
+    SP_API_REDIRECT_URI: str = "http://localhost:8000/api/v1/amazon/callback"
     SP_API_REFRESH_TOKEN: str = ""
     SP_API_LWA_APP_ID: str = ""
     SP_API_LWA_CLIENT_SECRET: str = ""

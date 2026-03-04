@@ -4,6 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from app.config import get_settings
 from app.db.session import SessionLocal
+from app.enums import Marketplace, AccountStatus, SyncType
 from app.models.marketplace_account import MarketplaceAccount
 from app.services.sync_worker import run_sync
 
@@ -18,13 +19,13 @@ def scheduled_sync_all():
     db = SessionLocal()
     try:
         accounts = db.query(MarketplaceAccount).filter(
-            MarketplaceAccount.marketplace == "amazon",
-            MarketplaceAccount.status == "connected",
+            MarketplaceAccount.marketplace == Marketplace.AMAZON,
+            MarketplaceAccount.status == AccountStatus.CONNECTED,
         ).all()
         logger.info(f"Scheduled sync: found {len(accounts)} connected Amazon accounts")
         for account in accounts:
             try:
-                run_sync(db, account.id, sync_type="full")
+                run_sync(db, account.id, sync_type=SyncType.FULL)
             except Exception:
                 logger.exception(f"Scheduled sync failed for account {account.id}")
     finally:

@@ -14,6 +14,7 @@ import { ConnectMarketplacesPage } from "@/pages/ConnectMarketplaces";
 import { DashboardPage } from "@/pages/Dashboard";
 import { PlaceholderPage } from "@/pages/placeholder/Placeholder";
 
+
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="flex h-screen items-center justify-center">Loading...</div>;
@@ -71,15 +72,8 @@ export default function App() {
       {/* Dashboard (needs full onboarding) */}
       <Route element={<RequireOnboarded><DashboardLayout /></RequireOnboarded>}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/dashboard/orders" element={<PlaceholderPage title="Orders" />} />
-        <Route path="/dashboard/shipments" element={<PlaceholderPage title="Shipments" />} />
-        <Route path="/dashboard/inventory" element={<PlaceholderPage title="Inventory" />} />
-        <Route path="/dashboard/listings" element={<PlaceholderPage title="Listings" />} />
-        <Route path="/dashboard/pricing" element={<PlaceholderPage title="Pricing" />} />
-        <Route path="/dashboard/customers" element={<PlaceholderPage title="Customer Insights" />} />
-        <Route path="/dashboard/forecasting" element={<PlaceholderPage title="Demand Forecasting" />} />
-        <Route path="/dashboard/reports" element={<PlaceholderPage title="Reports" />} />
         <Route path="/dashboard/assistant" element={<PlaceholderPage title="AI Assistant" />} />
+        <Route path="/dashboard/marketplaces" element={<ConnectMarketplacesPage />} />
         <Route path="/dashboard/settings" element={<PlaceholderPage title="Settings" />} />
       </Route>
 

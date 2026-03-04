@@ -9,7 +9,7 @@ export function AuthLayout() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-pink-500">
               <span className="text-lg font-bold text-white">✦</span>
             </div>
-            <span className="text-lg font-bold">Bharat Seller OS</span>
+            <span className="text-lg font-bold">RetailSutra</span>
           </Link>
         </div>
       </header>

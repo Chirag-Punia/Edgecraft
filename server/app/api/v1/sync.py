@@ -6,18 +6,27 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user
 from app.db.session import SessionLocal, get_db
+from app.enums import Marketplace, AccountStatus, SyncRunStatus, SyncType
 from app.models.marketplace_account import MarketplaceAccount
 from app.models.seller import Seller
 from app.models.sync_run import SyncRun
 from app.models.user import User
-from app.schemas.sync import SyncTriggerRequest, SyncRunResponse, SyncTriggerResponse, SeedDemoResponse
+from app.models.inventory_snapshot import InventorySnapshot
+from app.models.listing_map import ListingMap
+from app.models.order import Order
+from app.models.order_item import OrderItem
+from app.models.price_snapshot import PriceSnapshot
+from app.schemas.sync import (
+    SyncTriggerRequest, SyncRunResponse, SyncTriggerResponse,
+    SeedDemoResponse, UnseedResponse, DemoStatusResponse,
+)
 from app.services.sync_worker import run_sync
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/sync", tags=["sync"])
 
 
-def _run_sync_background(marketplace_account_id: int, sync_type: str):
+def _run_sync_background(marketplace_account_id: int, sync_type: SyncType):
     """Background task wrapper — uses its own DB session."""
     db = SessionLocal()
     try:
@@ -44,7 +53,7 @@ def trigger_sync(
     sync_run = SyncRun(
         marketplace_account_id=req.marketplace_account_id,
         sync_type=req.sync_type,
-        status="queued",
+        status=SyncRunStatus.QUEUED,
     )
     db.add(sync_run)
     db.commit()
@@ -124,25 +133,30 @@ def seed_demo(
     # Create or reuse Amazon marketplace account
     account = (
         db.query(MarketplaceAccount)
-        .filter_by(seller_id=seller.id, marketplace="amazon")
+        .filter_by(seller_id=seller.id, marketplace=Marketplace.AMAZON)
         .first()
     )
     if not account:
         account = MarketplaceAccount(
             seller_id=seller.id,
-            marketplace="amazon",
-            status="connected",
+            marketplace=Marketplace.AMAZON,
+            status=AccountStatus.CONNECTED,
+            is_demo_data=True,
         )
         db.add(account)
         db.flush()
     else:
-        account.status = "connected"
+        account.status = AccountStatus.CONNECTED
+        account.is_demo_data = True
+
+    # Reset so mock connector generates a full 30-day spread
+    account.last_sync_at = None
 
     db.commit()
     db.refresh(account)
 
-    # Run sync synchronously for demo (fast with mock data)
-    sync_run = run_sync(db, account.id, sync_type="full")
+    # Run sync synchronously with mock data (regardless of USE_MOCK_DATA config)
+    sync_run = run_sync(db, account.id, sync_type=SyncType.FULL, force_mock=True)
 
     return SeedDemoResponse(
         seller_id=seller.id,
@@ -150,3 +164,60 @@ def seed_demo(
         sync_run_id=sync_run.id,
         message=f"Demo data seeded: {sync_run.records_upserted} records upserted",
     )
+
+
+@router.post("/unseed", response_model=UnseedResponse)
+def unseed_demo(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Remove all demo data for the current user's seller."""
+    if not current_user.seller_id:
+        raise HTTPException(status_code=400, detail="No seller linked to this user")
+
+    demo_accounts = (
+        db.query(MarketplaceAccount)
+        .filter_by(seller_id=current_user.seller_id, is_demo_data=True)
+        .all()
+    )
+    if not demo_accounts:
+        return UnseedResponse(message="No demo data found", records_deleted=0)
+
+    account_ids = [a.id for a in demo_accounts]
+    total = 0
+
+    # Delete in FK order: order_items -> orders -> snapshots -> listing_map -> sync_runs
+    total += db.query(OrderItem).filter(OrderItem.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(Order).filter(Order.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(InventorySnapshot).filter(InventorySnapshot.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(PriceSnapshot).filter(PriceSnapshot.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(ListingMap).filter(ListingMap.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(SyncRun).filter(SyncRun.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+
+    # Clear flag but keep account
+    for account in demo_accounts:
+        account.is_demo_data = False
+
+    db.commit()
+    logger.info("Unseeded %d records for seller %d", total, current_user.seller_id)
+    return UnseedResponse(message=f"Demo data removed: {total} records deleted", records_deleted=total)
+
+
+@router.get("/demo-status", response_model=DemoStatusResponse)
+def demo_status(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Check if current user has active demo data."""
+    if not current_user.seller_id:
+        return DemoStatusResponse(is_seeded=False)
+
+    has_demo = (
+        db.query(MarketplaceAccount)
+        .filter_by(seller_id=current_user.seller_id, is_demo_data=True)
+        .join(SyncRun, SyncRun.marketplace_account_id == MarketplaceAccount.id)
+        .filter(SyncRun.status == SyncRunStatus.COMPLETED)
+        .first()
+    ) is not None
+
+    return DemoStatusResponse(is_seeded=has_demo)

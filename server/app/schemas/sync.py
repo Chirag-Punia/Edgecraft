@@ -1,17 +1,19 @@
 from datetime import datetime
 from pydantic import BaseModel
 
+from app.enums import SyncType, SyncRunStatus
+
 
 class SyncTriggerRequest(BaseModel):
     marketplace_account_id: int
-    sync_type: str = "full"  # full | orders | inventory | pricing
+    sync_type: SyncType = SyncType.FULL
 
 
 class SyncRunResponse(BaseModel):
     id: int
     marketplace_account_id: int
-    sync_type: str
-    status: str
+    sync_type: SyncType
+    status: SyncRunStatus
     started_at: datetime
     completed_at: datetime | None = None
     records_fetched: int
@@ -31,3 +33,12 @@ class SeedDemoResponse(BaseModel):
     marketplace_account_id: int
     sync_run_id: int
     message: str
+
+
+class UnseedResponse(BaseModel):
+    message: str
+    records_deleted: int
+
+
+class DemoStatusResponse(BaseModel):
+    is_seeded: bool

@@ -21,10 +21,6 @@ class ResendOTPRequest(BaseModel):
     email: EmailStr
 
 
-class GoogleAuthRequest(BaseModel):
-    credential: str  # Google ID token from frontend
-
-
 class RefreshRequest(BaseModel):
     refresh_token: str
 

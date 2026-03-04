@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: RetailSutra FastAPI backend on Lambda
+
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 512
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+      AllowCredentials: true
+
+Resources:
+  RetailSutraFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.handler
+      Runtime: python3.11
+      CodeUri: .
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          DATABASE_URL: !Ref DatabaseUrl
+          SECRET_KEY: !Ref SecretKey
+          FRONTEND_URL: !Ref FrontendUrl
+          SMTP_HOST: !Ref SmtpHost
+          SMTP_PORT: !Ref SmtpPort
+          SMTP_USER: !Ref SmtpUser
+          SMTP_PASSWORD: !Ref SmtpPassword
+          FROM_EMAIL: !Ref FromEmail
+          USE_MOCK_DATA: "true"
+      Events:
+        ApiCatchAll:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+        ApiRoot:
+          Type: Api
+          Properties:
+            Path: /
+            Method: ANY
+
+Parameters:
+  DatabaseUrl:
+    Type: String
+    NoEcho: true
+  SecretKey:
+    Type: String
+    NoEcho: true
+  FrontendUrl:
+    Type: String
+    Default: "http://localhost:5173"
+  SmtpHost:
+    Type: String
+    Default: "smtp.gmail.com"
+  SmtpPort:
+    Type: String
+    Default: "587"
+  SmtpUser:
+    Type: String
+    Default: ""
+  SmtpPassword:
+    Type: String
+    NoEcho: true
+    Default: ""
+  FromEmail:
+    Type: String
+    Default: "noreply@bharatselleros.com"
+
+Outputs:
+  ApiUrl:
+    Description: "API Gateway URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"

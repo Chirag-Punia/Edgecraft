@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.dialects.mysql import insert as mysql_insert
 
 from app.config import get_settings
+from app.enums import Marketplace, SyncRunStatus, SyncType, ListingStatus
 from app.models.sync_run import SyncRun
 from app.models.order import Order
 from app.models.order_item import OrderItem
@@ -23,9 +24,10 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 
 
-def _get_connector(marketplace_account: MarketplaceAccount):
+def _get_connector(marketplace_account: MarketplaceAccount, force_mock: bool = False):
     """Pick mock or real connector based on config."""
-    if settings.USE_MOCK_DATA:
+    if force_mock or settings.USE_MOCK_DATA:
+        logger.info("[Sync] Using MockAmazonConnector")
         return MockAmazonConnector()
     creds = json.loads(marketplace_account.credentials_encrypted or "{}")
     # Fall back to global config if per-account creds are missing
@@ -38,13 +40,14 @@ def _get_connector(marketplace_account: MarketplaceAccount):
             "aws_secret_key": settings.SP_API_AWS_SECRET_KEY,
             "role_arn": settings.SP_API_ROLE_ARN,
         }
+    logger.info("[Sync] Using real AmazonConnector")
     return AmazonConnector(creds)
 
 
 def _save_raw_dump(seller_id: int, entity: str, run_id: int, data: list | dict):
     """Save raw API response to disk for debugging/audit."""
     dir_path = os.path.join(
-        settings.RAW_DUMP_DIR, str(seller_id), "amazon", entity,
+        settings.RAW_DUMP_DIR, str(seller_id), Marketplace.AMAZON, entity,
         date.today().isoformat(),
     )
     os.makedirs(dir_path, exist_ok=True)
@@ -68,7 +71,7 @@ def _parse_amount(amount_obj) -> Decimal:
     return Decimal(str(amount_obj or "0"))
 
 
-def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") -> SyncRun:
+def run_sync(db: Session, marketplace_account_id: int, sync_type: SyncType = SyncType.FULL, force_mock: bool = False) -> SyncRun:
     """Run a full ETL sync for a marketplace account."""
     account = db.get(MarketplaceAccount, marketplace_account_id)
     if not account:
@@ -77,7 +80,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
     sync_run = SyncRun(
         marketplace_account_id=marketplace_account_id,
         sync_type=sync_type,
-        status="running",
+        status=SyncRunStatus.RUNNING,
     )
     db.add(sync_run)
     db.flush()
@@ -86,7 +89,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
     total_upserted = 0
 
     try:
-        connector = _get_connector(account)
+        connector = _get_connector(account, force_mock=force_mock)
 
         # --- Sync Orders ---
         created_after = account.last_sync_at or (datetime.utcnow() - timedelta(days=30))
@@ -111,7 +114,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
             order_vals = {
                 "marketplace_account_id": marketplace_account_id,
                 "external_order_id": ext_id,
-                "marketplace": "amazon",
+                "marketplace": Marketplace.AMAZON,
                 "status": raw_order.get("OrderStatus", "Unknown"),
                 "order_date": order_date,
                 "fulfillment_channel": raw_order.get("FulfillmentChannel"),
@@ -208,7 +211,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
                 "asin": item.get("asin"),
                 "fnsku": item.get("fnSku"),
                 "listing_title": item.get("productName"),
-                "listing_status": "active",
+                "listing_status": ListingStatus.ACTIVE,
             }
             _upsert(db, ListingMap, listing_vals, [
                 "asin", "fnsku", "listing_title", "listing_status",
@@ -245,7 +248,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
 
         # Update account last_sync_at
         account.last_sync_at = datetime.utcnow()
-        sync_run.status = "completed"
+        sync_run.status = SyncRunStatus.COMPLETED
         sync_run.records_fetched = total_fetched
         sync_run.records_upserted = total_upserted
         sync_run.completed_at = datetime.utcnow()
@@ -255,7 +258,7 @@ def run_sync(db: Session, marketplace_account_id: int, sync_type: str = "full") 
 
     except Exception as e:
         logger.exception(f"Sync failed for account {marketplace_account_id}")
-        sync_run.status = "failed"
+        sync_run.status = SyncRunStatus.FAILED
         sync_run.error_log = str(e)[:2000]
         sync_run.completed_at = datetime.utcnow()
         db.commit()

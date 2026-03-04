@@ -1,0 +1,6 @@
+__pycache__
+*.pyc
+.env
+raw_dumps/
+.venv/
+.git/

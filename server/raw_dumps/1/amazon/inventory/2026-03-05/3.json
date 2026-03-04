@@ -1,0 +1,632 @@
+[
+  {
+    "asin": "B08X1GKZP1",
+    "fnSku": "X00X1GKZP1",
+    "sellerSku": "BOR-FLASK-1L",
+    "condition": "NewItem",
+    "productName": "Borosil Stainless Steel Flask 1L",
+    "totalQuantity": 73,
+    "lastUpdatedTime": "2026-03-02T20:06:06.714708Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 15,
+      "inboundWorkingQuantity": 17,
+      "inboundShippedQuantity": 18,
+      "inboundReceivingQuantity": 2,
+      "reservedQuantity": {
+        "totalReservedQuantity": 20,
+        "pendingCustomerOrderQuantity": 13,
+        "pendingTransshipmentQuantity": 4,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B07HGKR2ZN",
+    "fnSku": "X00HGKR2ZN",
+    "sellerSku": "PRE-FRY-DLX",
+    "condition": "NewItem",
+    "productName": "Prestige Omega Deluxe Induction Base Fry Pan",
+    "totalQuantity": 167,
+    "lastUpdatedTime": "2026-03-03T16:06:06.714814Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 134,
+      "inboundWorkingQuantity": 10,
+      "inboundShippedQuantity": 13,
+      "inboundReceivingQuantity": 6,
+      "reservedQuantity": {
+        "totalReservedQuantity": 9,
+        "pendingCustomerOrderQuantity": 4,
+        "pendingTransshipmentQuantity": 2,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 1,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B09KXYZ123",
+    "fnSku": "X00KXYZ123",
+    "sellerSku": "CEL-DIN-35",
+    "condition": "NewItem",
+    "productName": "Cello Opalware Dazzle Dinner Set 35pcs",
+    "totalQuantity": 117,
+    "lastUpdatedTime": "2026-03-03T13:06:06.714850Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 76,
+      "inboundWorkingQuantity": 27,
+      "inboundShippedQuantity": 4,
+      "inboundReceivingQuantity": 7,
+      "reservedQuantity": {
+        "totalReservedQuantity": 8,
+        "pendingCustomerOrderQuantity": 1,
+        "pendingTransshipmentQuantity": 4,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B01N5KURZ5",
+    "fnSku": "X00N5KURZ5",
+    "sellerSku": "BAJ-SWX3",
+    "condition": "NewItem",
+    "productName": "Bajaj Majesty New SWX 3 Sandwich Maker",
+    "totalQuantity": 88,
+    "lastUpdatedTime": "2026-03-03T10:06:06.714992Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 65,
+      "inboundWorkingQuantity": 6,
+      "inboundShippedQuantity": 10,
+      "inboundReceivingQuantity": 10,
+      "reservedQuantity": {
+        "totalReservedQuantity": 7,
+        "pendingCustomerOrderQuantity": 2,
+        "pendingTransshipmentQuantity": 3,
+        "fcProcessingQuantity": 2
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 0,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B072KXYZ45",
+    "fnSku": "X002KXYZ45",
+    "sellerSku": "MIL-FLIP-500",
+    "condition": "NewItem",
+    "productName": "Milton Thermosteel Flip Lid Flask 500ml",
+    "totalQuantity": 141,
+    "lastUpdatedTime": "2026-03-03T18:06:06.715031Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 96,
+      "inboundWorkingQuantity": 21,
+      "inboundShippedQuantity": 19,
+      "inboundReceivingQuantity": 9,
+      "reservedQuantity": {
+        "totalReservedQuantity": 2,
+        "pendingCustomerOrderQuantity": 1,
+        "pendingTransshipmentQuantity": 0,
+        "fcProcessingQuantity": 1
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 2,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B07PQRST67",
+    "fnSku": "X00PQRST67",
+    "sellerSku": "PIG-KET-15",
+    "condition": "NewItem",
+    "productName": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+    "totalQuantity": 108,
+    "lastUpdatedTime": "2026-03-03T18:06:06.715060Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 85,
+      "inboundWorkingQuantity": 9,
+      "inboundShippedQuantity": 0,
+      "inboundReceivingQuantity": 3,
+      "reservedQuantity": {
+        "totalReservedQuantity": 11,
+        "pendingCustomerOrderQuantity": 6,
+        "pendingTransshipmentQuantity": 5,
+        "fcProcessingQuantity": 0
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 2,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B08MNOP890",
+    "fnSku": "X00MNOP890",
+    "sellerSku": "WON-NB-MIX",
+    "condition": "NewItem",
+    "productName": "Wonderchef Nutri-Blend Mixer Grinder",
+    "totalQuantity": 155,
+    "lastUpdatedTime": "2026-03-03T11:06:06.715085Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 101,
+      "inboundWorkingQuantity": 29,
+      "inboundShippedQuantity": 7,
+      "inboundReceivingQuantity": 8,
+      "reservedQuantity": {
+        "totalReservedQuantity": 15,
+        "pendingCustomerOrderQuantity": 10,
+        "pendingTransshipmentQuantity": 2,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B09ABCDE12",
+    "fnSku": "X00ABCDE12",
+    "sellerSku": "KUB-BED-KNG",
+    "condition": "NewItem",
+    "productName": "Kuber Industries Cotton Bedsheet King Size",
+    "totalQuantity": 136,
+    "lastUpdatedTime": "2026-03-03T04:06:06.715109Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 92,
+      "inboundWorkingQuantity": 16,
+      "inboundShippedQuantity": 15,
+      "inboundReceivingQuantity": 7,
+      "reservedQuantity": {
+        "totalReservedQuantity": 11,
+        "pendingCustomerOrderQuantity": 3,
+        "pendingTransshipmentQuantity": 5,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B07FGHIJ34",
+    "fnSku": "X00FGHIJ34",
+    "sellerSku": "STR-CUR-2PK",
+    "condition": "NewItem",
+    "productName": "Story@Home Polyester Door Curtains Set of 2",
+    "totalQuantity": 134,
+    "lastUpdatedTime": "2026-03-04T01:06:06.715131Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 105,
+      "inboundWorkingQuantity": 1,
+      "inboundShippedQuantity": 18,
+      "inboundReceivingQuantity": 3,
+      "reservedQuantity": {
+        "totalReservedQuantity": 6,
+        "pendingCustomerOrderQuantity": 4,
+        "pendingTransshipmentQuantity": 0,
+        "fcProcessingQuantity": 2
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 4,
+        "customerDamagedQuantity": 2,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B08KLMNO56",
+    "fnSku": "X00KLMNO56",
+    "sellerSku": "ASP-GLZ-1L",
+    "condition": "NewItem",
+    "productName": "Asian Paints Royale Glitz Paint 1L",
+    "totalQuantity": 83,
+    "lastUpdatedTime": "2026-03-02T06:06:06.715153Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 50,
+      "inboundWorkingQuantity": 10,
+      "inboundShippedQuantity": 7,
+      "inboundReceivingQuantity": 6,
+      "reservedQuantity": {
+        "totalReservedQuantity": 12,
+        "pendingCustomerOrderQuantity": 7,
+        "pendingTransshipmentQuantity": 3,
+        "fcProcessingQuantity": 2
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 4,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B09PQRST78",
+    "fnSku": "X00PQRST78",
+    "sellerSku": "HAV-LED-4PK",
+    "condition": "NewItem",
+    "productName": "Havells Adonia LED Bulb 15W Pack of 4",
+    "totalQuantity": 147,
+    "lastUpdatedTime": "2026-03-04T16:06:06.715175Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 117,
+      "inboundWorkingQuantity": 5,
+      "inboundShippedQuantity": 11,
+      "inboundReceivingQuantity": 2,
+      "reservedQuantity": {
+        "totalReservedQuantity": 12,
+        "pendingCustomerOrderQuantity": 4,
+        "pendingTransshipmentQuantity": 5,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B08UVWXY90",
+    "fnSku": "X00UVWXY90",
+    "sellerSku": "CRM-FAN-AUR",
+    "condition": "NewItem",
+    "productName": "Crompton Aura Prime Anti Dust Ceiling Fan",
+    "totalQuantity": 65,
+    "lastUpdatedTime": "2026-03-03T17:06:06.715197Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 19,
+      "inboundWorkingQuantity": 30,
+      "inboundShippedQuantity": 1,
+      "inboundReceivingQuantity": 0,
+      "reservedQuantity": {
+        "totalReservedQuantity": 15,
+        "pendingCustomerOrderQuantity": 13,
+        "pendingTransshipmentQuantity": 1,
+        "fcProcessingQuantity": 1
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 0,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B07ZABCD12",
+    "fnSku": "X00ZABCD12",
+    "sellerSku": "PAR-GRM-KIT",
+    "condition": "NewItem",
+    "productName": "Park Avenue Good Morning Grooming Kit",
+    "totalQuantity": 179,
+    "lastUpdatedTime": "2026-03-01T22:06:06.715219Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 129,
+      "inboundWorkingQuantity": 14,
+      "inboundShippedQuantity": 11,
+      "inboundReceivingQuantity": 0,
+      "reservedQuantity": {
+        "totalReservedQuantity": 23,
+        "pendingCustomerOrderQuantity": 15,
+        "pendingTransshipmentQuantity": 5,
+        "fcProcessingQuantity": 3
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B08EFGHI34",
+    "fnSku": "X00EFGHI34",
+    "sellerSku": "HIM-FACE-CB",
+    "condition": "NewItem",
+    "productName": "Himalaya Herbals Face Wash Combo Pack",
+    "totalQuantity": 120,
+    "lastUpdatedTime": "2026-03-04T07:06:06.715241Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 105,
+      "inboundWorkingQuantity": 0,
+      "inboundShippedQuantity": 0,
+      "inboundReceivingQuantity": 8,
+      "reservedQuantity": {
+        "totalReservedQuantity": 14,
+        "pendingCustomerOrderQuantity": 8,
+        "pendingTransshipmentQuantity": 4,
+        "fcProcessingQuantity": 2
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 1,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B09JKLMN56",
+    "fnSku": "X00JKLMN56",
+    "sellerSku": "WLD-BAG-35L",
+    "condition": "NewItem",
+    "productName": "Wildcraft Unisex Laptop Backpack 35L",
+    "totalQuantity": 59,
+    "lastUpdatedTime": "2026-03-04T10:06:06.715262Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 24,
+      "inboundWorkingQuantity": 16,
+      "inboundShippedQuantity": 4,
+      "inboundReceivingQuantity": 3,
+      "reservedQuantity": {
+        "totalReservedQuantity": 12,
+        "pendingCustomerOrderQuantity": 6,
+        "pendingTransshipmentQuantity": 4,
+        "fcProcessingQuantity": 2
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 1,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 1,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B0AOPQRS78",
+    "fnSku": "X00OPQRS78",
+    "sellerSku": "NOI-CFP4",
+    "condition": "NewItem",
+    "productName": "Noise ColorFit Pro 4 Smartwatch",
+    "totalQuantity": 153,
+    "lastUpdatedTime": "2026-03-04T16:06:06.715283Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 95,
+      "inboundWorkingQuantity": 30,
+      "inboundShippedQuantity": 12,
+      "inboundReceivingQuantity": 7,
+      "reservedQuantity": {
+        "totalReservedQuantity": 13,
+        "pendingCustomerOrderQuantity": 7,
+        "pendingTransshipmentQuantity": 5,
+        "fcProcessingQuantity": 1
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 3,
+        "customerDamagedQuantity": 1,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B0BTUVWX90",
+    "fnSku": "X00TUVWX90",
+    "sellerSku": "BOT-AD141",
+    "condition": "NewItem",
+    "productName": "boAt Airdopes 141 TWS Earbuds",
+    "totalQuantity": 64,
+    "lastUpdatedTime": "2026-03-02T05:06:06.715303Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 23,
+      "inboundWorkingQuantity": 12,
+      "inboundShippedQuantity": 12,
+      "inboundReceivingQuantity": 6,
+      "reservedQuantity": {
+        "totalReservedQuantity": 15,
+        "pendingCustomerOrderQuantity": 15,
+        "pendingTransshipmentQuantity": 0,
+        "fcProcessingQuantity": 0
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 2,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 0,
+        "expiredQuantity": 0
+      }
+    }
+  },
+  {
+    "asin": "B09YZABCD1",
+    "fnSku": "X00YZABCD1",
+    "sellerSku": "POR-CHG-20W",
+    "condition": "NewItem",
+    "productName": "Portronics Adapto 62 USB-C Charger 20W",
+    "totalQuantity": 150,
+    "lastUpdatedTime": "2026-03-02T08:06:06.715324Z",
+    "stores": [],
+    "inventoryDetails": {
+      "fulfillableQuantity": 111,
+      "inboundWorkingQuantity": 20,
+      "inboundShippedQuantity": 10,
+      "inboundReceivingQuantity": 9,
+      "reservedQuantity": {
+        "totalReservedQuantity": 7,
+        "pendingCustomerOrderQuantity": 3,
+        "pendingTransshipmentQuantity": 4,
+        "fcProcessingQuantity": 0
+      },
+      "researchingQuantity": {
+        "totalResearchingQuantity": 0,
+        "researchingQuantityBreakdown": []
+      },
+      "unfulfillableQuantity": {
+        "totalUnfulfillableQuantity": 2,
+        "customerDamagedQuantity": 0,
+        "warehouseDamagedQuantity": 0,
+        "distributorDamagedQuantity": 0,
+        "carrierDamagedQuantity": 0,
+        "defectiveQuantity": 2,
+        "expiredQuantity": 0
+      }
+    }
+  }
+]

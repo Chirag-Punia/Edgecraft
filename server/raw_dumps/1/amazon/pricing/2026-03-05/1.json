@@ -1,0 +1,164 @@
+[
+  {
+    "ASIN": "B08X1GKZP1",
+    "SellerSKU": "BOR-FLASK-1L",
+    "YourPrice": 899,
+    "LandedPrice": 959,
+    "BuyBoxPrice": 878.42,
+    "LowestPrice": 888.77,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B07HGKR2ZN",
+    "SellerSKU": "PRE-FRY-DLX",
+    "YourPrice": 1299,
+    "LandedPrice": 1359,
+    "BuyBoxPrice": 1354.28,
+    "LowestPrice": 1279.38,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B09KXYZ123",
+    "SellerSKU": "CEL-DIN-35",
+    "YourPrice": 2499,
+    "LandedPrice": 2539,
+    "BuyBoxPrice": 2538.51,
+    "LowestPrice": 2191.38,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B01N5KURZ5",
+    "SellerSKU": "BAJ-SWX3",
+    "YourPrice": 1449,
+    "LandedPrice": 1449,
+    "BuyBoxPrice": 1378.82,
+    "LowestPrice": 1276.68,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B072KXYZ45",
+    "SellerSKU": "MIL-FLIP-500",
+    "YourPrice": 649,
+    "LandedPrice": 689,
+    "BuyBoxPrice": 665.37,
+    "LowestPrice": 621.03,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B07PQRST67",
+    "SellerSKU": "PIG-KET-15",
+    "YourPrice": 599,
+    "LandedPrice": 659,
+    "BuyBoxPrice": 624.69,
+    "LowestPrice": 536.04,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B08MNOP890",
+    "SellerSKU": "WON-NB-MIX",
+    "YourPrice": 2199,
+    "LandedPrice": 2239,
+    "BuyBoxPrice": 2141.93,
+    "LowestPrice": 2144.46,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B09ABCDE12",
+    "SellerSKU": "KUB-BED-KNG",
+    "YourPrice": 799,
+    "LandedPrice": 839,
+    "BuyBoxPrice": 813.15,
+    "LowestPrice": 743.94,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B07FGHIJ34",
+    "SellerSKU": "STR-CUR-2PK",
+    "YourPrice": 499,
+    "LandedPrice": 559,
+    "BuyBoxPrice": 511.75,
+    "LowestPrice": 434.63,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B08KLMNO56",
+    "SellerSKU": "ASP-GLZ-1L",
+    "YourPrice": 450,
+    "LandedPrice": 490,
+    "BuyBoxPrice": 460.09,
+    "LowestPrice": 416.3,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B09PQRST78",
+    "SellerSKU": "HAV-LED-4PK",
+    "YourPrice": 699,
+    "LandedPrice": 699,
+    "BuyBoxPrice": 667.8,
+    "LowestPrice": 639.98,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B08UVWXY90",
+    "SellerSKU": "CRM-FAN-AUR",
+    "YourPrice": 2899,
+    "LandedPrice": 2959,
+    "BuyBoxPrice": 2852.79,
+    "LowestPrice": 2798.55,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B07ZABCD12",
+    "SellerSKU": "PAR-GRM-KIT",
+    "YourPrice": 599,
+    "LandedPrice": 599,
+    "BuyBoxPrice": 592.81,
+    "LowestPrice": 578.65,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B08EFGHI34",
+    "SellerSKU": "HIM-FACE-CB",
+    "YourPrice": 350,
+    "LandedPrice": 390,
+    "BuyBoxPrice": 354.69,
+    "LowestPrice": 338.64,
+    "IsBuyBoxWinner": true
+  },
+  {
+    "ASIN": "B09JKLMN56",
+    "SellerSKU": "WLD-BAG-35L",
+    "YourPrice": 1599,
+    "LandedPrice": 1639,
+    "BuyBoxPrice": 1597.5,
+    "LowestPrice": 1444.49,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B0AOPQRS78",
+    "SellerSKU": "NOI-CFP4",
+    "YourPrice": 3499,
+    "LandedPrice": 3559,
+    "BuyBoxPrice": 3475.15,
+    "LowestPrice": 3330.89,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B0BTUVWX90",
+    "SellerSKU": "BOT-AD141",
+    "YourPrice": 1299,
+    "LandedPrice": 1339,
+    "BuyBoxPrice": 1283.42,
+    "LowestPrice": 1254.61,
+    "IsBuyBoxWinner": false
+  },
+  {
+    "ASIN": "B09YZABCD1",
+    "SellerSKU": "POR-CHG-20W",
+    "YourPrice": 699,
+    "LandedPrice": 699,
+    "BuyBoxPrice": 719.83,
+    "LowestPrice": 668.92,
+    "IsBuyBoxWinner": true
+  }
+]

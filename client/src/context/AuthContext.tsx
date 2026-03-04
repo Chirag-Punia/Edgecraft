@@ -9,7 +9,6 @@ interface AuthState {
   signup: (email: string, password: string, fullName: string) => Promise<void>;
   verifyOtp: (email: string, code: string) => Promise<void>;
   resendOtp: (email: string) => Promise<void>;
-  googleAuth: (credential: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -63,13 +62,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await api.post("/auth/resend-otp", { email });
   };
 
-  const googleAuth = async (credential: string) => {
-    const { data } = await api.post("/auth/google", { credential });
-    localStorage.setItem("access_token", data.access_token);
-    localStorage.setItem("refresh_token", data.refresh_token);
-    await fetchUser();
-  };
-
   const logout = () => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -79,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshUser = fetchUser;
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, verifyOtp, resendOtp, googleAuth, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, verifyOtp, resendOtp, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

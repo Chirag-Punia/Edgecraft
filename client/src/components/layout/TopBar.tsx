@@ -23,11 +23,33 @@ export function TopBar() {
     <header className="flex h-16 items-center justify-between border-b bg-white px-6">
       <div className="flex items-center gap-4">
         <h1 className="text-lg font-semibold">Command Center</h1>
-        <Button variant="outline" size="sm" className="gap-1">
-          <span className="text-xs">🏪</span>
-          All Marketplaces
-          <ChevronDown className="h-3 w-3" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-1">
+              <span className="text-xs">🛒</span>
+              Amazon.in
+              <ChevronDown className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuItem className="font-medium">
+              <span className="mr-2 text-xs">🛒</span>
+              Amazon.in
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled className="opacity-40">
+              <span className="mr-2 text-xs">🛍️</span>
+              Flipkart — Coming Soon
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled className="opacity-40">
+              <span className="mr-2 text-xs">🟢</span>
+              Shopify — Coming Soon
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled className="opacity-40">
+              <span className="mr-2 text-xs">📘</span>
+              Facebook Marketplace — Coming Soon
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex items-center gap-4">
         <span className="text-sm text-muted-foreground">English</span>

@@ -1,0 +1,4385 @@
+[
+  {
+    "AmazonOrderId": "408-9478454-1445199",
+    "PurchaseDate": "2026-03-04T21:06:31.462820Z",
+    "LastUpdateDate": "2026-03-06T08:57:41.807379Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4446"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Hyderabad",
+      "StateOrRegion": "Telangana",
+      "CountryCode": "IN",
+      "PostalCode": "688508"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T07:06:31.462820Z",
+    "LatestShipDate": "2026-03-06T09:06:31.462820Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:31.462820Z",
+    "LatestDeliveryDate": "2026-03-07T21:06:31.462820Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2622631-7022674",
+    "PurchaseDate": "2026-03-04T21:08:20.124556Z",
+    "LastUpdateDate": "2026-03-05T23:45:04.223074Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "499"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Hyderabad",
+      "StateOrRegion": "Telangana",
+      "CountryCode": "IN",
+      "PostalCode": "988662"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T03:08:20.124556Z",
+    "LatestShipDate": "2026-03-06T15:08:20.124556Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:20.124556Z",
+    "LatestDeliveryDate": "2026-03-08T21:08:20.124556Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-4823498-5855124",
+    "PurchaseDate": "2026-03-04T21:07:02.371306Z",
+    "LastUpdateDate": "2026-03-05T00:09:34.186249Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "659"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "183667"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T03:07:02.371306Z",
+    "LatestShipDate": "2026-03-05T17:07:02.371306Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:02.371306Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:02.371306Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ],
+    "EasyShipShipmentStatus": "PendingPickUp"
+  },
+  {
+    "AmazonOrderId": "408-5107245-3741438",
+    "PurchaseDate": "2026-03-04T21:07:25.696532Z",
+    "LastUpdateDate": "2026-03-05T19:26:02.719693Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "5798"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Coimbatore",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "584714"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T06:07:25.696532Z",
+    "LatestShipDate": "2026-03-07T04:07:25.696532Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:25.696532Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:25.696532Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-7637601-8698256",
+    "PurchaseDate": "2026-03-04T21:06:53.310866Z",
+    "LastUpdateDate": "2026-03-05T13:21:21.949529Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4196"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Indore",
+      "StateOrRegion": "Madhya Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "249811"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T07:06:53.310866Z",
+    "LatestShipDate": "2026-03-07T02:06:53.310866Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:53.310866Z",
+    "LatestDeliveryDate": "2026-03-10T21:06:53.310866Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      },
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8082668-2065818",
+    "PurchaseDate": "2026-03-04T21:06:58.761035Z",
+    "LastUpdateDate": "2026-03-06T00:30:02.249335Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1299"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Chennai",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "503457"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:06:58.761035Z",
+    "LatestShipDate": "2026-03-06T19:06:58.761035Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:58.761035Z",
+    "LatestDeliveryDate": "2026-03-07T21:06:58.761035Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      },
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3997281-9517485",
+    "PurchaseDate": "2026-03-04T21:09:29.983385Z",
+    "LastUpdateDate": "2026-03-05T23:01:36.130576Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7044"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Jaipur",
+      "StateOrRegion": "Rajasthan",
+      "CountryCode": "IN",
+      "PostalCode": "211579"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T09:09:29.983385Z",
+    "LatestShipDate": "2026-03-07T05:09:29.983385Z",
+    "EarliestDeliveryDate": "2026-03-07T21:09:29.983385Z",
+    "LatestDeliveryDate": "2026-03-08T21:09:29.983385Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Borosil Stainless Steel Flask 1L",
+        "brand": "Borosil",
+        "category": "Kitchen",
+        "asin": "B08X1GKZP1",
+        "sku": "BOR-FLASK-1L",
+        "price": 899
+      },
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-5017343-1971823",
+    "PurchaseDate": "2026-03-04T21:07:09.215999Z",
+    "LastUpdateDate": "2026-03-06T04:08:59.470530Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2959"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "352572"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T12:07:09.215999Z",
+    "LatestShipDate": "2026-03-06T19:07:09.215999Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:09.215999Z",
+    "LatestDeliveryDate": "2026-03-07T21:07:09.215999Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6229731-7693979",
+    "PurchaseDate": "2026-03-04T21:09:20.062162Z",
+    "LastUpdateDate": "2026-03-05T02:10:52.626252Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2686"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "804314"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T18:09:20.062162Z",
+    "LatestShipDate": "2026-03-06T18:09:20.062162Z",
+    "EarliestDeliveryDate": "2026-03-07T21:09:20.062162Z",
+    "LatestDeliveryDate": "2026-03-08T21:09:20.062162Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Portronics Adapto 62 USB-C Charger 20W",
+        "brand": "Portronics",
+        "category": "Electronics",
+        "asin": "B09YZABCD1",
+        "sku": "POR-CHG-20W",
+        "price": 699
+      },
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-4841005-2130789",
+    "PurchaseDate": "2026-03-04T21:07:37.393683Z",
+    "LastUpdateDate": "2026-03-05T22:27:11.225986Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4998"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "132938"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:07:37.393683Z",
+    "LatestShipDate": "2026-03-06T12:07:37.393683Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:37.393683Z",
+    "LatestDeliveryDate": "2026-03-07T21:07:37.393683Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ],
+    "EasyShipShipmentStatus": "PendingPickUp"
+  },
+  {
+    "AmazonOrderId": "408-8231838-6944126",
+    "PurchaseDate": "2026-03-04T21:07:52.739202Z",
+    "LastUpdateDate": "2026-03-05T11:13:11.092265Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2007"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "544154"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T04:07:52.739202Z",
+    "LatestShipDate": "2026-03-05T22:07:52.739202Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:52.739202Z",
+    "LatestDeliveryDate": "2026-03-08T21:07:52.739202Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-5191056-2264748",
+    "PurchaseDate": "2026-03-04T21:09:03.292849Z",
+    "LastUpdateDate": "2026-03-05T00:41:49.057729Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7544"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "564656"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T09:09:03.292849Z",
+    "LatestShipDate": "2026-03-07T02:09:03.292849Z",
+    "EarliestDeliveryDate": "2026-03-07T21:09:03.292849Z",
+    "LatestDeliveryDate": "2026-03-08T21:09:03.292849Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      },
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      },
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8633773-5785687",
+    "PurchaseDate": "2026-03-04T21:09:01.704980Z",
+    "LastUpdateDate": "2026-03-05T02:45:07.861792Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7535"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "543555"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:09:01.704980Z",
+    "LatestShipDate": "2026-03-06T17:09:01.704980Z",
+    "EarliestDeliveryDate": "2026-03-07T21:09:01.704980Z",
+    "LatestDeliveryDate": "2026-03-08T21:09:01.704980Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Borosil Stainless Steel Flask 1L",
+        "brand": "Borosil",
+        "category": "Kitchen",
+        "asin": "B08X1GKZP1",
+        "sku": "BOR-FLASK-1L",
+        "price": 899
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      },
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9436429-9910817",
+    "PurchaseDate": "2026-03-04T21:08:36.391105Z",
+    "LastUpdateDate": "2026-03-06T10:57:41.161725Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3497"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "265080"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T19:08:36.391105Z",
+    "LatestShipDate": "2026-03-07T13:08:36.391105Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:36.391105Z",
+    "LatestDeliveryDate": "2026-03-07T21:08:36.391105Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      },
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9770838-6307805",
+    "PurchaseDate": "2026-03-04T21:06:25.163767Z",
+    "LastUpdateDate": "2026-03-05T06:50:26.747165Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1598"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "373432"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:06:25.163767Z",
+    "LatestShipDate": "2026-03-07T14:06:25.163767Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:25.163767Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:25.163767Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9487336-5449324",
+    "PurchaseDate": "2026-03-04T21:08:33.503125Z",
+    "LastUpdateDate": "2026-03-05T09:21:39.166308Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "900"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "238890"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T18:08:33.503125Z",
+    "LatestShipDate": "2026-03-06T19:08:33.503125Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:33.503125Z",
+    "LatestDeliveryDate": "2026-03-07T21:08:33.503125Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2737893-3253031",
+    "PurchaseDate": "2026-03-04T21:09:06.728404Z",
+    "LastUpdateDate": "2026-03-06T15:28:39.253432Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4896"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kolkata",
+      "StateOrRegion": "West Bengal",
+      "CountryCode": "IN",
+      "PostalCode": "377312"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T18:09:06.728404Z",
+    "LatestShipDate": "2026-03-07T01:09:06.728404Z",
+    "EarliestDeliveryDate": "2026-03-06T21:09:06.728404Z",
+    "LatestDeliveryDate": "2026-03-09T21:09:06.728404Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      }
+    ],
+    "EasyShipShipmentStatus": "PendingPickUp"
+  },
+  {
+    "AmazonOrderId": "408-1739653-1059486",
+    "PurchaseDate": "2026-03-04T21:08:38.794413Z",
+    "LastUpdateDate": "2026-03-05T05:27:00.580747Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "8694"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Chennai",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "449759"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:08:38.794413Z",
+    "LatestShipDate": "2026-03-06T19:08:38.794413Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:38.794413Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:38.794413Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      },
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3484601-8210624",
+    "PurchaseDate": "2026-03-04T21:08:17.547791Z",
+    "LastUpdateDate": "2026-03-05T10:27:00.378195Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1050"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Nagpur",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "233636"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T12:08:17.547791Z",
+    "LatestShipDate": "2026-03-07T11:08:17.547791Z",
+    "EarliestDeliveryDate": "2026-03-08T21:08:17.547791Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:17.547791Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3726327-3970445",
+    "PurchaseDate": "2026-03-04T21:07:22.574262Z",
+    "LastUpdateDate": "2026-03-06T17:58:41.065642Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2998"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Coimbatore",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "532322"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T05:07:22.574262Z",
+    "LatestShipDate": "2026-03-06T08:07:22.574262Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:22.574262Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:22.574262Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      }
+    ],
+    "EasyShipShipmentStatus": "OutForDelivery"
+  },
+  {
+    "AmazonOrderId": "408-4818418-4740036",
+    "PurchaseDate": "2026-03-04T21:08:46.858961Z",
+    "LastUpdateDate": "2026-03-05T17:29:48.726742Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2296"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "124813"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T12:08:46.858961Z",
+    "LatestShipDate": "2026-03-06T19:08:46.858961Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:46.858961Z",
+    "LatestDeliveryDate": "2026-03-08T21:08:46.858961Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      },
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6799667-6262632",
+    "PurchaseDate": "2026-03-04T21:07:29.396870Z",
+    "LastUpdateDate": "2026-03-05T11:13:09.034795Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "11392"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "557592"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T20:07:29.396870Z",
+    "LatestShipDate": "2026-03-07T11:07:29.396870Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:29.396870Z",
+    "LatestDeliveryDate": "2026-03-07T21:07:29.396870Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      },
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      },
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8235969-2173965",
+    "PurchaseDate": "2026-03-04T21:07:52.187764Z",
+    "LastUpdateDate": "2026-03-05T16:14:07.255086Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3937"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "796503"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T07:07:52.187764Z",
+    "LatestShipDate": "2026-03-06T18:07:52.187764Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:52.187764Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:52.187764Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6049101-7812810",
+    "PurchaseDate": "2026-03-04T21:07:12.337491Z",
+    "LastUpdateDate": "2026-03-06T13:58:36.522783Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4548"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 3,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Nagpur",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "674553"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T06:07:12.337491Z",
+    "LatestShipDate": "2026-03-07T06:07:12.337491Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:12.337491Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:12.337491Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "boAt Airdopes 141 TWS Earbuds",
+        "brand": "boAt",
+        "category": "Electronics",
+        "asin": "B0BTUVWX90",
+        "sku": "BOT-AD141",
+        "price": 1299
+      },
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      },
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9647849-6623525",
+    "PurchaseDate": "2026-03-04T21:07:10.311620Z",
+    "LastUpdateDate": "2026-03-05T07:59:53.221902Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1438"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Indore",
+      "StateOrRegion": "Madhya Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "197923"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T03:07:10.311620Z",
+    "LatestShipDate": "2026-03-06T09:07:10.311620Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:10.311620Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:10.311620Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      }
+    ],
+    "EasyShipShipmentStatus": "AtOriginFC"
+  },
+  {
+    "AmazonOrderId": "408-7705062-5093379",
+    "PurchaseDate": "2026-03-04T21:08:24.747263Z",
+    "LastUpdateDate": "2026-03-05T08:41:53.947950Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1339"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Hyderabad",
+      "StateOrRegion": "Telangana",
+      "CountryCode": "IN",
+      "PostalCode": "254739"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:08:24.747263Z",
+    "LatestShipDate": "2026-03-07T08:08:24.747263Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:24.747263Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:24.747263Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6323376-8425149",
+    "PurchaseDate": "2026-03-04T21:06:10.118756Z",
+    "LastUpdateDate": "2026-03-06T09:23:53.308200Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2807"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Indore",
+      "StateOrRegion": "Madhya Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "742412"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T15:06:10.118756Z",
+    "LatestShipDate": "2026-03-07T12:06:10.118756Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:10.118756Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:10.118756Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      },
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-5606980-8379837",
+    "PurchaseDate": "2026-03-04T21:09:08.979330Z",
+    "LastUpdateDate": "2026-03-05T18:12:33.515390Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1837"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kochi",
+      "StateOrRegion": "Kerala",
+      "CountryCode": "IN",
+      "PostalCode": "181247"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:09:08.979330Z",
+    "LatestShipDate": "2026-03-07T00:09:08.979330Z",
+    "EarliestDeliveryDate": "2026-03-08T21:09:08.979330Z",
+    "LatestDeliveryDate": "2026-03-10T21:09:08.979330Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+        "brand": "Pigeon",
+        "category": "Appliances",
+        "asin": "B07PQRST67",
+        "sku": "PIG-KET-15",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8816912-7975534",
+    "PurchaseDate": "2026-03-04T21:06:56.312821Z",
+    "LastUpdateDate": "2026-03-05T13:54:01.716017Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "649"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kochi",
+      "StateOrRegion": "Kerala",
+      "CountryCode": "IN",
+      "PostalCode": "165290"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:06:56.312821Z",
+    "LatestShipDate": "2026-03-06T23:06:56.312821Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:56.312821Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:56.312821Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ],
+    "EasyShipShipmentStatus": "Delivered"
+  },
+  {
+    "AmazonOrderId": "408-9191131-4681284",
+    "PurchaseDate": "2026-03-04T21:07:27.583162Z",
+    "LastUpdateDate": "2026-03-06T10:18:17.027838Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1198"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Nagpur",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "386193"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T18:07:27.583162Z",
+    "LatestShipDate": "2026-03-06T20:07:27.583162Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:27.583162Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:27.583162Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8746014-4048907",
+    "PurchaseDate": "2026-03-04T21:06:14.856221Z",
+    "LastUpdateDate": "2026-03-05T13:54:07.975015Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "5456"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "152727"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:06:14.856221Z",
+    "LatestShipDate": "2026-03-06T10:06:14.856221Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:14.856221Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:14.856221Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+        "brand": "Pigeon",
+        "category": "Appliances",
+        "asin": "B07PQRST67",
+        "sku": "PIG-KET-15",
+        "price": 599
+      },
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-1675419-1520596",
+    "PurchaseDate": "2026-03-04T21:07:15.048624Z",
+    "LastUpdateDate": "2026-03-05T19:29:30.174417Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2196"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kolkata",
+      "StateOrRegion": "West Bengal",
+      "CountryCode": "IN",
+      "PostalCode": "359295"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:07:15.048624Z",
+    "LatestShipDate": "2026-03-06T13:07:15.048624Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:15.048624Z",
+    "LatestDeliveryDate": "2026-03-08T21:07:15.048624Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      },
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3747534-6218367",
+    "PurchaseDate": "2026-03-04T21:06:13.111994Z",
+    "LastUpdateDate": "2026-03-05T05:15:56.204901Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4347"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Bangalore",
+      "StateOrRegion": "Karnataka",
+      "CountryCode": "IN",
+      "PostalCode": "213349"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T20:06:13.111994Z",
+    "LatestShipDate": "2026-03-06T15:06:13.111994Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:13.111994Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:13.111994Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      }
+    ],
+    "EasyShipShipmentStatus": "AtDestinationFC"
+  },
+  {
+    "AmazonOrderId": "408-1689025-6825112",
+    "PurchaseDate": "2026-03-04T21:08:05.176179Z",
+    "LastUpdateDate": "2026-03-06T16:48:43.200936Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2259"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "658623"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T04:08:05.176179Z",
+    "LatestShipDate": "2026-03-07T04:08:05.176179Z",
+    "EarliestDeliveryDate": "2026-03-08T21:08:05.176179Z",
+    "LatestDeliveryDate": "2026-03-11T21:08:05.176179Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9753457-5531230",
+    "PurchaseDate": "2026-03-04T21:07:23.768588Z",
+    "LastUpdateDate": "2026-03-05T21:54:12.334201Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "700"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kolkata",
+      "StateOrRegion": "West Bengal",
+      "CountryCode": "IN",
+      "PostalCode": "745830"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:07:23.768588Z",
+    "LatestShipDate": "2026-03-06T13:07:23.768588Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:23.768588Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:23.768588Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-1481506-9293086",
+    "PurchaseDate": "2026-03-04T21:07:57.584972Z",
+    "LastUpdateDate": "2026-03-05T20:51:25.362629Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1198"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "992288"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:07:57.584972Z",
+    "LatestShipDate": "2026-03-06T22:07:57.584972Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:57.584972Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:57.584972Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      },
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9234615-8519121",
+    "PurchaseDate": "2026-03-04T21:07:47.370979Z",
+    "LastUpdateDate": "2026-03-05T14:48:23.755256Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1497"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Chennai",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "931450"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T08:07:47.370979Z",
+    "LatestShipDate": "2026-03-07T02:07:47.370979Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:47.370979Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:47.370979Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6144280-5217853",
+    "PurchaseDate": "2026-03-04T21:07:08.366724Z",
+    "LastUpdateDate": "2026-03-05T17:07:33.037696Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "5858"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Hyderabad",
+      "StateOrRegion": "Telangana",
+      "CountryCode": "IN",
+      "PostalCode": "341736"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T15:07:08.366724Z",
+    "LatestShipDate": "2026-03-06T20:07:08.366724Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:08.366724Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:08.366724Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-4010529-6071208",
+    "PurchaseDate": "2026-03-04T21:06:47.856954Z",
+    "LastUpdateDate": "2026-03-05T03:43:56.519174Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "8892"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 3,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Jaipur",
+      "StateOrRegion": "Rajasthan",
+      "CountryCode": "IN",
+      "PostalCode": "114835"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T08:06:47.856954Z",
+    "LatestShipDate": "2026-03-06T19:06:47.856954Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:47.856954Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:47.856954Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+        "brand": "Pigeon",
+        "category": "Appliances",
+        "asin": "B07PQRST67",
+        "sku": "PIG-KET-15",
+        "price": 599
+      },
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      },
+      {
+        "name": "boAt Airdopes 141 TWS Earbuds",
+        "brand": "boAt",
+        "category": "Electronics",
+        "asin": "B0BTUVWX90",
+        "sku": "BOT-AD141",
+        "price": 1299
+      }
+    ],
+    "EasyShipShipmentStatus": "PickedUp"
+  },
+  {
+    "AmazonOrderId": "408-1861958-5235884",
+    "PurchaseDate": "2026-03-04T21:07:04.346688Z",
+    "LastUpdateDate": "2026-03-06T19:54:35.049031Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1987"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Jaipur",
+      "StateOrRegion": "Rajasthan",
+      "CountryCode": "IN",
+      "PostalCode": "600935"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T11:07:04.346688Z",
+    "LatestShipDate": "2026-03-06T10:07:04.346688Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:04.346688Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:04.346688Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9767312-7381684",
+    "PurchaseDate": "2026-03-04T21:06:22.184081Z",
+    "LastUpdateDate": "2026-03-05T21:13:05.702082Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3246"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "572398"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T20:06:22.184081Z",
+    "LatestShipDate": "2026-03-06T22:06:22.184081Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:22.184081Z",
+    "LatestDeliveryDate": "2026-03-11T21:06:22.184081Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      },
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3916107-2259379",
+    "PurchaseDate": "2026-03-04T21:07:08.995740Z",
+    "LastUpdateDate": "2026-03-06T01:46:47.449212Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3996"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "264136"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T06:07:08.995740Z",
+    "LatestShipDate": "2026-03-06T09:07:08.995740Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:08.995740Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:08.995740Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2925626-4771676",
+    "PurchaseDate": "2026-03-04T21:07:39.896312Z",
+    "LastUpdateDate": "2026-03-06T02:02:12.750526Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1350"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Chennai",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "779094"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T07:07:39.896312Z",
+    "LatestShipDate": "2026-03-06T22:07:39.896312Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:39.896312Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:39.896312Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9396529-9284509",
+    "PurchaseDate": "2026-03-04T21:07:02.595590Z",
+    "LastUpdateDate": "2026-03-05T04:48:08.975087Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1449"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Mumbai",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "559023"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:07:02.595590Z",
+    "LatestShipDate": "2026-03-06T18:07:02.595590Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:02.595590Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:02.595590Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9706768-8419378",
+    "PurchaseDate": "2026-03-04T21:06:17.042549Z",
+    "LastUpdateDate": "2026-03-05T18:24:36.292525Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "8456"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kolkata",
+      "StateOrRegion": "West Bengal",
+      "CountryCode": "IN",
+      "PostalCode": "391668"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T06:06:17.042549Z",
+    "LatestShipDate": "2026-03-07T00:06:17.042549Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:17.042549Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:17.042549Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Borosil Stainless Steel Flask 1L",
+        "brand": "Borosil",
+        "category": "Kitchen",
+        "asin": "B08X1GKZP1",
+        "sku": "BOR-FLASK-1L",
+        "price": 899
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-1615675-8630712",
+    "PurchaseDate": "2026-03-04T21:08:07.099593Z",
+    "LastUpdateDate": "2026-03-06T03:58:12.674125Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "13846"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "192337"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:08:07.099593Z",
+    "LatestShipDate": "2026-03-07T12:08:07.099593Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:07.099593Z",
+    "LatestDeliveryDate": "2026-03-10T21:08:07.099593Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Noise ColorFit Pro 4 Smartwatch",
+        "brand": "Noise",
+        "category": "Electronics",
+        "asin": "B0AOPQRS78",
+        "sku": "NOI-CFP4",
+        "price": 3499
+      },
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      },
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-5480460-3198037",
+    "PurchaseDate": "2026-03-04T21:07:14.225645Z",
+    "LastUpdateDate": "2026-03-06T19:43:09.481421Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3397"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "402020"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T02:07:14.225645Z",
+    "LatestShipDate": "2026-03-06T03:07:14.225645Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:14.225645Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:14.225645Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Borosil Stainless Steel Flask 1L",
+        "brand": "Borosil",
+        "category": "Kitchen",
+        "asin": "B08X1GKZP1",
+        "sku": "BOR-FLASK-1L",
+        "price": 899
+      },
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9361353-5896624",
+    "PurchaseDate": "2026-03-04T21:08:29.883086Z",
+    "LastUpdateDate": "2026-03-05T03:50:55.176391Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3395"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "633590"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:08:29.883086Z",
+    "LatestShipDate": "2026-03-06T18:08:29.883086Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:29.883086Z",
+    "LatestDeliveryDate": "2026-03-08T21:08:29.883086Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      },
+      {
+        "name": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+        "brand": "Pigeon",
+        "category": "Appliances",
+        "asin": "B07PQRST67",
+        "sku": "PIG-KET-15",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9518424-5482413",
+    "PurchaseDate": "2026-03-04T21:07:32.831807Z",
+    "LastUpdateDate": "2026-03-05T20:48:11.760228Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "739"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "960408"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:07:32.831807Z",
+    "LatestShipDate": "2026-03-06T23:07:32.831807Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:32.831807Z",
+    "LatestDeliveryDate": "2026-03-08T21:07:32.831807Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Portronics Adapto 62 USB-C Charger 20W",
+        "brand": "Portronics",
+        "category": "Electronics",
+        "asin": "B09YZABCD1",
+        "sku": "POR-CHG-20W",
+        "price": 699
+      }
+    ],
+    "EasyShipShipmentStatus": "AtDestinationFC"
+  },
+  {
+    "AmazonOrderId": "408-5006492-7425184",
+    "PurchaseDate": "2026-03-04T21:08:57.974132Z",
+    "LastUpdateDate": "2026-03-06T01:24:21.010685Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1358"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "344907"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T11:08:57.974132Z",
+    "LatestShipDate": "2026-03-06T11:08:57.974132Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:57.974132Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:57.974132Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9823994-8665981",
+    "PurchaseDate": "2026-03-04T21:07:31.880431Z",
+    "LastUpdateDate": "2026-03-05T13:04:47.314999Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3894"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Ahmedabad",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "116093"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T15:07:31.880431Z",
+    "LatestShipDate": "2026-03-06T09:07:31.880431Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:31.880431Z",
+    "LatestDeliveryDate": "2026-03-08T21:07:31.880431Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      },
+      {
+        "name": "Portronics Adapto 62 USB-C Charger 20W",
+        "brand": "Portronics",
+        "category": "Electronics",
+        "asin": "B09YZABCD1",
+        "sku": "POR-CHG-20W",
+        "price": 699
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9186400-1602286",
+    "PurchaseDate": "2026-03-04T21:07:31.719729Z",
+    "LastUpdateDate": "2026-03-06T04:54:00.720161Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1058"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Bangalore",
+      "StateOrRegion": "Karnataka",
+      "CountryCode": "IN",
+      "PostalCode": "747453"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T13:07:31.719729Z",
+    "LatestShipDate": "2026-03-06T21:07:31.719729Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:31.719729Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:31.719729Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Story@Home Polyester Door Curtains Set of 2",
+        "brand": "Story@Home",
+        "category": "Home",
+        "asin": "B07FGHIJ34",
+        "sku": "STR-CUR-2PK",
+        "price": 499
+      }
+    ],
+    "EasyShipShipmentStatus": "AtDestinationFC"
+  },
+  {
+    "AmazonOrderId": "408-7913081-4020853",
+    "PurchaseDate": "2026-03-04T21:09:30.246597Z",
+    "LastUpdateDate": "2026-03-06T09:15:23.115849Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "8144"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "278240"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T08:09:30.246597Z",
+    "LatestShipDate": "2026-03-07T05:09:30.246597Z",
+    "EarliestDeliveryDate": "2026-03-07T21:09:30.246597Z",
+    "LatestDeliveryDate": "2026-03-08T21:09:30.246597Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      },
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      },
+      {
+        "name": "Pigeon by Stovekraft Amaze Plus Kettle 1.5L",
+        "brand": "Pigeon",
+        "category": "Appliances",
+        "asin": "B07PQRST67",
+        "sku": "PIG-KET-15",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2239197-8410995",
+    "PurchaseDate": "2026-03-04T21:08:11.974694Z",
+    "LastUpdateDate": "2026-03-05T16:06:58.470020Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "689"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "462351"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T18:08:11.974694Z",
+    "LatestShipDate": "2026-03-06T16:08:11.974694Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:11.974694Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:11.974694Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-1368085-7640518",
+    "PurchaseDate": "2026-03-04T21:07:09.359144Z",
+    "LastUpdateDate": "2026-03-06T19:20:04.678266Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "490"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Nagpur",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "387813"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T10:07:09.359144Z",
+    "LatestShipDate": "2026-03-06T16:07:09.359144Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:09.359144Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:09.359144Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6183033-8395785",
+    "PurchaseDate": "2026-03-04T21:09:03.541152Z",
+    "LastUpdateDate": "2026-03-06T10:43:53.866540Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "12295"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Mumbai",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "134985"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T21:09:03.541152Z",
+    "LatestShipDate": "2026-03-06T11:09:03.541152Z",
+    "EarliestDeliveryDate": "2026-03-08T21:09:03.541152Z",
+    "LatestDeliveryDate": "2026-03-09T21:09:03.541152Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Noise ColorFit Pro 4 Smartwatch",
+        "brand": "Noise",
+        "category": "Electronics",
+        "asin": "B0AOPQRS78",
+        "sku": "NOI-CFP4",
+        "price": 3499
+      },
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      },
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      }
+    ],
+    "EasyShipShipmentStatus": "PickedUp"
+  },
+  {
+    "AmazonOrderId": "408-6682698-2932227",
+    "PurchaseDate": "2026-03-04T21:06:27.185847Z",
+    "LastUpdateDate": "2026-03-05T11:58:39.874263Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2259"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Nagpur",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "591081"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T16:06:27.185847Z",
+    "LatestShipDate": "2026-03-06T22:06:27.185847Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:27.185847Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:27.185847Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      }
+    ],
+    "EasyShipShipmentStatus": "PickedUp"
+  },
+  {
+    "AmazonOrderId": "408-7232293-2817745",
+    "PurchaseDate": "2026-03-04T21:08:41.162098Z",
+    "LastUpdateDate": "2026-03-05T08:44:55.168610Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "6397"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Surat",
+      "StateOrRegion": "Gujarat",
+      "CountryCode": "IN",
+      "PostalCode": "807617"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T09:08:41.162098Z",
+    "LatestShipDate": "2026-03-06T21:08:41.162098Z",
+    "EarliestDeliveryDate": "2026-03-08T21:08:41.162098Z",
+    "LatestDeliveryDate": "2026-03-11T21:08:41.162098Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      },
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      }
+    ],
+    "EasyShipShipmentStatus": "PendingSchedule"
+  },
+  {
+    "AmazonOrderId": "408-4939290-3276065",
+    "PurchaseDate": "2026-03-04T21:08:14.003467Z",
+    "LastUpdateDate": "2026-03-06T18:27:58.221288Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "12232"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kolkata",
+      "StateOrRegion": "West Bengal",
+      "CountryCode": "IN",
+      "PostalCode": "507524"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T04:08:14.003467Z",
+    "LatestShipDate": "2026-03-05T22:08:14.003467Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:14.003467Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:14.003467Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      },
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8438733-8460758",
+    "PurchaseDate": "2026-03-04T21:08:24.281294Z",
+    "LastUpdateDate": "2026-03-06T09:04:03.589856Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1397"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Jaipur",
+      "StateOrRegion": "Rajasthan",
+      "CountryCode": "IN",
+      "PostalCode": "347582"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T12:08:24.281294Z",
+    "LatestShipDate": "2026-03-06T13:08:24.281294Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:24.281294Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:24.281294Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3112652-4442778",
+    "PurchaseDate": "2026-03-04T21:06:29.046381Z",
+    "LastUpdateDate": "2026-03-06T06:20:06.147300Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7736"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Jaipur",
+      "StateOrRegion": "Rajasthan",
+      "CountryCode": "IN",
+      "PostalCode": "171942"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T11:06:29.046381Z",
+    "LatestShipDate": "2026-03-06T14:06:29.046381Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:29.046381Z",
+    "LatestDeliveryDate": "2026-03-07T21:06:29.046381Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      },
+      {
+        "name": "Prestige Omega Deluxe Induction Base Fry Pan",
+        "brand": "Prestige",
+        "category": "Kitchen",
+        "asin": "B07HGKR2ZN",
+        "sku": "PRE-FRY-DLX",
+        "price": 1299
+      },
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3211291-1249314",
+    "PurchaseDate": "2026-03-04T21:06:50.797305Z",
+    "LastUpdateDate": "2026-03-05T08:15:49.766050Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1947"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Coimbatore",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "475644"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T04:06:50.797305Z",
+    "LatestShipDate": "2026-03-05T17:06:50.797305Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:50.797305Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:50.797305Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8583392-9453010",
+    "PurchaseDate": "2026-03-04T21:06:57.006498Z",
+    "LastUpdateDate": "2026-03-05T13:19:59.137862Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1987"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Bangalore",
+      "StateOrRegion": "Karnataka",
+      "CountryCode": "IN",
+      "PostalCode": "332311"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T17:06:57.006498Z",
+    "LatestShipDate": "2026-03-06T11:06:57.006498Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:57.006498Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:57.006498Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2355439-6404139",
+    "PurchaseDate": "2026-03-04T21:06:17.749588Z",
+    "LastUpdateDate": "2026-03-06T10:54:59.757308Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2949"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Coimbatore",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "737846"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T15:06:17.749588Z",
+    "LatestShipDate": "2026-03-06T07:06:17.749588Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:17.749588Z",
+    "LatestDeliveryDate": "2026-03-10T21:06:17.749588Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Asian Paints Royale Glitz Paint 1L",
+        "brand": "Asian Paints",
+        "category": "Home Improvement",
+        "asin": "B08KLMNO56",
+        "sku": "ASP-GLZ-1L",
+        "price": 450
+      },
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-4607488-8215376",
+    "PurchaseDate": "2026-03-04T21:06:34.461167Z",
+    "LastUpdateDate": "2026-03-06T03:27:08.981199Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1458"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "573489"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T04:06:34.461167Z",
+    "LatestShipDate": "2026-03-07T03:06:34.461167Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:34.461167Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:34.461167Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-2432176-2564141",
+    "PurchaseDate": "2026-03-04T21:07:32.493492Z",
+    "LastUpdateDate": "2026-03-06T13:00:51.826325Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "2938"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Pune",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "552855"
+    },
+    "IsBusinessOrder": true,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T03:07:32.493492Z",
+    "LatestShipDate": "2026-03-05T20:07:32.493492Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:32.493492Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:32.493492Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      }
+    ],
+    "EasyShipShipmentStatus": "OutForDelivery"
+  },
+  {
+    "AmazonOrderId": "408-3595941-9089795",
+    "PurchaseDate": "2026-03-04T21:08:52.787408Z",
+    "LastUpdateDate": "2026-03-06T00:17:50.715874Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7183"
+    },
+    "NumberOfItemsShipped": 3,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "335137"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T17:08:52.787408Z",
+    "LatestShipDate": "2026-03-06T18:08:52.787408Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:52.787408Z",
+    "LatestDeliveryDate": "2026-03-09T21:08:52.787408Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Portronics Adapto 62 USB-C Charger 20W",
+        "brand": "Portronics",
+        "category": "Electronics",
+        "asin": "B09YZABCD1",
+        "sku": "POR-CHG-20W",
+        "price": 699
+      },
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      },
+      {
+        "name": "Bajaj Majesty New SWX 3 Sandwich Maker",
+        "brand": "Bajaj",
+        "category": "Appliances",
+        "asin": "B01N5KURZ5",
+        "sku": "BAJ-SWX3",
+        "price": 1449
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6701311-6889195",
+    "PurchaseDate": "2026-03-04T21:07:19.641085Z",
+    "LastUpdateDate": "2026-03-06T00:15:59.759642Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3507"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 2,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "106402"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T09:07:19.641085Z",
+    "LatestShipDate": "2026-03-06T16:07:19.641085Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:19.641085Z",
+    "LatestDeliveryDate": "2026-03-07T21:07:19.641085Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Kuber Industries Cotton Bedsheet King Size",
+        "brand": "Kuber",
+        "category": "Home",
+        "asin": "B09ABCDE12",
+        "sku": "KUB-BED-KNG",
+        "price": 799
+      },
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6442241-2425342",
+    "PurchaseDate": "2026-03-04T21:06:37.903274Z",
+    "LastUpdateDate": "2026-03-06T05:00:20.615488Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "998"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "155164"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T12:06:37.903274Z",
+    "LatestShipDate": "2026-03-06T19:06:37.903274Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:37.903274Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:37.903274Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Borosil Stainless Steel Flask 1L",
+        "brand": "Borosil",
+        "category": "Kitchen",
+        "asin": "B08X1GKZP1",
+        "sku": "BOR-FLASK-1L",
+        "price": 899
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-5752087-9164342",
+    "PurchaseDate": "2026-03-04T21:08:41.219478Z",
+    "LastUpdateDate": "2026-03-05T00:29:01.033198Z",
+    "OrderStatus": "Unshipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "760"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "652530"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:08:41.219478Z",
+    "LatestShipDate": "2026-03-06T09:08:41.219478Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:41.219478Z",
+    "LatestDeliveryDate": "2026-03-08T21:08:41.219478Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Himalaya Herbals Face Wash Combo Pack",
+        "brand": "Himalaya",
+        "category": "Personal Care",
+        "asin": "B08EFGHI34",
+        "sku": "HIM-FACE-CB",
+        "price": 350
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-3167376-7378822",
+    "PurchaseDate": "2026-03-04T21:06:18.163678Z",
+    "LastUpdateDate": "2026-03-05T16:40:56.730296Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "4398"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "658453"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:06:18.163678Z",
+    "LatestShipDate": "2026-03-06T13:06:18.163678Z",
+    "EarliestDeliveryDate": "2026-03-06T21:06:18.163678Z",
+    "LatestDeliveryDate": "2026-03-08T21:06:18.163678Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Wonderchef Nutri-Blend Mixer Grinder",
+        "brand": "Wonderchef",
+        "category": "Appliances",
+        "asin": "B08MNOP890",
+        "sku": "WON-NB-MIX",
+        "price": 2199
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-7785090-8007741",
+    "PurchaseDate": "2026-03-04T21:07:49.935912Z",
+    "LastUpdateDate": "2026-03-06T13:17:53.466961Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1797"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Indore",
+      "StateOrRegion": "Madhya Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "403578"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:07:49.935912Z",
+    "LatestShipDate": "2026-03-07T14:07:49.935912Z",
+    "EarliestDeliveryDate": "2026-03-07T21:07:49.935912Z",
+    "LatestDeliveryDate": "2026-03-10T21:07:49.935912Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6587964-3820798",
+    "PurchaseDate": "2026-03-04T21:06:13.208144Z",
+    "LastUpdateDate": "2026-03-05T13:22:03.984106Z",
+    "OrderStatus": "Canceled",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "8636"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 3,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Indore",
+      "StateOrRegion": "Madhya Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "180089"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T11:06:13.208144Z",
+    "LatestShipDate": "2026-03-06T13:06:13.208144Z",
+    "EarliestDeliveryDate": "2026-03-07T21:06:13.208144Z",
+    "LatestDeliveryDate": "2026-03-10T21:06:13.208144Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Wildcraft Unisex Laptop Backpack 35L",
+        "brand": "Wildcraft",
+        "category": "Bags",
+        "asin": "B09JKLMN56",
+        "sku": "WLD-BAG-35L",
+        "price": 1599
+      },
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-8783840-8531380",
+    "PurchaseDate": "2026-03-04T21:06:32.006694Z",
+    "LastUpdateDate": "2026-03-05T22:04:35.895639Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3548"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Kochi",
+      "StateOrRegion": "Kerala",
+      "CountryCode": "IN",
+      "PostalCode": "814220"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T06:06:32.006694Z",
+    "LatestShipDate": "2026-03-07T01:06:32.006694Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:32.006694Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:32.006694Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Crompton Aura Prime Anti Dust Ceiling Fan",
+        "brand": "Crompton",
+        "category": "Appliances",
+        "asin": "B08UVWXY90",
+        "sku": "CRM-FAN-AUR",
+        "price": 2899
+      },
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-9511700-2244712",
+    "PurchaseDate": "2026-03-04T21:08:02.895225Z",
+    "LastUpdateDate": "2026-03-06T03:59:35.370810Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "739"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "Other",
+    "PaymentMethodDetails": [
+      "Other"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Lucknow",
+      "StateOrRegion": "Uttar Pradesh",
+      "CountryCode": "IN",
+      "PostalCode": "425486"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T02:08:02.895225Z",
+    "LatestShipDate": "2026-03-06T12:08:02.895225Z",
+    "EarliestDeliveryDate": "2026-03-07T21:08:02.895225Z",
+    "LatestDeliveryDate": "2026-03-10T21:08:02.895225Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-4158134-6394323",
+    "PurchaseDate": "2026-03-04T21:06:16.587862Z",
+    "LastUpdateDate": "2026-03-05T15:26:06.989696Z",
+    "OrderStatus": "Pending",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "7557"
+    },
+    "NumberOfItemsShipped": 0,
+    "NumberOfItemsUnshipped": 1,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Chennai",
+      "StateOrRegion": "Tamil Nadu",
+      "CountryCode": "IN",
+      "PostalCode": "734394"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T15:06:16.587862Z",
+    "LatestShipDate": "2026-03-07T15:06:16.587862Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:16.587862Z",
+    "LatestDeliveryDate": "2026-03-09T21:06:16.587862Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-7105194-7255418",
+    "PurchaseDate": "2026-03-04T21:06:39.438630Z",
+    "LastUpdateDate": "2026-03-05T01:01:08.468687Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "9594"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "396635"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T20:06:39.438630Z",
+    "LatestShipDate": "2026-03-06T18:06:39.438630Z",
+    "EarliestDeliveryDate": "2026-03-08T21:06:39.438630Z",
+    "LatestDeliveryDate": "2026-03-11T21:06:39.438630Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-6869018-6204824",
+    "PurchaseDate": "2026-03-04T21:08:45.260630Z",
+    "LastUpdateDate": "2026-03-06T06:03:14.754949Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Expedited",
+    "ShipmentServiceLevelCategory": "Expedited",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "3957"
+    },
+    "NumberOfItemsShipped": 2,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Mumbai",
+      "StateOrRegion": "Maharashtra",
+      "CountryCode": "IN",
+      "PostalCode": "787923"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": true,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T03:08:45.260630Z",
+    "LatestShipDate": "2026-03-06T00:08:45.260630Z",
+    "EarliestDeliveryDate": "2026-03-06T21:08:45.260630Z",
+    "LatestDeliveryDate": "2026-03-08T21:08:45.260630Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Havells Adonia LED Bulb 15W Pack of 4",
+        "brand": "Havells",
+        "category": "Lighting",
+        "asin": "B09PQRST78",
+        "sku": "HAV-LED-4PK",
+        "price": 699
+      },
+      {
+        "name": "Cello Opalware Dazzle Dinner Set 35pcs",
+        "brand": "Cello",
+        "category": "Kitchen",
+        "asin": "B09KXYZ123",
+        "sku": "CEL-DIN-35",
+        "price": 2499
+      }
+    ]
+  },
+  {
+    "AmazonOrderId": "408-7070468-1305857",
+    "PurchaseDate": "2026-03-04T21:07:28.083778Z",
+    "LastUpdateDate": "2026-03-06T02:05:29.059581Z",
+    "OrderStatus": "Shipped",
+    "FulfillmentChannel": "MFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "1797"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Delhi",
+      "StateOrRegion": "Delhi",
+      "CountryCode": "IN",
+      "PostalCode": "480211"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T14:07:28.083778Z",
+    "LatestShipDate": "2026-03-07T10:07:28.083778Z",
+    "EarliestDeliveryDate": "2026-03-06T21:07:28.083778Z",
+    "LatestDeliveryDate": "2026-03-09T21:07:28.083778Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Park Avenue Good Morning Grooming Kit",
+        "brand": "Park Avenue",
+        "category": "Personal Care",
+        "asin": "B07ZABCD12",
+        "sku": "PAR-GRM-KIT",
+        "price": 599
+      }
+    ],
+    "EasyShipShipmentStatus": "AtOriginFC"
+  },
+  {
+    "AmazonOrderId": "408-3198638-7320310",
+    "PurchaseDate": "2026-03-04T21:07:17.949954Z",
+    "LastUpdateDate": "2026-03-06T10:07:51.580291Z",
+    "OrderStatus": "Delivered",
+    "FulfillmentChannel": "AFN",
+    "SalesChannel": "Amazon.in",
+    "OrderType": "StandardOrder",
+    "ShipServiceLevel": "Standard",
+    "ShipmentServiceLevelCategory": "Standard",
+    "OrderTotal": {
+      "CurrencyCode": "INR",
+      "Amount": "649"
+    },
+    "NumberOfItemsShipped": 1,
+    "NumberOfItemsUnshipped": 0,
+    "PaymentMethod": "COD",
+    "PaymentMethodDetails": [
+      "COD"
+    ],
+    "MarketplaceId": "A21TJRUUN4KGV",
+    "ShippingAddress": {
+      "City": "Hyderabad",
+      "StateOrRegion": "Telangana",
+      "CountryCode": "IN",
+      "PostalCode": "261745"
+    },
+    "IsBusinessOrder": false,
+    "IsPrime": false,
+    "IsGlobalExpressEnabled": false,
+    "IsPremiumOrder": false,
+    "IsSoldByAB": false,
+    "IsISPU": false,
+    "IsReplacementOrder": false,
+    "EarliestShipDate": "2026-03-05T02:07:17.949954Z",
+    "LatestShipDate": "2026-03-06T11:07:17.949954Z",
+    "EarliestDeliveryDate": "2026-03-08T21:07:17.949954Z",
+    "LatestDeliveryDate": "2026-03-11T21:07:17.949954Z",
+    "ElectronicInvoiceStatus": "NotRequired",
+    "_mock_items": [
+      {
+        "name": "Milton Thermosteel Flip Lid Flask 500ml",
+        "brand": "Milton",
+        "category": "Kitchen",
+        "asin": "B072KXYZ45",
+        "sku": "MIL-FLIP-500",
+        "price": 649
+      }
+    ]
+  }
+]
