@@ -46,14 +46,17 @@ def _get_connector(marketplace_account: MarketplaceAccount, force_mock: bool = F
 
 def _save_raw_dump(seller_id: int, entity: str, run_id: int, data: list | dict):
     """Save raw API response to disk for debugging/audit."""
-    dir_path = os.path.join(
-        settings.RAW_DUMP_DIR, str(seller_id), Marketplace.AMAZON, entity,
-        date.today().isoformat(),
-    )
-    os.makedirs(dir_path, exist_ok=True)
-    file_path = os.path.join(dir_path, f"{run_id}.json")
-    with open(file_path, "w") as f:
-        json.dump(data, f, default=str, indent=2)
+    try:
+        dir_path = os.path.join(
+            settings.RAW_DUMP_DIR, str(seller_id), Marketplace.AMAZON, entity,
+            date.today().isoformat(),
+        )
+        os.makedirs(dir_path, exist_ok=True)
+        file_path = os.path.join(dir_path, f"{run_id}.json")
+        with open(file_path, "w") as f:
+            json.dump(data, f, default=str, indent=2)
+    except OSError:
+        logger.warning("Cannot write raw dump (read-only filesystem), skipping")
 
 
 def _upsert(db: Session, model, values: dict, update_fields: list[str]):
