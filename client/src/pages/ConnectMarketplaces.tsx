@@ -42,19 +42,27 @@ export function ConnectMarketplacesPage() {
   // Load already-connected marketplaces on mount
   useEffect(() => {
     api.get("/marketplaces").then(({ data }) => {
-      const ids = new Set<string>(data.map((mp: { marketplace: string }) => mp.marketplace));
+      const ids = new Set<string>(
+        data
+          .filter((mp: { marketplace: string; status?: string }) => mp.status === "connected")
+          .map((mp: { marketplace: string }) => mp.marketplace),
+      );
       setConnected(ids);
     }).catch(() => {});
   }, []);
 
-  // Retry polling: if no marketplaces connected yet, poll a few times for background auto-seed
+  // Retry polling: if no marketplaces connected yet, poll a few times for background connect completion
   useEffect(() => {
     if (connected.size > 0) return;
     let attempt = 0;
     const timer = setInterval(() => {
       attempt++;
       api.get("/marketplaces").then(({ data }) => {
-        const ids = new Set<string>(data.map((mp: { marketplace: string }) => mp.marketplace));
+        const ids = new Set<string>(
+          data
+            .filter((mp: { marketplace: string; status?: string }) => mp.status === "connected")
+            .map((mp: { marketplace: string }) => mp.marketplace),
+        );
         if (ids.size > 0) setConnected(ids);
       }).catch(() => {});
       if (attempt >= 3) clearInterval(timer);

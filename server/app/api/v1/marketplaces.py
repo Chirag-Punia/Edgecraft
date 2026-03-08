@@ -24,12 +24,13 @@ def connect_marketplace(
 
 @router.get("", response_model=list[MarketplaceResponse])
 def list_marketplaces(
+    include_demo: bool = False,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     if not current_user.seller_id:
         return []
-    return marketplace_service.list_marketplaces(db, current_user.seller_id)
+    return marketplace_service.list_marketplaces(db, current_user.seller_id, include_demo=include_demo)
 
 
 @router.delete("/{marketplace_id}", response_model=MessageResponse)

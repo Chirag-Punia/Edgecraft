@@ -31,8 +31,11 @@ def create_marketplace(db: Session, seller_id: int, marketplace: Marketplace, cr
     return account
 
 
-def list_marketplaces(db: Session, seller_id: int) -> list[MarketplaceAccount]:
-    return db.query(MarketplaceAccount).filter(MarketplaceAccount.seller_id == seller_id).all()
+def list_marketplaces(db: Session, seller_id: int, include_demo: bool = False) -> list[MarketplaceAccount]:
+    query = db.query(MarketplaceAccount).filter(MarketplaceAccount.seller_id == seller_id)
+    if not include_demo:
+        query = query.filter(MarketplaceAccount.is_demo_data.is_(False))
+    return query.all()
 
 
 def connect_amazon_oauth(
@@ -52,6 +55,7 @@ def connect_amazon_oauth(
         logger.info("[Marketplace] Existing Amazon account found: id=%s, old_status=%s — updating credentials", existing.id, existing.status)
         existing.credentials_encrypted = creds
         existing.status = AccountStatus.CONNECTED
+        existing.is_demo_data = False
     else:
         logger.info("[Marketplace] No existing Amazon account — creating new for seller_id=%s", seller_id)
         existing = MarketplaceAccount(
@@ -59,6 +63,7 @@ def connect_amazon_oauth(
             marketplace=Marketplace.AMAZON,
             status=AccountStatus.CONNECTED,
             credentials_encrypted=creds,
+            is_demo_data=False,
         )
         db.add(existing)
 

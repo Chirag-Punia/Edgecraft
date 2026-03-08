@@ -204,9 +204,10 @@ def unseed_demo(
     total += db.query(ProductMaster).filter(ProductMaster.seller_id == current_user.seller_id).delete(synchronize_session=False)
     total += db.query(SyncRun).filter(SyncRun.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
 
-    # Clear flag but keep account
+    # Keep demo flag but mark as disconnected to avoid treating demo as a real connection
     for account in demo_accounts:
-        account.is_demo_data = False
+        account.status = AccountStatus.DISCONNECTED
+        account.credentials_encrypted = None
 
     db.commit()
     logger.info("Unseeded %d records for seller %d", total, current_user.seller_id)
