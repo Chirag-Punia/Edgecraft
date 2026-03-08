@@ -10,6 +10,8 @@ from app.models import (  # noqa: F401
     Seller, User, EmailOTP, MarketplaceAccount,
     SyncRun, ProductMaster, ListingMap, Order,
     OrderItem, InventorySnapshot, PriceSnapshot,
+    ChatSession, ChatMessage, CustomerReview,
+    ReviewInsight, DemandForecast, PricingRecommendation,
 )
 
 config = context.config

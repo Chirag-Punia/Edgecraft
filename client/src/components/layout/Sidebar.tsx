@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   Bot,
+  Sparkles,
   Settings,
   Store,
 } from "lucide-react";
@@ -10,6 +11,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const NAV_ITEMS = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "AI Reports", icon: Sparkles, href: "/dashboard/reports" },
   { label: "AI Assistant", icon: Bot, href: "/dashboard/assistant" },
   { label: "Marketplaces", icon: Store, href: "/dashboard/marketplaces" },
   { label: "Settings", icon: Settings, href: "/dashboard/settings" },
@@ -47,7 +49,7 @@ export function Sidebar() {
               className={cn(
                 "mb-1 flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
                 isActive
-                  ? "bg-sidebar-accent text-orange-400 font-medium"
+                  ? "border-l-[3px] border-purple-500 bg-sidebar-accent/60 text-white font-medium pl-[calc(0.75rem-3px)]"
                   : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
               )}
             >

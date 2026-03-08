@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.api.v1 import auth, sellers, marketplaces, dashboard, sync, amazon_auth
+from app.api.v1 import auth, sellers, marketplaces, dashboard, sync, amazon_auth, ai_assistant, ai_reports
 from app.services.scheduler import start_scheduler, shutdown_scheduler
 
 logging.basicConfig(
@@ -49,6 +49,8 @@ app.include_router(marketplaces.router, prefix="/api/v1")
 app.include_router(dashboard.router, prefix="/api/v1")
 app.include_router(sync.router, prefix="/api/v1")
 app.include_router(amazon_auth.router, prefix="/api/v1")
+app.include_router(ai_assistant.router, prefix="/api/v1")
+app.include_router(ai_reports.router, prefix="/api/v1")
 
 
 @app.get("/health")

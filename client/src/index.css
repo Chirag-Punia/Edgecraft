@@ -53,8 +53,8 @@
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
-    /* Orange brand primary */
-    --primary: oklch(0.65 0.2 41);
+    /* Purple brand primary */
+    --primary: oklch(0.55 0.2 270);
     --primary-foreground: oklch(0.985 0 0);
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -65,21 +65,21 @@
     --destructive: oklch(0.577 0.245 27.325);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
-    --ring: oklch(0.65 0.2 41);
-    --chart-1: oklch(0.65 0.2 41);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    /* Sidebar uses the orange brand */
-    --sidebar: oklch(0.25 0.03 30);
-    --sidebar-foreground: oklch(0.95 0 0);
-    --sidebar-primary: oklch(0.65 0.2 41);
+    --ring: oklch(0.55 0.2 270);
+    --chart-1: oklch(0.55 0.2 270);
+    --chart-2: oklch(0.6 0.16 250);
+    --chart-3: oklch(0.65 0.17 160);
+    --chart-4: oklch(0.75 0.15 80);
+    --chart-5: oklch(0.6 0.18 310);
+    /* Sidebar uses dark slate-blue */
+    --sidebar: oklch(0.15 0.02 260);
+    --sidebar-foreground: oklch(0.92 0 0);
+    --sidebar-primary: oklch(0.65 0.2 270);
     --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.3 0.04 30);
-    --sidebar-accent-foreground: oklch(0.95 0 0);
-    --sidebar-border: oklch(0.35 0.03 30);
-    --sidebar-ring: oklch(0.65 0.2 41);
+    --sidebar-accent: oklch(0.22 0.03 260);
+    --sidebar-accent-foreground: oklch(0.92 0 0);
+    --sidebar-border: oklch(0.25 0.02 260);
+    --sidebar-ring: oklch(0.65 0.2 270);
 }
 
 @layer base {
@@ -92,12 +92,29 @@
     }
 }
 
-/* Orange gradient used for primary CTA buttons */
+/* Purple-blue gradient used for primary CTA buttons */
 .btn-gradient {
-    background: linear-gradient(135deg, #f97316, #ec4899);
+    background: linear-gradient(135deg, #7C3AED, #3B82F6);
     color: white;
     border: none;
 }
 .btn-gradient:hover {
-    background: linear-gradient(135deg, #ea580c, #db2777);
+    background: linear-gradient(135deg, #6D28D9, #2563EB);
 }
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fadeIn 0.4s ease-out forwards; opacity: 0; }
+.animate-slide-up { animation: slideUp 0.4s ease-out forwards; opacity: 0; }
+.delay-75 { animation-delay: 75ms; }
+.delay-150 { animation-delay: 150ms; }
+.delay-225 { animation-delay: 225ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-375 { animation-delay: 375ms; }
+.delay-450 { animation-delay: 450ms; }

@@ -58,8 +58,8 @@ export function BusinessInfoPage() {
 
       <Card className="border-0 shadow-lg">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-orange-100">
-            <Building2 className="h-7 w-7 text-orange-600" />
+          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
+            <Building2 className="h-7 w-7 text-primary" />
           </div>
           <CardTitle className="text-2xl">Tell Us About Your Business</CardTitle>
           <CardDescription>Help us customize your experience</CardDescription>

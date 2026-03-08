@@ -81,7 +81,7 @@ export function LoginPage() {
                 Remember me
               </Label>
             </div>
-            <Link to="#" className="text-sm text-orange-600 hover:underline">
+            <Link to="#" className="text-sm text-primary hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -92,7 +92,7 @@ export function LoginPage() {
 
           <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-orange-600 hover:underline">
+            <Link to="/signup" className="text-primary hover:underline">
               Sign up
             </Link>
           </p>

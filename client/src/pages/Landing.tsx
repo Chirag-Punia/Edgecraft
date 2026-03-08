@@ -12,12 +12,12 @@ export function LandingPage() {
       <section className="mx-auto max-w-7xl px-4 py-16 md:py-24">
         <div className="grid items-center gap-12 md:grid-cols-2">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-orange-50 px-4 py-1.5 text-sm text-orange-600">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-primary/5 px-4 py-1.5 text-sm text-primary">
               <span>🔥</span> Trusted by 10,000+ Indian Sellers
             </div>
             <h1 className="mb-6 text-4xl font-bold leading-tight md:text-5xl">
               Manage All Your Marketplaces{" "}
-              <span className="bg-gradient-to-r from-orange-500 to-pink-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
                 From One Dashboard
               </span>
             </h1>
@@ -30,15 +30,15 @@ export function LandingPage() {
             {/* Stats */}
             <div className="mb-8 flex gap-8">
               <div>
-                <div className="text-2xl font-bold text-orange-500">80%</div>
+                <div className="text-2xl font-bold text-primary">80%</div>
                 <div className="text-sm text-muted-foreground">Time Saved</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-orange-500">35%</div>
+                <div className="text-2xl font-bold text-primary">35%</div>
                 <div className="text-sm text-muted-foreground">Revenue Growth</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-orange-500">24/7</div>
+                <div className="text-2xl font-bold text-primary">24/7</div>
                 <div className="text-sm text-muted-foreground">AI Support</div>
               </div>
             </div>
@@ -61,7 +61,7 @@ export function LandingPage() {
 
           {/* Hero image placeholder */}
           <div className="relative">
-            <div className="overflow-hidden rounded-2xl border bg-gradient-to-br from-orange-50 to-pink-50 p-8 shadow-lg">
+            <div className="overflow-hidden rounded-2xl border bg-gradient-to-br from-purple-50 to-blue-50 p-8 shadow-lg">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-green-400" />

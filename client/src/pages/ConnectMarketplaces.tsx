@@ -47,6 +47,21 @@ export function ConnectMarketplacesPage() {
     }).catch(() => {});
   }, []);
 
+  // Retry polling: if no marketplaces connected yet, poll a few times for background auto-seed
+  useEffect(() => {
+    if (connected.size > 0) return;
+    let attempt = 0;
+    const timer = setInterval(() => {
+      attempt++;
+      api.get("/marketplaces").then(({ data }) => {
+        const ids = new Set<string>(data.map((mp: { marketplace: string }) => mp.marketplace));
+        if (ids.size > 0) setConnected(ids);
+      }).catch(() => {});
+      if (attempt >= 3) clearInterval(timer);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleConnect = async (marketplaceId: string) => {
     // Amazon uses OAuth redirect flow
     if (marketplaceId === "amazon") {
@@ -84,8 +99,8 @@ export function ConnectMarketplacesPage() {
 
       <Card className="border-0 shadow-lg">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-orange-100">
-            <Store className="h-7 w-7 text-orange-600" />
+          <div className="mx-auto mb-2 flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10">
+            <Store className="h-7 w-7 text-primary" />
           </div>
           <CardTitle className="text-2xl">Connect Your Marketplaces</CardTitle>
           <CardDescription>
@@ -119,7 +134,7 @@ export function ConnectMarketplacesPage() {
                     connected.has(mp.id)
                       ? "border-green-300 bg-green-50"
                       : isAvailable
-                        ? "hover:border-orange-200"
+                        ? "hover:border-primary/20"
                         : "opacity-50 cursor-not-allowed"
                   }`}
                 >

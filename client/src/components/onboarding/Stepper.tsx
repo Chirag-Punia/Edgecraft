@@ -17,14 +17,14 @@ export function Stepper({ currentStep, steps }: StepperProps) {
         return (
           <div key={step} className="flex items-center gap-2">
             {index > 0 && (
-              <div className={cn("h-px w-16", isCompleted ? "bg-orange-500" : "bg-gray-200")} />
+              <div className={cn("h-px w-16", isCompleted ? "bg-primary" : "bg-gray-200")} />
             )}
             <div className="flex items-center gap-2">
               <div
                 className={cn(
                   "flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium",
                   isCompleted && "bg-green-500 text-white",
-                  isCurrent && "bg-orange-500 text-white",
+                  isCurrent && "bg-primary text-white",
                   !isCompleted && !isCurrent && "bg-gray-100 text-gray-400"
                 )}
               >

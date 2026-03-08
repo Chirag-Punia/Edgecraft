@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint, func
+from sqlalchemy import Column, Index, Integer, String, DateTime, ForeignKey, UniqueConstraint, func
 from app.db.session import Base
 
 
@@ -18,4 +18,5 @@ class ListingMap(Base):
 
     __table_args__ = (
         UniqueConstraint("marketplace_account_id", "marketplace_sku", name="uq_listing_account_sku"),
+        Index("ix_listing_map_account_asin", "marketplace_account_id", "asin"),
     )

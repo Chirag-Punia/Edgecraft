@@ -16,6 +16,11 @@ from app.models.listing_map import ListingMap
 from app.models.order import Order
 from app.models.order_item import OrderItem
 from app.models.price_snapshot import PriceSnapshot
+from app.models.customer_review import CustomerReview
+from app.models.review_insight import ReviewInsight
+from app.models.demand_forecast import DemandForecast
+from app.models.pricing_recommendation import PricingRecommendation
+from app.models.product_master import ProductMaster
 from app.schemas.sync import (
     SyncTriggerRequest, SyncRunResponse, SyncTriggerResponse,
     SeedDemoResponse, UnseedResponse, DemoStatusResponse,
@@ -149,7 +154,7 @@ def seed_demo(
         account.status = AccountStatus.CONNECTED
         account.is_demo_data = True
 
-    # Reset so mock connector generates a full 30-day spread
+    # Reset so mock connector generates a full 180-day spread
     account.last_sync_at = None
 
     db.commit()
@@ -186,12 +191,17 @@ def unseed_demo(
     account_ids = [a.id for a in demo_accounts]
     total = 0
 
-    # Delete in FK order: order_items -> orders -> snapshots -> listing_map -> sync_runs
+    # Delete in FK order: analytics -> order_items -> orders -> snapshots -> listing_map -> sync_runs
+    total += db.query(PricingRecommendation).filter(PricingRecommendation.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(DemandForecast).filter(DemandForecast.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(ReviewInsight).filter(ReviewInsight.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(CustomerReview).filter(CustomerReview.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
     total += db.query(OrderItem).filter(OrderItem.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
     total += db.query(Order).filter(Order.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
     total += db.query(InventorySnapshot).filter(InventorySnapshot.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
     total += db.query(PriceSnapshot).filter(PriceSnapshot.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
     total += db.query(ListingMap).filter(ListingMap.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
+    total += db.query(ProductMaster).filter(ProductMaster.seller_id == current_user.seller_id).delete(synchronize_session=False)
     total += db.query(SyncRun).filter(SyncRun.marketplace_account_id.in_(account_ids)).delete(synchronize_session=False)
 
     # Clear flag but keep account

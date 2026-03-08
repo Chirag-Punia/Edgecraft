@@ -34,6 +34,18 @@ class Settings(BaseSettings):
     RAW_DUMP_DIR: str = "./raw_dumps"
     USE_MOCK_DATA: bool = True
 
+    # AWS Bedrock (AI Assistant)
+    AWS_REGION: str = "us-east-1"
+    AWS_ACCESS_KEY_ID: str = ""
+    AWS_SECRET_ACCESS_KEY: str = ""
+    AWS_BEARER_TOKEN_BEDROCK: str = ""  # Bedrock API Key (bearer token auth)
+    BEDROCK_MODEL_ID: str = "amazon.nova-lite-v1:0"
+    BEDROCK_SUMMARIZER_MODEL_ID: str = ""  # Override model for summarization (e.g. nova-pro)
+    BEDROCK_MAX_TOKENS: int = 2048
+    AI_RATE_LIMIT_PER_MINUTE: int = 20
+    AI_DAILY_LIMIT: int = 200
+    TAVILY_API_KEY: str = ""  # Free tier: 1000 searches/month
+
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 

@@ -12,6 +12,8 @@ import { BusinessInfoPage } from "@/pages/BusinessInfo";
 import { ConnectMarketplacesPage } from "@/pages/ConnectMarketplaces";
 import { DashboardPage } from "@/pages/Dashboard";
 import { PlaceholderPage } from "@/pages/placeholder/Placeholder";
+import { AIAssistantPage } from "@/pages/AIAssistant";
+import { AIReportsPage } from "@/pages/AIReports";
 
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -57,7 +59,8 @@ export default function App() {
       {/* Dashboard (needs full onboarding) */}
       <Route element={<RequireOnboarded><DashboardLayout /></RequireOnboarded>}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/dashboard/assistant" element={<PlaceholderPage title="AI Assistant" />} />
+        <Route path="/dashboard/reports" element={<AIReportsPage />} />
+        <Route path="/dashboard/assistant" element={<AIAssistantPage />} />
         <Route path="/dashboard/marketplaces" element={<ConnectMarketplacesPage />} />
         <Route path="/dashboard/settings" element={<PlaceholderPage title="Settings" />} />
       </Route>

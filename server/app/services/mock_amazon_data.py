@@ -34,19 +34,49 @@ PRODUCTS = [
 ]
 
 INDIAN_CITIES = [
-    ("Mumbai", "Maharashtra"), ("Delhi", "Delhi"), ("Bangalore", "Karnataka"),
-    ("Hyderabad", "Telangana"), ("Chennai", "Tamil Nadu"), ("Kolkata", "West Bengal"),
-    ("Pune", "Maharashtra"), ("Ahmedabad", "Gujarat"), ("Jaipur", "Rajasthan"),
-    ("Lucknow", "Uttar Pradesh"), ("Surat", "Gujarat"), ("Nagpur", "Maharashtra"),
-    ("Indore", "Madhya Pradesh"), ("Coimbatore", "Tamil Nadu"), ("Kochi", "Kerala"),
+    ("Mumbai", "Maharashtra"),
+    ("Delhi", "Delhi"),
+    ("Bangalore", "Karnataka"),
+    ("Hyderabad", "Telangana"),
+    ("Chennai", "Tamil Nadu"),
+    ("Kolkata", "West Bengal"),
+    ("Pune", "Maharashtra"),
+    ("Ahmedabad", "Gujarat"),
+    ("Jaipur", "Rajasthan"),
+    ("Lucknow", "Uttar Pradesh"),
+    ("Surat", "Gujarat"),
+    ("Nagpur", "Maharashtra"),
+    ("Indore", "Madhya Pradesh"),
+    ("Coimbatore", "Tamil Nadu"),
+    ("Kochi", "Kerala"),
+    ("Chandigarh", "Chandigarh"),
+    ("Bhopal", "Madhya Pradesh"),
+    ("Patna", "Bihar"),
+    ("Visakhapatnam", "Andhra Pradesh"),
+    ("Thiruvananthapuram", "Kerala"),
 ]
 
-# Weighted to match real Amazon.in distribution
-ORDER_STATUSES = [
-    OrderStatus.SHIPPED, OrderStatus.SHIPPED, OrderStatus.SHIPPED,
-    OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.DELIVERED, OrderStatus.DELIVERED,
-    OrderStatus.UNSHIPPED, OrderStatus.PENDING, OrderStatus.CANCELED,
+CITY_WEIGHTS = [
+    14, 13, 12, 8, 7, 6, 6, 5, 4, 4,
+    3, 3, 3, 2, 2, 2, 2, 1, 1, 1,
 ]
+
+# Product popularity weights — top 6 products appear 2-3x more often
+PRODUCT_WEIGHTS = [
+    3, 3, 2, 2, 3, 2, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 3, 2, 1,
+]
+
+# Day-of-week seasonality multipliers (Monday=0 ... Sunday=6)
+DAY_OF_WEEK_WEIGHTS = {
+    0: 0.7,   # Monday
+    1: 1.0,   # Tuesday
+    2: 1.0,   # Wednesday
+    3: 1.0,   # Thursday
+    4: 1.2,   # Friday
+    5: 1.4,   # Saturday
+    6: 1.4,   # Sunday
+}
 
 EASYSHIP_STATUSES = [
     "PendingSchedule", "PendingPickUp", "PickedUp", "AtOriginFC",
@@ -61,6 +91,26 @@ def _money(amount, currency="INR") -> dict:
     return {"CurrencyCode": currency, "Amount": str(round(amount, 2))}
 
 
+def _weighted_order_date(rng: random.Random, start: datetime, end: datetime) -> datetime:
+    """Pick an order date with weekly seasonality and growth trend bias."""
+    total_days = (end - start).days
+    if total_days <= 0:
+        return start
+
+    candidates = []
+    weights = []
+    for d in range(total_days):
+        day_dt = start + timedelta(days=d)
+        dow_weight = DAY_OF_WEEK_WEIGHTS.get(day_dt.weekday(), 1.0)
+        growth = 0.6 + 0.8 * (d / max(total_days - 1, 1))
+        candidates.append(d)
+        weights.append(dow_weight * growth)
+
+    chosen_day = rng.choices(candidates, weights=weights, k=1)[0]
+    hour_offset = rng.uniform(0, 24 * 3600)
+    return start + timedelta(days=chosen_day, seconds=hour_offset)
+
+
 class MockAmazonConnector:
     """Generates deterministic mock data matching the real SP-API response shape exactly."""
 
@@ -69,33 +119,48 @@ class MockAmazonConnector:
 
     def get_orders(self, created_after: datetime | None = None, created_before: datetime | None = None) -> list[dict]:
         if created_after is None:
-            created_after = datetime.utcnow() - timedelta(days=30)
+            created_after = datetime.utcnow() - timedelta(days=180)
         if created_before is None:
             created_before = datetime.utcnow()
 
         orders = []
-        num_orders = self._rng.randint(60, 90)
-        time_span = (created_before - created_after).total_seconds()
+        num_orders = self._rng.randint(300, 380)
+
+        # Target status distribution: ~10-12% Cancelled, ~5% Pending, ~5% Unshipped, rest Shipped/Delivered
+        status_pool = (
+            [OrderStatus.CANCELED] * 11
+            + [OrderStatus.PENDING] * 5
+            + [OrderStatus.UNSHIPPED] * 5
+            + [OrderStatus.SHIPPED] * 30
+            + [OrderStatus.DELIVERED] * 49
+        )
 
         for i in range(num_orders):
-            order_time = created_after + timedelta(seconds=self._rng.uniform(0, time_span))
+            order_time = _weighted_order_date(self._rng, created_after, created_before)
             last_update = order_time + timedelta(hours=self._rng.uniform(1, 48))
-            city, state = self._rng.choice(INDIAN_CITIES)
+            city, state = self._rng.choices(INDIAN_CITIES, weights=CITY_WEIGHTS, k=1)[0]
             num_items = self._rng.choices([1, 2, 3], weights=[60, 30, 10])[0]
-            items_for_order = self._rng.sample(PRODUCTS, min(num_items, len(PRODUCTS)))
+            items_for_order = self._rng.choices(PRODUCTS, weights=PRODUCT_WEIGHTS, k=num_items)
+            # Deduplicate by ASIN (choices can repeat)
+            seen_asins = set()
+            unique_items = []
+            for item in items_for_order:
+                if item["asin"] not in seen_asins:
+                    seen_asins.add(item["asin"])
+                    unique_items.append(item)
+            items_for_order = unique_items or [self._rng.choice(PRODUCTS)]
+
             total = sum(p["price"] * self._rng.randint(1, 3) for p in items_for_order)
             shipping = self._rng.choice([0, 0, 0, 40, 60, 99])
-            status = self._rng.choice(ORDER_STATUSES)
+            status = self._rng.choice(status_pool)
             fulfillment = self._rng.choice([FulfillmentChannel.AFN, FulfillmentChannel.AFN, FulfillmentChannel.MFN])
             is_prime = self._rng.random() < 0.35
             payment_method = self._rng.choice(PAYMENT_METHODS)
-            items_shipped = num_items if status in (OrderStatus.SHIPPED, OrderStatus.DELIVERED) else 0
-            items_unshipped = num_items - items_shipped
+            items_shipped = len(items_for_order) if status in (OrderStatus.SHIPPED, OrderStatus.DELIVERED) else 0
+            items_unshipped = len(items_for_order) - items_shipped
 
-            # Delivery window: 2-7 days from order
             earliest_delivery = order_time + timedelta(days=self._rng.randint(2, 4))
             latest_delivery = earliest_delivery + timedelta(days=self._rng.randint(1, 3))
-            # Ship window: 0-2 days from order
             earliest_ship = order_time + timedelta(hours=self._rng.randint(4, 24))
             latest_ship = earliest_ship + timedelta(hours=self._rng.randint(12, 48))
 
@@ -133,7 +198,6 @@ class MockAmazonConnector:
                 "EarliestDeliveryDate": earliest_delivery.isoformat() + "Z",
                 "LatestDeliveryDate": latest_delivery.isoformat() + "Z",
                 "ElectronicInvoiceStatus": "NotRequired",
-                # EasyShip for MFN orders on Amazon.in
                 "_mock_items": items_for_order,
             }
 

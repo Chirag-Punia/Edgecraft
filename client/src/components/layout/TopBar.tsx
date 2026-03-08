@@ -20,9 +20,8 @@ export function TopBar() {
   };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-white px-6">
+    <header className="flex h-14 items-center justify-between border-b bg-white/80 backdrop-blur px-8">
       <div className="flex items-center gap-4">
-        <h1 className="text-lg font-semibold">Command Center</h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-1">
@@ -57,7 +56,7 @@ export function TopBar() {
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="bg-orange-100 text-orange-700 text-xs">
+                <AvatarFallback className="bg-primary/10 text-primary text-xs">
                   {user?.full_name?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>

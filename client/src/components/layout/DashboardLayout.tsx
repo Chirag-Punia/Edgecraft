@@ -8,8 +8,10 @@ export function DashboardLayout() {
       <Sidebar />
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar />
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-6">
-          <Outlet />
+        <main className="flex-1 overflow-y-auto bg-background px-8 py-6">
+          <div className="max-w-[1440px] mx-auto">
+            <Outlet />
+          </div>
         </main>
       </div>
     </div>
