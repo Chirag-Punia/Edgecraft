@@ -53,11 +53,15 @@ function InlineChartInner({ chart, data }: Props) {
     });
   }, [data, chart.x_key]);
 
-  const tooltipFormatter = (value: number, name: string) => {
-    if (chart.currency_axis && typeof value === "number") {
-      return [fmtINR(value), name];
-    }
-    return [typeof value === "number" ? value.toLocaleString("en-IN") : value, name];
+  const tooltipFormatter = (value: number | string | undefined, name?: string) => {
+    const formatted =
+      typeof value === "number"
+        ? chart.currency_axis
+          ? fmtINR(value)
+          : value.toLocaleString("en-IN")
+        : value;
+    if (name == null) return formatted;
+    return [formatted, name];
   };
 
   const yAxisFormatter = (v: number) => {
@@ -113,9 +117,11 @@ function InlineChartInner({ chart, data }: Props) {
             outerRadius={80}
             dataKey="value"
             nameKey="name"
-            label={({ name, percent }) =>
-              `${truncLabel(name, 10)} ${(percent * 100).toFixed(0)}%`
-            }
+            label={({ name, percent }) => {
+              const safeName = typeof name === "string" ? name : name == null ? "" : String(name);
+              const safePercent = typeof percent === "number" ? percent : 0;
+              return `${truncLabel(safeName, 10)} ${(safePercent * 100).toFixed(0)}%`;
+            }}
             labelLine={false}
           >
             {pieData.map((entry, i) => (

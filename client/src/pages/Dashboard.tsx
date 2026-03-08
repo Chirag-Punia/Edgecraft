@@ -354,10 +354,13 @@ export function DashboardPage() {
                     <YAxis yAxisId="left" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                     <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
                     <Tooltip
-                      formatter={(value: number, name: string) => [
-                        name === "gmv" ? fmtINR(value) : value,
-                        name === "gmv" ? "Revenue" : "Orders",
-                      ]}
+                      formatter={(value: number | string | undefined, name?: string) => {
+                        const isRevenue = name === "gmv";
+                        const formatted =
+                          typeof value === "number" ? (isRevenue ? fmtINR(value) : value) : value;
+                        if (name == null) return formatted;
+                        return [formatted, isRevenue ? "Revenue" : "Orders"];
+                      }}
                       labelFormatter={(v) => new Date(v).toLocaleDateString("en-IN")}
                     />
                     <Line type="monotone" dataKey="gmv" stroke="#7C3AED" strokeWidth={2} dot={false} name="gmv" yAxisId="left" />
@@ -408,7 +411,12 @@ export function DashboardPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis type="number" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                     <YAxis type="category" dataKey="name" tick={{ fontSize: 10 }} width={120} />
-                    <Tooltip formatter={(v: number) => [fmtINR(v), "Revenue"]} />
+                    <Tooltip
+                      formatter={(v: number | string | undefined) => {
+                        const formatted = typeof v === "number" ? fmtINR(v) : v;
+                        return [formatted, "Revenue"];
+                      }}
+                    />
                     <Bar dataKey="revenue" fill="#7C3AED" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -430,10 +438,17 @@ export function DashboardPage() {
                     <XAxis type="number" tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                     <YAxis type="category" dataKey="city" tick={{ fontSize: 11 }} width={90} />
                     <Tooltip
-                      formatter={(v: number, name: string) => [
-                        name === "revenue" ? fmtINR(v) : `${v} orders`,
-                        name === "revenue" ? "Revenue" : "Orders",
-                      ]}
+                      formatter={(v: number | string | undefined, name?: string) => {
+                        const isRevenue = name === "revenue";
+                        const formatted =
+                          typeof v === "number"
+                            ? isRevenue
+                              ? fmtINR(v)
+                              : `${v} orders`
+                            : v;
+                        if (name == null) return formatted;
+                        return [formatted, isRevenue ? "Revenue" : "Orders"];
+                      }}
                     />
                     <Bar dataKey="revenue" fill="#3B82F6" radius={[0, 4, 4, 0]} name="revenue" />
                   </BarChart>
