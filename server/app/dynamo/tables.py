@@ -301,10 +301,12 @@ def create_all_tables():
     kwargs = {"region_name": settings.AWS_REGION}
     if settings.DYNAMODB_ENDPOINT_URL:
         kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL
-    # Only override credentials for local dev (on Lambda, IAM role is used)
-    if settings.AWS_ACCESS_KEY_ID:
-        kwargs["aws_access_key_id"] = settings.AWS_ACCESS_KEY_ID
-        kwargs["aws_secret_access_key"] = settings.AWS_SECRET_ACCESS_KEY
+    # Use SP-API credentials as fallback for DynamoDB access
+    access_key = settings.AWS_ACCESS_KEY_ID or settings.SP_API_AWS_ACCESS_KEY
+    secret_key = settings.AWS_SECRET_ACCESS_KEY or settings.SP_API_AWS_SECRET_KEY
+    if access_key:
+        kwargs["aws_access_key_id"] = access_key
+        kwargs["aws_secret_access_key"] = secret_key
 
     dynamodb = boto3.resource("dynamodb", **kwargs)
     existing = [t.name for t in dynamodb.tables.all()]
