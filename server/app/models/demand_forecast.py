@@ -1,26 +1,24 @@
-from sqlalchemy import Column, Integer, String, Date, DateTime, ForeignKey, Numeric, Boolean, UniqueConstraint, func
-from app.db.session import Base
+"""DemandForecast table schema (DynamoDB).
 
+Table: demand_forecasts
+PK: marketplace_account_id (N)
+SK: asin_date_horizon (S) — composite key "{asin}#{forecast_date}#{horizon_days}"
 
-class DemandForecast(Base):
-    __tablename__ = "demand_forecasts"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    marketplace_account_id = Column(Integer, ForeignKey("marketplace_accounts.id"), nullable=False, index=True)
-    asin = Column(String(20), nullable=False)
-    seller_sku = Column(String(100), nullable=True)
-    forecast_date = Column(Date, nullable=False)
-    horizon_days = Column(Integer, nullable=False)
-    predicted_units = Column(Integer, nullable=False)
-    confidence_lower = Column(Integer, nullable=True)
-    confidence_upper = Column(Integer, nullable=True)
-    velocity_7d = Column(Numeric(10, 2), nullable=True)
-    velocity_30d = Column(Numeric(10, 2), nullable=True)
-    days_of_stock = Column(Integer, nullable=True)
-    stockout_risk = Column(Boolean, default=False)
-    method = Column(String(50), nullable=True)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("marketplace_account_id", "asin", "forecast_date", "horizon_days", name="uq_forecast_account_asin_date_horizon"),
-    )
+Fields:
+    marketplace_account_id: int
+    asin_date_horizon: str  (composite: "{asin}#{forecast_date}#{horizon_days}")
+    asin: str
+    seller_sku: str | None
+    forecast_date: str (ISO date)
+    horizon_days: int
+    predicted_units: int
+    confidence_lower: int | None
+    confidence_upper: int | None
+    velocity_7d: Decimal | None
+    velocity_30d: Decimal | None
+    days_of_stock: int | None
+    stockout_risk: bool
+    method: str | None
+    created_at: str (ISO datetime)
+"""
+TABLE_NAME = "demand_forecasts"

@@ -3,7 +3,10 @@ from functools import lru_cache
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "mysql+pymysql://root:password@localhost:3306/retailsutra"
+    # DynamoDB
+    DYNAMODB_TABLE_PREFIX: str = "retailsutra_"
+    DYNAMODB_ENDPOINT_URL: str = ""  # Set to "http://localhost:8000" for local DynamoDB
+
     SECRET_KEY: str = "change-me-to-a-random-secret"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30

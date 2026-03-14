@@ -1,20 +1,18 @@
-"""AI Assistant orchestrator — the core pipeline.
+"""AI Assistant orchestrator — the core pipeline (DynamoDB version).
 
-Flow: User message → LLM (Bedrock) → ReportSpec JSON → SQL Template → Execute → LLM Summarize → Response
-      OR: User message → LLM → web_search → Tavily → LLM Summarize → Response
+Flow: User message -> LLM (Bedrock) -> ReportSpec JSON -> DynamoDB Query -> LLM Summarize -> Response
+      OR: User message -> LLM -> web_search -> Tavily -> LLM Summarize -> Response
 """
 import json
 import logging
 import re
 from datetime import datetime, date, timedelta
 
-from sqlalchemy.orm import Session
+from boto3.dynamodb.conditions import Key, Attr
 
 from app.config import get_settings
+from app.dynamo.helpers import query_all, to_dynamo_item, now_iso
 from app.enums import ChatRole, ReportType
-from app.models.chat_session import ChatSession
-from app.models.chat_message import ChatMessage
-from app.models.marketplace_account import MarketplaceAccount
 from app.services.bedrock_client import invoke_bedrock
 from app.services.chart_builder import build_chart_data
 from app.services.report_spec import ReportSpec, TimeRange, compile_and_execute
@@ -199,21 +197,27 @@ DEFAULT_SUGGESTIONS = [
 ]
 
 
-def _get_account_ids(db: Session, seller_id: int) -> list[int]:
-    """Get marketplace account IDs for a seller."""
-    return [
-        a.id for a in db.query(MarketplaceAccount.id)
-        .filter(MarketplaceAccount.seller_id == seller_id)
-        .all()
-    ]
+def _get_account_ids(db, seller_id: int) -> list[int]:
+    """Get marketplace account IDs for a seller (connected accounts only)."""
+    from app.enums import AccountStatus
+    table = db.get_table("marketplace_accounts")
+    connected = AccountStatus.CONNECTED.value
+    items = query_all(
+        table,
+        IndexName="seller-index",
+        KeyConditionExpression=Key("seller_id").eq(int(seller_id)),
+        FilterExpression=Attr("status").eq(connected),
+    )
+    return [item["id"] for item in items]
 
 
-def _build_messages(history: list[ChatMessage], user_message: str) -> list[dict]:
+def _build_messages(history: list[dict], user_message: str) -> list[dict]:
     """Build Bedrock message array from chat history + new message."""
     messages = []
     for msg in history[-MAX_HISTORY_TURNS:]:
-        if msg.role in ("user", "assistant"):
-            messages.append({"role": msg.role, "content": msg.content})
+        role = msg.get("role", "")
+        if role in ("user", "assistant"):
+            messages.append({"role": role, "content": msg.get("content", "")})
     messages.append({"role": "user", "content": user_message})
     return messages
 
@@ -248,7 +252,7 @@ def _generate_title(message: str) -> str:
 def _build_enrichment_context(
     report_type: str,
     account_ids: list[int],
-    db: Session,
+    db,
 ) -> str:
     """Pull lightweight cross-data context for the summarizer."""
     context_parts = []
@@ -267,7 +271,7 @@ def _build_enrichment_context(
                     for row in stockout_data["rows"][:3]
                 ]
                 context_parts.append(
-                    f"⚠️ Cross-reference: {len(stockout_data['rows'])} products at stockout risk "
+                    f"Warning: {len(stockout_data['rows'])} products at stockout risk "
                     f"({', '.join(str(n) for n in names)}). Revenue from these could drop if not restocked."
                 )
 
@@ -279,7 +283,7 @@ def _build_enrichment_context(
             rev_data = compile_and_execute(rev_spec, account_ids, db)
             if rev_data["rows"] and rev_data["rows"][0][0]:
                 rev = rev_data["rows"][0][0]
-                context_parts.append(f"📊 Context: Last 7 days total revenue = ₹{rev:,.0f}")
+                context_parts.append(f"Context: Last 7 days total revenue = ₹{rev:,.0f}")
 
         if report_type in ("pricing_analysis",):
             top_spec = ReportSpec(
@@ -291,7 +295,7 @@ def _build_enrichment_context(
             if top_data["rows"]:
                 top_names = [str(row[1] or row[0]) for row in top_data["rows"][:3]]
                 context_parts.append(
-                    f"📊 Top 3 products by revenue (30d): {', '.join(top_names)}. "
+                    f"Top 3 products by revenue (30d): {', '.join(top_names)}. "
                     f"Prioritize Buy Box wins on these."
                 )
     except Exception as e:
@@ -346,29 +350,39 @@ def _handle_web_search(
 
 
 def get_or_create_session(
-    db: Session, session_id: int | None, user_id: int, seller_id: int, language: str = "en"
-) -> ChatSession:
-    """Get existing session or create a new one."""
-    if session_id:
-        session = db.query(ChatSession).filter(
-            ChatSession.id == session_id,
-            ChatSession.user_id == user_id,
-        ).first()
-        if session:
-            return session
+    db, session_id: int | None, user_id: int, seller_id: int, language: str = "en"
+) -> dict:
+    """Get existing session or create a new one. Returns a dict representing the session."""
+    table = db.get_table("chat_sessions")
 
-    session = ChatSession(
-        seller_id=seller_id,
-        user_id=user_id,
-        language=language,
-    )
-    db.add(session)
-    db.flush()
+    if session_id:
+        # Query by PK
+        response = table.get_item(Key={"id": int(session_id)})
+        item = response.get("Item")
+        if item:
+            from app.dynamo.helpers import from_dynamo_item
+            session = from_dynamo_item(item)
+            if session.get("user_id") == user_id:
+                return session
+
+    # Create new session
+    new_id = db.next_id("chat_sessions")
+    now = now_iso()
+    session = {
+        "id": new_id,
+        "seller_id": seller_id,
+        "user_id": user_id,
+        "language": language,
+        "title": None,
+        "created_at": now,
+        "updated_at": now,
+    }
+    table.put_item(Item=to_dynamo_item(session))
     return session
 
 
 def process_chat(
-    db: Session,
+    db,
     user_id: int,
     seller_id: int,
     message: str,
@@ -397,26 +411,37 @@ def process_chat(
     session = get_or_create_session(db, session_id, user_id, seller_id, lang)
 
     # Set title from first message
-    if not session.title:
-        session.title = _generate_title(message)
+    sessions_table = db.get_table("chat_sessions")
+    if not session.get("title"):
+        session["title"] = _generate_title(message)
+        sessions_table.update_item(
+            Key={"id": int(session["id"])},
+            UpdateExpression="SET title = :t",
+            ExpressionAttributeValues={":t": session["title"]},
+        )
 
     # Save user message
-    user_msg = ChatMessage(
-        session_id=session.id,
-        role=ChatRole.USER,
-        content=message,
-    )
-    db.add(user_msg)
-    db.flush()
+    messages_table = db.get_table("chat_messages")
+    user_msg_id = db.next_id("chat_messages")
+    now = now_iso()
+    user_msg = {
+        "session_id": int(session["id"]),
+        "id": user_msg_id,
+        "role": ChatRole.USER.value,
+        "content": message,
+        "created_at": now,
+    }
+    messages_table.put_item(Item=to_dynamo_item(user_msg))
 
-    # Load chat history
-    history = (
-        db.query(ChatMessage)
-        .filter(ChatMessage.session_id == session.id)
-        .order_by(ChatMessage.created_at.asc())
-        .all()
+    # Load chat history (all messages in this session, sorted by SK=id)
+    history_items = query_all(
+        messages_table,
+        KeyConditionExpression=Key("session_id").eq(int(session["id"])),
     )
-    history = [m for m in history if m.id != user_msg.id]
+    # Exclude the message we just saved
+    history = [m for m in history_items if m.get("id") != user_msg_id]
+    # Sort by id (creation order)
+    history.sort(key=lambda m: m.get("id", 0))
 
     # Step 1: Call Bedrock to get ReportSpec or conversational response
     system = SYSTEM_PROMPT.format(schema_catalog=SCHEMA_CATALOG)
@@ -430,16 +455,18 @@ def process_chat(
 
     if not llm_response:
         content = "I'm having trouble connecting to the AI service right now. Please try again in a moment."
-        assistant_msg = ChatMessage(
-            session_id=session.id,
-            role=ChatRole.ASSISTANT,
-            content=content,
-        )
-        db.add(assistant_msg)
-        db.commit()
+        assistant_msg_id = db.next_id("chat_messages")
+        assistant_msg = {
+            "session_id": int(session["id"]),
+            "id": assistant_msg_id,
+            "role": ChatRole.ASSISTANT.value,
+            "content": content,
+            "created_at": now_iso(),
+        }
+        messages_table.put_item(Item=to_dynamo_item(assistant_msg))
         return {
-            "session_id": session.id,
-            "message_id": assistant_msg.id,
+            "session_id": session["id"],
+            "message_id": assistant_msg_id,
             "content": content,
             "report_data": None,
             "chart_data": None,
@@ -558,25 +585,37 @@ def process_chat(
         msg_metadata["web_sources"] = web_sources
 
     # Save assistant message
-    assistant_msg = ChatMessage(
-        session_id=session.id,
-        role=ChatRole.ASSISTANT,
-        content=final_content,
-        report_spec=spec_json,
-        report_data=report_data,
-        metadata_=msg_metadata if msg_metadata else None,
+    assistant_msg_id = db.next_id("chat_messages")
+    assistant_msg = {
+        "session_id": int(session["id"]),
+        "id": assistant_msg_id,
+        "role": ChatRole.ASSISTANT.value,
+        "content": final_content,
+        "created_at": now_iso(),
+    }
+    if spec_json:
+        assistant_msg["report_spec"] = spec_json
+    if report_data:
+        assistant_msg["report_data"] = report_data
+    if msg_metadata:
+        assistant_msg["metadata_"] = msg_metadata
+
+    messages_table.put_item(Item=to_dynamo_item(assistant_msg))
+
+    # Update session timestamp
+    sessions_table.update_item(
+        Key={"id": int(session["id"])},
+        UpdateExpression="SET updated_at = :u",
+        ExpressionAttributeValues={":u": now_iso()},
     )
-    db.add(assistant_msg)
-    session.updated_at = datetime.utcnow()
-    db.commit()
 
     return {
-        "session_id": session.id,
-        "message_id": assistant_msg.id,
+        "session_id": session["id"],
+        "message_id": assistant_msg_id,
         "content": final_content,
         "report_data": report_data,
         "chart_data": chart_data,
         "web_sources": web_sources,
         "suggested_questions": suggested,
-        "language": session.language or lang,
+        "language": session.get("language") or lang,
     }

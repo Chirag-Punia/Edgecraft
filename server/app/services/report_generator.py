@@ -1,13 +1,12 @@
-"""AI Report Generator — collects data, prompts the LLM, caches results."""
+"""AI Report Generator — collects data, prompts the LLM, caches results (DynamoDB version)."""
 import json
 import logging
 import re
 from datetime import datetime, timedelta
 
-from sqlalchemy.orm import Session
+from boto3.dynamodb.conditions import Key, Attr
 
-from app.models.ai_report import AIReport
-from app.models.marketplace_account import MarketplaceAccount
+from app.dynamo.helpers import query_all, to_dynamo_item, from_dynamo_item, now_iso
 from app.services.bedrock_client import invoke_bedrock
 from app.services.report_data_collector import COLLECTORS
 
@@ -141,11 +140,18 @@ Then write 2-3 sentences summarizing the overall pricing strategy: how many to r
 CACHE_HOURS = 6
 
 
-def _get_account_ids(db: Session, seller_id: int) -> list[int]:
-    return [
-        a.id for a in db.query(MarketplaceAccount.id)
-        .filter(MarketplaceAccount.seller_id == seller_id).all()
-    ]
+def _get_account_ids(db, seller_id: int) -> list[int]:
+    """Get marketplace account IDs for a seller (connected accounts only)."""
+    from app.enums import AccountStatus
+    table = db.get_table("marketplace_accounts")
+    connected = AccountStatus.CONNECTED.value
+    items = query_all(
+        table,
+        IndexName="seller-index",
+        KeyConditionExpression=Key("seller_id").eq(int(seller_id)),
+        FilterExpression=Attr("status").eq(connected),
+    )
+    return [item["id"] for item in items]
 
 
 def _extract_json(text: str) -> dict | None:
@@ -167,74 +173,88 @@ def _extract_json(text: str) -> dict | None:
     return None
 
 
+def _get_report(db, seller_id: int, report_type: str) -> dict | None:
+    """Get an AI report from DynamoDB. PK=seller_id, SK=report_type_lang."""
+    table = db.get_table("ai_reports")
+    # Use report_type#en as the default sort key pattern
+    sk = f"{report_type}#en"
+    response = table.get_item(Key={"seller_id": int(seller_id), "report_type_lang": sk})
+    item = response.get("Item")
+    if item:
+        return from_dynamo_item(item)
+    return None
+
+
+def _put_report(db, report: dict):
+    """Write an AI report to DynamoDB."""
+    table = db.get_table("ai_reports")
+    table.put_item(Item=to_dynamo_item(report))
+
+
 def generate_report(
-    db: Session,
+    db,
     seller_id: int,
     report_type: str,
     force: bool = False,
-) -> AIReport:
-    """Generate or return cached AI report."""
+) -> dict:
+    """Generate or return cached AI report.
+
+    Returns a dict with: report_type, status, ai_narrative, report_data, score,
+    generated_at, expires_at.
+    """
     config = REPORT_CONFIGS.get(report_type)
     if not config:
         raise ValueError(f"Unknown report type: {report_type}")
 
+    sk = f"{report_type}#en"
+    now = datetime.utcnow()
+
     # Check cache
     if not force:
-        cached = (
-            db.query(AIReport)
-            .filter(AIReport.seller_id == seller_id, AIReport.report_type == report_type,
-                    AIReport.status == "ready", AIReport.expires_at > datetime.utcnow())
-            .first()
-        )
-        if cached:
-            return cached
+        cached = _get_report(db, seller_id, report_type)
+        if cached and cached.get("status") == "ready":
+            expires_at = cached.get("expires_at")
+            if expires_at:
+                try:
+                    exp = datetime.fromisoformat(expires_at)
+                    if exp > now:
+                        return cached
+                except (ValueError, TypeError):
+                    pass
 
     # Check if already generating (with 5-min stuck timeout)
-    generating = (
-        db.query(AIReport)
-        .filter(AIReport.seller_id == seller_id, AIReport.report_type == report_type,
-                AIReport.status == "generating")
-        .first()
-    )
-    if generating:
-        stuck_threshold = datetime.utcnow() - timedelta(minutes=5)
-        if generating.generated_at and generating.generated_at > stuck_threshold:
-            return generating
-        # Stuck — reset and regenerate
+    existing = _get_report(db, seller_id, report_type)
+    if existing and existing.get("status") == "generating":
+        gen_at = existing.get("generated_at")
+        if gen_at:
+            try:
+                gen_time = datetime.fromisoformat(gen_at)
+                stuck_threshold = now - timedelta(minutes=5)
+                if gen_time > stuck_threshold:
+                    return existing
+            except (ValueError, TypeError):
+                pass
+        # Stuck — fall through to regenerate
 
-    # Upsert: create or update record
-    report = (
-        db.query(AIReport)
-        .filter(AIReport.seller_id == seller_id, AIReport.report_type == report_type)
-        .first()
-    )
-    if not report:
-        report = AIReport(seller_id=seller_id, report_type=report_type)
-        db.add(report)
-
-    report.status = "generating"
-    report.generated_at = datetime.utcnow()
-    try:
-        db.commit()
-    except Exception:
-        db.rollback()
-        # Another request won the race — return whatever exists
-        existing = db.query(AIReport).filter(
-            AIReport.seller_id == seller_id, AIReport.report_type == report_type).first()
-        if existing:
-            return existing
-        raise
-    db.refresh(report)
+    # Set status to generating
+    report = existing or {
+        "seller_id": int(seller_id),
+        "report_type_lang": sk,
+        "report_type": report_type,
+    }
+    report["status"] = "generating"
+    report["generated_at"] = now.isoformat()
+    _put_report(db, report)
 
     try:
         account_ids = _get_account_ids(db, seller_id)
         if not account_ids:
-            report.status = "ready"
-            report.ai_narrative = "No marketplace connected yet. Connect a marketplace and sync data to generate this report."
-            report.report_data = {}
-            report.generated_at = datetime.utcnow()
-            report.expires_at = datetime.utcnow() + timedelta(hours=CACHE_HOURS)
-            db.commit()
+            report["status"] = "ready"
+            report["ai_narrative"] = "No marketplace connected yet. Connect a marketplace and sync data to generate this report."
+            report["report_data"] = {}
+            report["generated_at"] = now.isoformat()
+            report["expires_at"] = (now + timedelta(hours=CACHE_HOURS)).isoformat()
+            _put_report(db, report)
             return report
 
         # Collect data
@@ -274,20 +294,20 @@ def generate_report(
         if report_type == "business_health" and parsed_json:
             score = parsed_json.get("overall_score")
 
-        report.status = "ready"
-        report.ai_narrative = narrative
-        report.report_data = parsed_json or data
-        report.score = score
-        report.generated_at = datetime.utcnow()
-        report.expires_at = datetime.utcnow() + timedelta(hours=CACHE_HOURS)
-        db.commit()
+        report["status"] = "ready"
+        report["ai_narrative"] = narrative
+        report["report_data"] = parsed_json or data
+        report["score"] = score
+        report["generated_at"] = datetime.utcnow().isoformat()
+        report["expires_at"] = (datetime.utcnow() + timedelta(hours=CACHE_HOURS)).isoformat()
+        _put_report(db, report)
 
     except Exception as e:
         logger.error("Report generation failed for %s/%s: %s", seller_id, report_type, e)
-        report.status = "failed"
-        report.ai_narrative = "Report generation failed. Please try again."
-        report.generated_at = datetime.utcnow()
-        report.expires_at = datetime.utcnow() + timedelta(minutes=5)
-        db.commit()
+        report["status"] = "failed"
+        report["ai_narrative"] = "Report generation failed. Please try again."
+        report["generated_at"] = datetime.utcnow().isoformat()
+        report["expires_at"] = (datetime.utcnow() + timedelta(minutes=5)).isoformat()
+        _put_report(db, report)
 
     return report

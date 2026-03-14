@@ -2,10 +2,12 @@
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from boto3.dynamodb.conditions import Attr
+
 from app.config import get_settings
 from app.db.session import SessionLocal
 from app.enums import Marketplace, AccountStatus, SyncType
-from app.models.marketplace_account import MarketplaceAccount
+from app.dynamo.helpers import scan_all
 from app.services.sync_worker import run_sync
 
 logger = logging.getLogger(__name__)
@@ -18,18 +20,25 @@ def scheduled_sync_all():
     """Run sync for all connected Amazon marketplace accounts."""
     db = SessionLocal()
     try:
-        accounts = db.query(MarketplaceAccount).filter(
-            MarketplaceAccount.marketplace == Marketplace.AMAZON,
-            MarketplaceAccount.status == AccountStatus.CONNECTED,
-        ).all()
+        acct_table = db.get_table("marketplace_accounts")
+
+        # Scan for all connected Amazon accounts
+        accounts = scan_all(
+            acct_table,
+            FilterExpression=(
+                Attr("marketplace").eq(Marketplace.AMAZON.value) &
+                Attr("status").eq(AccountStatus.CONNECTED.value)
+            ),
+        )
+
         logger.info(f"Scheduled sync: found {len(accounts)} connected Amazon accounts")
         for account in accounts:
             try:
-                run_sync(db, account.id, sync_type=SyncType.FULL)
+                run_sync(db, account["id"], sync_type=SyncType.FULL)
             except Exception:
-                logger.exception(f"Scheduled sync failed for account {account.id}")
-    finally:
-        db.close()
+                logger.exception(f"Scheduled sync failed for account {account['id']}")
+    except Exception:
+        logger.exception("Scheduled sync_all failed")
 
 
 def start_scheduler():

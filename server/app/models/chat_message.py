@@ -1,15 +1,17 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, JSON, func
-from app.db.session import Base
+"""ChatMessage table schema (DynamoDB).
 
+Table: chat_messages
+PK: session_id (N)
+SK: id (N) — auto-increment via counters table
 
-class ChatMessage(Base):
-    __tablename__ = "chat_messages"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    session_id = Column(Integer, ForeignKey("chat_sessions.id", ondelete="CASCADE"), nullable=False, index=True)
-    role = Column(String(20), nullable=False)
-    content = Column(Text, nullable=False)
-    report_spec = Column(JSON, nullable=True)
-    report_data = Column(JSON, nullable=True)
-    metadata_ = Column("metadata", JSON, nullable=True)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+Fields:
+    id: int
+    session_id: int
+    role: str  (user | assistant | system)
+    content: str
+    report_spec: dict | None  (JSON-compatible map)
+    report_data: dict | None  (JSON-compatible map)
+    metadata: dict | None  (JSON-compatible map)
+    created_at: str (ISO datetime)
+"""
+TABLE_NAME = "chat_messages"

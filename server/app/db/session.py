@@ -1,30 +1,25 @@
-import os
-import ssl
+"""Database session — DynamoDB client provider.
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from typing import Generator
-
-from app.config import get_settings
-
-settings = get_settings()
-
-connect_args: dict = {}
-ca_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "certs", "global-bundle.pem")
-if os.path.exists(ca_path):
-    connect_args["ssl"] = {"ca": ca_path}
-
-engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True, connect_args=connect_args)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Replaces the previous MySQL/SQLAlchemy setup.
+Provides get_db() for FastAPI dependency injection (returns dynamo client module).
+SessionLocal() for background tasks.
+"""
+import app.dynamo.client as dynamo_client
 
 
-class Base(DeclarativeBase):
-    pass
+def get_db():
+    """FastAPI dependency — yields the DynamoDB client module.
+
+    Usage in endpoints: db = Depends(get_db)
+    Then: db.get_table("orders"), db.next_id("orders"), etc.
+    """
+    yield dynamo_client
 
 
-def get_db() -> Generator:
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+def SessionLocal():
+    """For background tasks that need their own 'session'.
+
+    Returns the dynamo client module directly (DynamoDB is stateless,
+    no session management needed like SQLAlchemy).
+    """
+    return dynamo_client

@@ -14,7 +14,7 @@ class SyncRunResponse(BaseModel):
     marketplace_account_id: int
     sync_type: SyncType
     status: SyncRunStatus
-    started_at: datetime
+    started_at: datetime | None = None
     completed_at: datetime | None = None
     records_fetched: int
     records_upserted: int
@@ -42,3 +42,4 @@ class UnseedResponse(BaseModel):
 
 class DemoStatusResponse(BaseModel):
     is_seeded: bool
+    is_seeding: bool = False

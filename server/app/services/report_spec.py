@@ -1,20 +1,18 @@
-"""Report Spec validation and SQL template compilation.
+"""Report Spec validation and DynamoDB query execution.
 
 This is the security boundary between the LLM and the database.
 The LLM produces a JSON ReportSpec, which is validated here against
-strict rules, then compiled into a safe parameterized SQL query.
+strict rules, then dispatched to the appropriate DynamoDB query function.
 """
 import logging
 import re as _re
 from datetime import date, timedelta
-from decimal import Decimal
 
 from pydantic import BaseModel, field_validator
-from sqlalchemy import text, bindparam
-from sqlalchemy.orm import Session
 
 from app.enums import ReportType
 from app.services.sql_templates import TEMPLATES
+from app.dynamo.helpers import query_by_account_ids
 
 logger = logging.getLogger(__name__)
 
@@ -97,34 +95,44 @@ def _resolve_dates(time_range: TimeRange) -> tuple[date, date]:
     return today - timedelta(days=time_range.n), today
 
 
-# Mapping from report_type to the table + date column to find latest snapshot
+# Mapping from report_type to the table + sort-key field to find latest snapshot
 _SNAPSHOT_TABLE_MAP = {
-    "inventory_health": ("inventory_snapshots", "snapshot_date"),
-    "stockout_risk": ("inventory_snapshots", "snapshot_date"),
-    "pricing_analysis": ("price_snapshots", "snapshot_date"),
-    "customer_sentiment": ("review_insights", "insight_date"),
-    "demand_forecast": ("demand_forecasts", "forecast_date"),
+    "inventory_health": ("inventory_snapshots", "sku_date"),
+    "stockout_risk": ("inventory_snapshots", "sku_date"),
+    "pricing_analysis": ("price_snapshots", "asin_date"),
+    "customer_sentiment": ("review_insights", "asin_date"),
+    "demand_forecast": ("demand_forecasts", "asin_date_horizon"),
 }
 
 
-def _resolve_snapshot_date(report_type: str, account_ids: tuple, db: Session) -> date:
+def _resolve_snapshot_date(report_type: str, account_ids: list[int], db) -> date:
     """Get the latest available snapshot date for a report type.
 
     Falls back to today if no snapshot data exists or report doesn't use snapshots.
+    Queries DynamoDB partitions and extracts dates from sort keys.
     """
     mapping = _SNAPSHOT_TABLE_MAP.get(report_type)
     if not mapping:
         return date.today()
 
-    table_name, date_col = mapping
+    table_name, sk_field = mapping
     try:
-        stmt = text(
-            f"SELECT MAX({date_col}) FROM {table_name} "
-            f"WHERE marketplace_account_id IN :account_ids"
-        ).bindparams(bindparam("account_ids", expanding=True))
-        result = db.execute(stmt, {"account_ids": account_ids}).scalar()
-        if result:
-            return result
+        table = db.get_table(table_name)
+        all_items = query_by_account_ids(table, account_ids)
+
+        dates = set()
+        for item in all_items:
+            sk = item.get(sk_field, "")
+            parts = sk.split("#")
+            for part in parts:
+                try:
+                    date.fromisoformat(part)
+                    dates.add(part)
+                    break
+                except (ValueError, TypeError):
+                    continue
+        if dates:
+            return date.fromisoformat(max(dates))
     except Exception as e:
         logger.debug("Snapshot date lookup failed for %s: %s", report_type, e)
 
@@ -134,9 +142,9 @@ def _resolve_snapshot_date(report_type: str, account_ids: tuple, db: Session) ->
 def compile_and_execute(
     spec: ReportSpec,
     account_ids: list[int],
-    db: Session,
+    db,
 ) -> dict:
-    """Compile a validated ReportSpec into SQL and execute it.
+    """Validate a ReportSpec and execute the corresponding DynamoDB query.
 
     Returns:
         {"columns": [...], "rows": [[...], ...], "report_type": "...", "time_range": "..."}
@@ -159,52 +167,35 @@ def compile_and_execute(
 
     # Resolve snapshot_date to the latest available data instead of today,
     # so queries work even if sync hasn't run today.
-    snapshot_date = _resolve_snapshot_date(report_type, tuple(account_ids), db)
+    snapshot_date = _resolve_snapshot_date(report_type, account_ids, db)
 
-    # Build params — always inject account_ids server-side
-    params: dict = {
-        "account_ids": tuple(account_ids),
+    # Build params for the query function
+    sort_field = spec.metric
+    if sort_field not in template_def.get("allowed_sort_fields", [spec.metric]):
+        sort_field = template_def.get("default_sort_field", "revenue")
+    # Defense-in-depth: ensure sort_field is a bare identifier
+    if not _re.match(r"^[a-z_]+$", sort_field):
+        sort_field = template_def.get("default_sort_field", "revenue")
+
+    params = {
         "start_date": start_date,
         "end_date": end_date,
         "limit": spec.limit,
         "snapshot_date": snapshot_date,
         "threshold": spec.threshold,
         "horizon_days": spec.horizon_days,
+        "sort_field": sort_field,
+        "sort_dir": spec.sort,
     }
 
-    # Handle templates with dynamic sort fields (e.g., top_products)
-    sql_text = template_def["sql"].text
-    if "{sort_field}" in sql_text:
-        sort_field = spec.metric if spec.metric in template_def.get("allowed_sort_fields", []) else template_def.get("default_sort_field", "revenue")
-        sort_dir = spec.sort
-        # Defense-in-depth: ensure sort_field is a bare SQL identifier
-        if not _re.match(r"^[a-z_]+$", sort_field):
-            sort_field = template_def.get("default_sort_field", "revenue")
-        sql_text = sql_text.replace("{sort_field}", sort_field).replace("{sort_dir}", sort_dir)
-
-    stmt = text(sql_text).bindparams(bindparam("account_ids", expanding=True))
-    result = db.execute(stmt, params)
-    columns = template_def["columns"]
-    rows = []
-    for row in result:
-        row_data = []
-        for i, col in enumerate(columns):
-            val = row[i]
-            if isinstance(val, Decimal):
-                val = float(val)
-            elif isinstance(val, date):
-                val = val.isoformat()
-            elif isinstance(val, (list, dict)):
-                pass  # JSON columns
-            else:
-                val = val
-            row_data.append(val)
-        rows.append(row_data)
+    # Call the DynamoDB query function
+    query_fn = template_def["fn"]
+    result = query_fn(db, account_ids, params)
 
     time_desc = f"{start_date.isoformat()} to {end_date.isoformat()}"
     return {
-        "columns": columns,
-        "rows": rows,
+        "columns": result["columns"],
+        "rows": result["rows"],
         "report_type": report_type,
         "time_range": time_desc,
     }

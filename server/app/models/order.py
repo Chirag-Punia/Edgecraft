@@ -1,27 +1,26 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text, Numeric, UniqueConstraint, func
-from app.db.session import Base
-from app.enums import Marketplace
+"""Order table schema (DynamoDB).
 
+Table: orders
+PK: id (N) — auto-increment via counters table
+GSI: account-date-index (marketplace_account_id, order_date)
+GSI: acct-ext-order-index (acct_ext_order) — composite key "account_id#external_order_id"
 
-class Order(Base):
-    __tablename__ = "orders"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    marketplace_account_id = Column(Integer, ForeignKey("marketplace_accounts.id"), nullable=False, index=True)
-    external_order_id = Column(String(100), nullable=False)
-    marketplace = Column(String(50), nullable=False, default=Marketplace.AMAZON)
-    status = Column(String(50), nullable=False)
-    order_date = Column(DateTime, nullable=False, index=True)
-    fulfillment_channel = Column(String(20), nullable=True)
-    currency = Column(String(10), default="INR")
-    total_amount = Column(Numeric(12, 2), nullable=False)
-    shipping_amount = Column(Numeric(10, 2), default=0)
-    ship_city = Column(String(100), nullable=True)
-    ship_state = Column(String(100), nullable=True)
-    raw_payload = Column(Text, nullable=True)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("marketplace_account_id", "external_order_id", name="uq_order_account_extid"),
-    )
+Fields:
+    id: int
+    marketplace_account_id: int
+    external_order_id: str
+    acct_ext_order: str  (composite: "{marketplace_account_id}#{external_order_id}")
+    marketplace: str  (amazon | flipkart | shopify | facebook)
+    status: str
+    order_date: str (ISO datetime)
+    fulfillment_channel: str | None
+    currency: str  (default: INR)
+    total_amount: Decimal
+    shipping_amount: Decimal
+    ship_city: str | None
+    ship_state: str | None
+    raw_payload: str | None
+    created_at: str (ISO datetime)
+    updated_at: str (ISO datetime)
+"""
+TABLE_NAME = "orders"

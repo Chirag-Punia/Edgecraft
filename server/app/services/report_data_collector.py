@@ -1,45 +1,18 @@
-"""Collect cross-domain data for AI report generation.
+"""Collect cross-domain data for AI report generation (DynamoDB version).
 
 Each collector gathers raw metrics from multiple tables into a structured dict
-that the LLM can reason about. No LLM calls here — pure SQL.
+that the LLM can reason about. No LLM calls here — pure DynamoDB queries + Python aggregation.
 """
 import logging
+from collections import defaultdict
 from datetime import date, timedelta
-from decimal import Decimal
 
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+from boto3.dynamodb.conditions import Key
 
-from app.models.order import Order
-from app.models.order_item import OrderItem
-from app.models.inventory_snapshot import InventorySnapshot
-from app.models.price_snapshot import PriceSnapshot
-from app.models.demand_forecast import DemandForecast
-from app.models.review_insight import ReviewInsight
-from app.models.listing_map import ListingMap
+from app.dynamo.helpers import query_all, query_by_account_ids
 from app.enums import OrderStatus
 
 logger = logging.getLogger(__name__)
-
-
-def _latest_date(db: Session, account_ids: list[int], model, date_col) -> date:
-    if not account_ids:
-        return date.today()
-    result = db.query(func.max(date_col)).filter(
-        model.marketplace_account_id.in_(account_ids)
-    ).scalar()
-    return result or date.today()
-
-
-def _names(db: Session, account_ids: list[int], asins: list[str]) -> dict[str, str]:
-    if not asins or not account_ids:
-        return {}
-    rows = db.query(ListingMap.asin, ListingMap.listing_title).filter(
-        ListingMap.marketplace_account_id.in_(account_ids),
-        ListingMap.asin.in_(list(set(a for a in asins if a))),
-    ).all()
-    lookup = {r.asin: r.listing_title for r in rows if r.listing_title}
-    return {a: lookup.get(a, a) for a in asins}
 
 
 def _dec(v) -> float:
@@ -48,58 +21,151 @@ def _dec(v) -> float:
     return float(v)
 
 
-def collect_health_scorecard(db: Session, account_ids: list[int]) -> dict:
+def _query_orders_in_range(db, account_ids: list[int], start: date, end: date) -> list[dict]:
+    """Query orders within a date range across account_ids."""
+    table = db.get_table("orders")
+    orders = []
+    for aid in account_ids:
+        items = query_all(
+            table,
+            IndexName="account-date-index",
+            KeyConditionExpression=(
+                Key("marketplace_account_id").eq(aid)
+                & Key("order_date").between(start.isoformat(), end.isoformat())
+            ),
+        )
+        orders.extend(items)
+    return orders
+
+
+def _query_order_items_for_orders(db, account_ids: list[int], order_ids: set) -> list[dict]:
+    """Query order items for given account_ids, filter by order_ids."""
+    if not order_ids:
+        return []
+    table = db.get_table("order_items")
+    items = []
+    for aid in account_ids:
+        all_items = query_all(
+            table,
+            IndexName="account-index",
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+        )
+        items.extend([i for i in all_items if i.get("order_id") in order_ids])
+    return items
+
+
+def _latest_date(db, account_ids: list[int], table_name: str, sk_field: str) -> date:
+    """Get latest available date by scanning partitions and extracting dates from sort keys."""
+    if not account_ids:
+        return date.today()
+    try:
+        table = db.get_table(table_name)
+        dates = set()
+        for aid in account_ids:
+            items = query_all(
+                table,
+                KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+                ProjectionExpression=sk_field,
+            )
+            for item in items:
+                sk = item.get(sk_field, "")
+                parts = sk.split("#")
+                for part in parts:
+                    try:
+                        date.fromisoformat(part)
+                        dates.add(part)
+                        break
+                    except (ValueError, TypeError):
+                        continue
+        if dates:
+            return date.fromisoformat(max(dates))
+    except Exception as e:
+        logger.warning("Latest date lookup failed for %s: %s", table_name, e)
+    return date.today()
+
+
+def _get_snapshot_items(db, account_ids: list[int], table_name: str, sk_field: str, snap_date: date) -> list[dict]:
+    """Get snapshot items for a given date by filtering sort keys that contain the date string."""
+    table = db.get_table(table_name)
+    date_str = snap_date.isoformat()
+    items = []
+    for aid in account_ids:
+        all_items = query_all(
+            table,
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+        )
+        items.extend([i for i in all_items if date_str in i.get(sk_field, "")])
+    return items
+
+
+def _names(db, account_ids: list[int], asins: list[str]) -> dict[str, str]:
+    """Batch lookup product names from listing_map."""
+    if not asins or not account_ids:
+        return {}
+    unique = list(set(a for a in asins if a))
+    if not unique:
+        return {}
+    table = db.get_table("listing_map")
+    lookup = {}
+    for aid in account_ids:
+        items = query_all(
+            table,
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+        )
+        for item in items:
+            if item.get("asin") in unique and item.get("listing_title"):
+                lookup[item["asin"]] = item["listing_title"]
+    return {a: lookup.get(a, a) for a in asins}
+
+
+def collect_health_scorecard(db, account_ids: list[int]) -> dict:
     today = date.today()
     week_ago = today - timedelta(days=7)
     prev_week = week_ago - timedelta(days=7)
-    base = Order.marketplace_account_id.in_(account_ids)
 
-    rev_curr = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= week_ago).scalar())
-    rev_prev = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= prev_week, Order.order_date < week_ago).scalar())
+    # Revenue and orders
+    orders_curr = _query_orders_in_range(db, account_ids, week_ago, today)
+    orders_prev = _query_orders_in_range(db, account_ids, prev_week, week_ago - timedelta(days=1))
 
-    orders_curr = db.query(func.count(Order.id)).filter(base, Order.order_date >= week_ago).scalar() or 0
-    cancelled = db.query(func.count(Order.id)).filter(
-        base, Order.order_date >= week_ago,
-        Order.status.in_([OrderStatus.CANCELLED, OrderStatus.CANCELED])
-    ).scalar() or 0
+    rev_curr = sum(_dec(o.get("total_amount")) for o in orders_curr)
+    rev_prev = sum(_dec(o.get("total_amount")) for o in orders_prev)
+    orders_curr_count = len(orders_curr)
 
-    inv_date = _latest_date(db, account_ids, InventorySnapshot, InventorySnapshot.snapshot_date)
-    total_skus = db.query(func.count(InventorySnapshot.id)).filter(
-        InventorySnapshot.marketplace_account_id.in_(account_ids),
-        InventorySnapshot.snapshot_date == inv_date).scalar() or 0
-    low_stock = db.query(func.count(InventorySnapshot.id)).filter(
-        InventorySnapshot.marketplace_account_id.in_(account_ids),
-        InventorySnapshot.snapshot_date == inv_date,
-        InventorySnapshot.fulfillable_quantity <= 10).scalar() or 0
+    cancel_statuses = {OrderStatus.CANCELLED.value, OrderStatus.CANCELED.value}
+    cancelled = sum(1 for o in orders_curr if o.get("status") in cancel_statuses)
 
-    price_date = _latest_date(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    total_priced = db.query(func.count(PriceSnapshot.id)).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == price_date).scalar() or 0
-    buybox_wins = db.query(func.count(PriceSnapshot.id)).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == price_date,
-        PriceSnapshot.is_buybox_winner == True).scalar() or 0
+    # Inventory
+    inv_date = _latest_date(db, account_ids, "inventory_snapshots", "sku_date")
+    inv_items = _get_snapshot_items(db, account_ids, "inventory_snapshots", "sku_date", inv_date)
+    total_skus = len(inv_items)
+    low_stock = sum(1 for i in inv_items if int(i.get("fulfillable_quantity", 0) or 0) <= 10)
 
-    insight_date = _latest_date(db, account_ids, ReviewInsight, ReviewInsight.insight_date)
-    sentiments = db.query(ReviewInsight.avg_sentiment).filter(
-        ReviewInsight.marketplace_account_id.in_(account_ids),
-        ReviewInsight.insight_date == insight_date).all()
-    avg_sent = sum(_dec(s[0]) for s in sentiments) / len(sentiments) if sentiments else 0
+    # Pricing
+    price_date = _latest_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", price_date)
+    total_priced = len(price_items)
+    buybox_wins = sum(1 for p in price_items if p.get("is_buybox_winner"))
 
-    fc_date = _latest_date(db, account_ids, DemandForecast, DemandForecast.forecast_date)
-    stockout_risk_count = db.query(func.count(DemandForecast.id)).filter(
-        DemandForecast.marketplace_account_id.in_(account_ids),
-        DemandForecast.forecast_date == fc_date,
-        DemandForecast.horizon_days == 7,
-        DemandForecast.stockout_risk == True).scalar() or 0
+    # Sentiment
+    insight_date = _latest_date(db, account_ids, "review_insights", "asin_date")
+    insight_items = _get_snapshot_items(db, account_ids, "review_insights", "asin_date", insight_date)
+    avg_sent = (
+        sum(_dec(s.get("avg_sentiment")) for s in insight_items) / len(insight_items)
+        if insight_items else 0
+    )
+
+    # Stockout risk
+    fc_date = _latest_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
+    stockout_risk_count = sum(
+        1 for f in fc_items
+        if int(f.get("horizon_days", 0)) == 7 and f.get("stockout_risk")
+    )
 
     return {
         "revenue_7d": rev_curr, "revenue_prev_7d": rev_prev,
-        "orders_7d": orders_curr, "cancelled_7d": cancelled,
-        "cancel_rate": round(cancelled / orders_curr * 100, 1) if orders_curr > 0 else 0,
+        "orders_7d": orders_curr_count, "cancelled_7d": cancelled,
+        "cancel_rate": round(cancelled / orders_curr_count * 100, 1) if orders_curr_count > 0 else 0,
         "total_skus": total_skus, "low_stock_skus": low_stock,
         "total_priced": total_priced, "buybox_wins": buybox_wins,
         "buybox_rate": round(buybox_wins / total_priced * 100, 1) if total_priced > 0 else 0,
@@ -108,109 +174,122 @@ def collect_health_scorecard(db: Session, account_ids: list[int]) -> dict:
     }
 
 
-def collect_product_matrix(db: Session, account_ids: list[int]) -> dict:
+def collect_product_matrix(db, account_ids: list[int]) -> dict:
     today = date.today()
     month_ago = today - timedelta(days=30)
 
     # Top 15 products by revenue
-    products = (
-        db.query(
-            OrderItem.asin,
-            func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).label("revenue"),
-            func.sum(OrderItem.quantity_ordered).label("units"),
-        )
-        .join(Order, OrderItem.order_id == Order.id)
-        .filter(Order.marketplace_account_id.in_(account_ids), Order.order_date >= month_ago)
-        .group_by(OrderItem.asin)
-        .order_by(func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).desc())
-        .limit(15)
-        .all()
-    )
-    asins = [p.asin for p in products]
-    names = _names(db, account_ids, asins)
+    orders = _query_orders_in_range(db, account_ids, month_ago, today)
+    order_ids = set(o["id"] for o in orders)
+    order_items = _query_order_items_for_orders(db, account_ids, order_ids)
 
-    inv_date = _latest_date(db, account_ids, InventorySnapshot, InventorySnapshot.snapshot_date)
-    inv_map = {}
-    for row in db.query(InventorySnapshot.asin, InventorySnapshot.fulfillable_quantity).filter(
-        InventorySnapshot.marketplace_account_id.in_(account_ids),
-        InventorySnapshot.snapshot_date == inv_date, InventorySnapshot.asin.in_(asins)).all():
-        inv_map[row.asin] = row.fulfillable_quantity
+    asin_agg = defaultdict(lambda: {"revenue": 0.0, "units": 0})
+    for it in order_items:
+        asin = it.get("asin", "")
+        price = _dec(it.get("unit_price"))
+        qty = int(it.get("quantity_ordered", 0) or 0)
+        asin_agg[asin]["revenue"] += price * qty
+        asin_agg[asin]["units"] += qty
 
-    price_date = _latest_date(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    buybox_map = {}
-    for row in db.query(PriceSnapshot.asin, PriceSnapshot.is_buybox_winner).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == price_date, PriceSnapshot.asin.in_(asins)).all():
-        buybox_map[row.asin] = bool(row.is_buybox_winner)
+    sorted_asins = sorted(asin_agg.items(), key=lambda x: x[1]["revenue"], reverse=True)[:15]
+    asins = [a for a, _ in sorted_asins]
+    names_map = _names(db, account_ids, asins)
 
-    insight_date = _latest_date(db, account_ids, ReviewInsight, ReviewInsight.insight_date)
+    # Inventory snapshot
+    inv_date = _latest_date(db, account_ids, "inventory_snapshots", "sku_date")
+    inv_items = _get_snapshot_items(db, account_ids, "inventory_snapshots", "sku_date", inv_date)
+    inv_map = {i.get("asin"): int(i.get("fulfillable_quantity", 0) or 0) for i in inv_items if i.get("asin")}
+
+    # Price snapshot
+    price_date = _latest_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", price_date)
+    buybox_map = {p.get("asin"): bool(p.get("is_buybox_winner")) for p in price_items if p.get("asin")}
+
+    # Sentiment
+    insight_date = _latest_date(db, account_ids, "review_insights", "asin_date")
+    insight_items = _get_snapshot_items(db, account_ids, "review_insights", "asin_date", insight_date)
     sent_map = {}
-    for row in db.query(ReviewInsight.asin, ReviewInsight.avg_sentiment, ReviewInsight.negative_count).filter(
-        ReviewInsight.marketplace_account_id.in_(account_ids),
-        ReviewInsight.insight_date == insight_date, ReviewInsight.asin.in_(asins)).all():
-        sent_map[row.asin] = {"sentiment": _dec(row.avg_sentiment), "negatives": row.negative_count}
+    for r in insight_items:
+        if r.get("asin"):
+            sent_map[r["asin"]] = {
+                "sentiment": _dec(r.get("avg_sentiment")),
+                "negatives": int(r.get("negative_count", 0) or 0),
+            }
 
-    fc_date = _latest_date(db, account_ids, DemandForecast, DemandForecast.forecast_date)
+    # Demand forecast
+    fc_date = _latest_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
     risk_map = {}
-    for row in db.query(DemandForecast.asin, DemandForecast.stockout_risk, DemandForecast.days_of_stock).filter(
-        DemandForecast.marketplace_account_id.in_(account_ids),
-        DemandForecast.forecast_date == fc_date, DemandForecast.horizon_days == 7,
-        DemandForecast.asin.in_(asins)).all():
-        risk_map[row.asin] = {"stockout_risk": bool(row.stockout_risk), "days_of_stock": row.days_of_stock}
+    for f in fc_items:
+        if int(f.get("horizon_days", 0)) == 7 and f.get("asin"):
+            risk_map[f["asin"]] = {
+                "stockout_risk": bool(f.get("stockout_risk")),
+                "days_of_stock": f.get("days_of_stock"),
+            }
 
     items = []
-    for p in products:
+    for asin, data in sorted_asins:
         items.append({
-            "asin": p.asin, "name": names.get(p.asin, p.asin),
-            "revenue_30d": _dec(p.revenue), "units_30d": int(p.units or 0),
-            "stock": inv_map.get(p.asin, None),
-            "buybox_winner": buybox_map.get(p.asin, None),
-            "sentiment": sent_map.get(p.asin, {}).get("sentiment"),
-            "negative_reviews": sent_map.get(p.asin, {}).get("negatives", 0),
-            "stockout_risk": risk_map.get(p.asin, {}).get("stockout_risk", False),
-            "days_of_stock": risk_map.get(p.asin, {}).get("days_of_stock"),
+            "asin": asin, "name": names_map.get(asin, asin),
+            "revenue_30d": round(data["revenue"], 2), "units_30d": data["units"],
+            "stock": inv_map.get(asin),
+            "buybox_winner": buybox_map.get(asin),
+            "sentiment": sent_map.get(asin, {}).get("sentiment"),
+            "negative_reviews": sent_map.get(asin, {}).get("negatives", 0),
+            "stockout_risk": risk_map.get(asin, {}).get("stockout_risk", False),
+            "days_of_stock": risk_map.get(asin, {}).get("days_of_stock"),
         })
 
     return {"products": items}
 
 
-def collect_revenue_leakage(db: Session, account_ids: list[int]) -> dict:
+def collect_revenue_leakage(db, account_ids: list[int]) -> dict:
     today = date.today()
     month_ago = today - timedelta(days=30)
-    base = Order.marketplace_account_id.in_(account_ids)
 
-    total_rev = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= month_ago).scalar())
-    cancel_rev = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= month_ago,
-        Order.status.in_([OrderStatus.CANCELLED, OrderStatus.CANCELED])).scalar())
+    orders = _query_orders_in_range(db, account_ids, month_ago, today)
+    total_rev = sum(_dec(o.get("total_amount")) for o in orders)
 
-    price_date = _latest_date(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    losing = db.query(PriceSnapshot.asin, PriceSnapshot.your_price, PriceSnapshot.buybox_price).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == price_date,
-        PriceSnapshot.is_buybox_winner == False,
-        PriceSnapshot.your_price.isnot(None), PriceSnapshot.buybox_price.isnot(None)).all()
+    cancel_statuses = {OrderStatus.CANCELLED.value, OrderStatus.CANCELED.value}
+    cancel_rev = sum(
+        _dec(o.get("total_amount"))
+        for o in orders if o.get("status") in cancel_statuses
+    )
 
-    asins_losing = [r.asin for r in losing]
-    names = _names(db, account_ids, asins_losing)
+    # Pricing losses
+    price_date = _latest_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", price_date)
+    losing = [
+        p for p in price_items
+        if not p.get("is_buybox_winner")
+        and p.get("your_price") is not None
+        and p.get("buybox_price") is not None
+    ]
+
+    asins_losing = [r.get("asin", "") for r in losing]
+    names_map = _names(db, account_ids, asins_losing)
     pricing_losses = [
-        {"asin": r.asin, "name": names.get(r.asin, r.asin),
-         "your_price": _dec(r.your_price), "buybox_price": _dec(r.buybox_price),
-         "gap": round(_dec(r.your_price) - _dec(r.buybox_price), 2)}
+        {
+            "asin": r.get("asin", ""), "name": names_map.get(r.get("asin", ""), r.get("asin", "")),
+            "your_price": _dec(r.get("your_price")), "buybox_price": _dec(r.get("buybox_price")),
+            "gap": round(_dec(r.get("your_price")) - _dec(r.get("buybox_price")), 2),
+        }
         for r in losing
     ]
 
-    fc_date = _latest_date(db, account_ids, DemandForecast, DemandForecast.forecast_date)
-    stockouts = db.query(DemandForecast.asin, DemandForecast.predicted_units, DemandForecast.days_of_stock).filter(
-        DemandForecast.marketplace_account_id.in_(account_ids),
-        DemandForecast.forecast_date == fc_date,
-        DemandForecast.horizon_days == 7,
-        DemandForecast.stockout_risk == True).all()
-    stockout_names = _names(db, account_ids, [s.asin for s in stockouts])
+    # Stockout risks
+    fc_date = _latest_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
+    stockouts = [
+        f for f in fc_items
+        if int(f.get("horizon_days", 0)) == 7 and f.get("stockout_risk")
+    ]
+    stockout_names = _names(db, account_ids, [s.get("asin", "") for s in stockouts])
     stockout_items = [
-        {"asin": s.asin, "name": stockout_names.get(s.asin, s.asin),
-         "predicted_units": s.predicted_units, "days_of_stock": s.days_of_stock}
+        {
+            "asin": s.get("asin", ""), "name": stockout_names.get(s.get("asin", ""), s.get("asin", "")),
+            "predicted_units": s.get("predicted_units"), "days_of_stock": s.get("days_of_stock"),
+        }
         for s in stockouts
     ]
 
@@ -222,38 +301,40 @@ def collect_revenue_leakage(db: Session, account_ids: list[int]) -> dict:
     }
 
 
-def collect_weekly_digest(db: Session, account_ids: list[int]) -> dict:
+def collect_weekly_digest(db, account_ids: list[int]) -> dict:
     today = date.today()
     week_ago = today - timedelta(days=7)
     prev_week = week_ago - timedelta(days=7)
-    base = Order.marketplace_account_id.in_(account_ids)
 
-    rev_curr = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= week_ago).scalar())
-    rev_prev = _dec(db.query(func.sum(Order.total_amount)).filter(
-        base, Order.order_date >= prev_week, Order.order_date < week_ago).scalar())
-    orders_curr = db.query(func.count(Order.id)).filter(base, Order.order_date >= week_ago).scalar() or 0
-    orders_prev = db.query(func.count(Order.id)).filter(
-        base, Order.order_date >= prev_week, Order.order_date < week_ago).scalar() or 0
+    orders_curr = _query_orders_in_range(db, account_ids, week_ago, today)
+    orders_prev = _query_orders_in_range(db, account_ids, prev_week, week_ago - timedelta(days=1))
+
+    rev_curr = sum(_dec(o.get("total_amount")) for o in orders_curr)
+    rev_prev = sum(_dec(o.get("total_amount")) for o in orders_prev)
+    orders_curr_count = len(orders_curr)
+    orders_prev_count = len(orders_prev)
 
     # Top 5 products this week
-    top_prods = (
-        db.query(OrderItem.asin, func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).label("rev"))
-        .join(Order, OrderItem.order_id == Order.id)
-        .filter(Order.marketplace_account_id.in_(account_ids), Order.order_date >= week_ago)
-        .group_by(OrderItem.asin)
-        .order_by(func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).desc())
-        .limit(5).all()
-    )
-    names = _names(db, account_ids, [p.asin for p in top_prods])
+    order_ids = set(o["id"] for o in orders_curr)
+    order_items = _query_order_items_for_orders(db, account_ids, order_ids)
+
+    asin_rev = defaultdict(float)
+    for it in order_items:
+        asin = it.get("asin", "")
+        price = _dec(it.get("unit_price"))
+        qty = int(it.get("quantity_ordered", 0) or 0)
+        asin_rev[asin] += price * qty
+
+    top_asins = sorted(asin_rev.items(), key=lambda x: x[1], reverse=True)[:5]
+    names_map = _names(db, account_ids, [a for a, _ in top_asins])
 
     health = collect_health_scorecard(db, account_ids)
 
     return {
         "revenue_this_week": rev_curr, "revenue_last_week": rev_prev,
         "revenue_change_pct": round((rev_curr - rev_prev) / rev_prev * 100, 1) if rev_prev > 0 else 0,
-        "orders_this_week": orders_curr, "orders_last_week": orders_prev,
-        "top_products": [{"name": names.get(p.asin, p.asin), "revenue": _dec(p.rev)} for p in top_prods],
+        "orders_this_week": orders_curr_count, "orders_last_week": orders_prev_count,
+        "top_products": [{"name": names_map.get(a, a), "revenue": round(r, 2)} for a, r in top_asins],
         "cancel_rate": health["cancel_rate"],
         "buybox_rate": health["buybox_rate"],
         "low_stock_count": health["low_stock_skus"],
@@ -262,42 +343,46 @@ def collect_weekly_digest(db: Session, account_ids: list[int]) -> dict:
     }
 
 
-def collect_pricing_strategy(db: Session, account_ids: list[int]) -> dict:
-    price_date = _latest_date(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    snapshots = db.query(PriceSnapshot).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == price_date).all()
+def collect_pricing_strategy(db, account_ids: list[int]) -> dict:
+    price_date = _latest_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", price_date)
 
-    asins = [s.asin for s in snapshots]
-    names = _names(db, account_ids, asins)
+    asins = [s.get("asin", "") for s in price_items]
+    names_map = _names(db, account_ids, asins)
 
-    insight_date = _latest_date(db, account_ids, ReviewInsight, ReviewInsight.insight_date)
+    # Sentiment
+    insight_date = _latest_date(db, account_ids, "review_insights", "asin_date")
+    insight_items = _get_snapshot_items(db, account_ids, "review_insights", "asin_date", insight_date)
     sent_map = {}
-    for r in db.query(ReviewInsight.asin, ReviewInsight.avg_sentiment).filter(
-        ReviewInsight.marketplace_account_id.in_(account_ids),
-        ReviewInsight.insight_date == insight_date, ReviewInsight.asin.in_(asins)).all():
-        sent_map[r.asin] = _dec(r.avg_sentiment)
+    for r in insight_items:
+        if r.get("asin"):
+            sent_map[r["asin"]] = _dec(r.get("avg_sentiment"))
 
     # Revenue per ASIN last 30d
     today = date.today()
     month_ago = today - timedelta(days=30)
-    rev_map = {}
-    for r in db.query(OrderItem.asin, func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).label("rev")).join(
-        Order, OrderItem.order_id == Order.id).filter(
-        Order.marketplace_account_id.in_(account_ids), Order.order_date >= month_ago).group_by(
-        OrderItem.asin).all():
-        rev_map[r.asin] = _dec(r.rev)
+    orders = _query_orders_in_range(db, account_ids, month_ago, today)
+    order_ids = set(o["id"] for o in orders)
+    order_items = _query_order_items_for_orders(db, account_ids, order_ids)
+
+    rev_map = defaultdict(float)
+    for it in order_items:
+        asin = it.get("asin", "")
+        price = _dec(it.get("unit_price"))
+        qty = int(it.get("quantity_ordered", 0) or 0)
+        rev_map[asin] += price * qty
 
     items = []
-    for s in snapshots:
+    for s in price_items:
+        asin = s.get("asin", "")
         items.append({
-            "asin": s.asin, "name": names.get(s.asin, s.asin),
-            "your_price": _dec(s.your_price),
-            "buybox_price": _dec(s.buybox_price),
-            "lowest_price": _dec(s.lowest_price),
-            "is_winner": bool(s.is_buybox_winner),
-            "sentiment": sent_map.get(s.asin),
-            "revenue_30d": rev_map.get(s.asin, 0),
+            "asin": asin, "name": names_map.get(asin, asin),
+            "your_price": _dec(s.get("your_price")),
+            "buybox_price": _dec(s.get("buybox_price")),
+            "lowest_price": _dec(s.get("lowest_price")),
+            "is_winner": bool(s.get("is_buybox_winner")),
+            "sentiment": sent_map.get(asin),
+            "revenue_30d": round(rev_map.get(asin, 0), 2),
         })
 
     items.sort(key=lambda x: x["revenue_30d"], reverse=True)

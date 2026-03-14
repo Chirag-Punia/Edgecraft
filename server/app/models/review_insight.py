@@ -1,24 +1,22 @@
-from sqlalchemy import Column, Integer, String, Text, Date, DateTime, ForeignKey, Numeric, JSON, UniqueConstraint, func
-from app.db.session import Base
+"""ReviewInsight table schema (DynamoDB).
 
+Table: review_insights
+PK: marketplace_account_id (N)
+SK: asin_date (S) — composite key "{asin}#{insight_date}"
 
-class ReviewInsight(Base):
-    __tablename__ = "review_insights"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    marketplace_account_id = Column(Integer, ForeignKey("marketplace_accounts.id"), nullable=False, index=True)
-    asin = Column(String(20), nullable=False, index=True)
-    insight_date = Column(Date, nullable=False)
-    avg_sentiment = Column(Numeric(3, 2), nullable=True)
-    positive_count = Column(Integer, default=0)
-    negative_count = Column(Integer, default=0)
-    neutral_count = Column(Integer, default=0)
-    top_topics = Column(JSON, nullable=True)
-    top_complaints = Column(JSON, nullable=True)
-    top_praises = Column(JSON, nullable=True)
-    summary = Column(Text, nullable=True)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
-
-    __table_args__ = (
-        UniqueConstraint("marketplace_account_id", "asin", "insight_date", name="uq_insight_account_asin_date"),
-    )
+Fields:
+    marketplace_account_id: int
+    asin_date: str  (composite: "{asin}#{insight_date}")
+    asin: str
+    insight_date: str (ISO date)
+    avg_sentiment: Decimal | None
+    positive_count: int
+    negative_count: int
+    neutral_count: int
+    top_topics: list | None  (JSON-compatible list)
+    top_complaints: list | None  (JSON-compatible list)
+    top_praises: list | None  (JSON-compatible list)
+    summary: str | None
+    created_at: str (ISO datetime)
+"""
+TABLE_NAME = "review_insights"

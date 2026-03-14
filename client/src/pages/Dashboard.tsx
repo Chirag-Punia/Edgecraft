@@ -95,7 +95,7 @@ export function DashboardPage() {
   const [days, setDays] = useState(30);
   const [seeding, setSeeding] = useState(false);
   const [unseeding, setUnseeding] = useState(false);
-  const [seedResult, setSeedResult] = useState<string | null>(null);
+  const [seedResult, setSeedResult] = useState<{ message: string; isError: boolean } | null>(null);
   const [isSeeded, setIsSeeded] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -148,47 +148,107 @@ export function DashboardPage() {
 
   const [autoSeeding, setAutoSeeding] = useState(false);
   const seedPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Fetch dashboard data with retry for eventual consistency
+  const fetchAllData = useCallback(async (period: number, retryOnEmpty = true) => {
+    await Promise.all([fetchTimeSeries(period), fetchSnapshot()]);
+    // If KPIs came back empty and this is the first attempt, retry after a delay
+    // (DynamoDB GSI eventual consistency may cause briefly empty results)
+    if (retryOnEmpty) {
+      // We need to check the state after the fetch; use a short timeout to re-fetch
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await Promise.all([fetchTimeSeries(period), fetchSnapshot()]);
+    }
+  }, [fetchTimeSeries, fetchSnapshot]);
+
+  // Poll demo-status until seeded, then fetch data
+  const startSeedPolling = useCallback((period: number) => {
+    // Clear any existing poll
+    if (seedPollRef.current) {
+      clearInterval(seedPollRef.current);
+      seedPollRef.current = null;
+    }
+    setAutoSeeding(true);
+    let attempt = 0;
+    const maxAttempts = 20;
+    seedPollRef.current = setInterval(() => {
+      // Check if the component has unmounted (abort signal fired)
+      if (abortRef.current?.signal.aborted) {
+        clearInterval(seedPollRef.current!);
+        seedPollRef.current = null;
+        return;
+      }
+      attempt++;
+      api.get("/sync/demo-status").then(({ data: d }) => {
+        // Guard against updates after unmount
+        if (abortRef.current?.signal.aborted) return;
+        if (d.is_seeded) {
+          clearInterval(seedPollRef.current!);
+          seedPollRef.current = null;
+          setIsSeeded(true);
+          setAutoSeeding(false);
+          // Delay slightly for DynamoDB GSI eventual consistency, then fetch
+          setTimeout(() => {
+            if (abortRef.current?.signal.aborted) return;
+            fetchAllData(period, true).then(() => {
+              if (!abortRef.current?.signal.aborted) setLoading(false);
+            });
+          }, 1000);
+        } else if (!d.is_seeding && attempt >= 3) {
+          // Not seeding and not seeded — no background job running
+          clearInterval(seedPollRef.current!);
+          seedPollRef.current = null;
+          setAutoSeeding(false);
+          setLoading(false);
+        } else if (attempt >= maxAttempts) {
+          clearInterval(seedPollRef.current!);
+          seedPollRef.current = null;
+          setAutoSeeding(false);
+          setLoading(false);
+        }
+      }).catch(() => {
+        if (attempt >= maxAttempts) {
+          clearInterval(seedPollRef.current!);
+          seedPollRef.current = null;
+          setAutoSeeding(false);
+          setLoading(false);
+        }
+      });
+    }, 3000);
+  }, [fetchAllData]);
 
   useEffect(() => {
+    const controller = new AbortController();
+    abortRef.current = controller;
     setLoading(true);
-    api.get("/sync/demo-status").then(({ data }) => {
+
+    api.get("/sync/demo-status", { signal: controller.signal }).then(({ data }) => {
+      if (controller.signal.aborted) return;
       if (data.is_seeded) {
         setIsSeeded(true);
-        Promise.all([fetchTimeSeries(days), fetchSnapshot()]).then(() => setLoading(false));
+        fetchAllData(days, false).then(() => {
+          if (!controller.signal.aborted) setLoading(false);
+        });
+      } else if (data.is_seeding) {
+        // Background auto-seed is running; poll for completion
+        if (!controller.signal.aborted) startSeedPolling(days);
       } else {
-        // Background auto-seed may be running; poll for completion
-        setAutoSeeding(true);
-        let attempt = 0;
-        const maxAttempts = 15;
-        seedPollRef.current = setInterval(() => {
-          attempt++;
-          api.get("/sync/demo-status").then(({ data: d }) => {
-            if (d.is_seeded) {
-              clearInterval(seedPollRef.current!);
-              seedPollRef.current = null;
-              setIsSeeded(true);
-              setAutoSeeding(false);
-              Promise.all([fetchTimeSeries(days), fetchSnapshot()]).then(() => setLoading(false));
-            } else if (attempt >= maxAttempts) {
-              clearInterval(seedPollRef.current!);
-              seedPollRef.current = null;
-              setAutoSeeding(false);
-              setLoading(false);
-            }
-          }).catch(() => {
-            if (attempt >= maxAttempts) {
-              clearInterval(seedPollRef.current!);
-              seedPollRef.current = null;
-              setAutoSeeding(false);
-              setLoading(false);
-            }
-          });
-        }, 3000);
+        // Not seeded and not seeding
+        setLoading(false);
       }
     }).catch(() => {
-      setLoading(false);
+      // Ignore errors if aborted (expected on StrictMode unmount)
+      if (!controller.signal.aborted) setLoading(false);
     });
-    return () => { if (seedPollRef.current) clearInterval(seedPollRef.current); };
+
+    return () => {
+      controller.abort();
+      if (seedPollRef.current) {
+        clearInterval(seedPollRef.current);
+        seedPollRef.current = null;
+      }
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handlePeriodChange = (newDays: number) => {
@@ -201,28 +261,41 @@ export function DashboardPage() {
     setSeedResult(null);
     try {
       const { data } = await api.post("/sync/seed-demo");
-      setSeedResult(data.message);
-      setIsSeeded(true);
-      fetchTimeSeries(days);
-      fetchSnapshot();
+      setSeedResult({ message: data.message, isError: false });
+      // Don't fetch data immediately — seed runs in background
+      // Start polling for completion
+      setSeeding(false);
+      setLoading(true);
+      startSeedPolling(days);
     } catch (err: any) {
-      setSeedResult(err.response?.data?.detail || "Failed to seed demo data");
-    } finally {
+      setSeedResult({ message: err.response?.data?.detail || "Failed to seed demo data", isError: true });
       setSeeding(false);
     }
   };
+
+  const clearDashboardData = useCallback(() => {
+    setKpis([]);
+    setSalesTrend([]);
+    setOrderStatus([]);
+    setTopProducts([]);
+    setInventory(null);
+    setPricing(null);
+    setActionItems([]);
+    setForecast([]);
+    setSentiment(null);
+    setCitySales([]);
+  }, []);
 
   const handleUnseedDemo = async () => {
     setUnseeding(true);
     setSeedResult(null);
     try {
       const { data } = await api.post("/sync/unseed");
-      setSeedResult(data.message);
+      setSeedResult({ message: data.message, isError: false });
       setIsSeeded(false);
-      fetchTimeSeries(days);
-      fetchSnapshot();
+      clearDashboardData();
     } catch (err: any) {
-      setSeedResult(err.response?.data?.detail || "Failed to remove demo data");
+      setSeedResult({ message: err.response?.data?.detail || "Failed to remove demo data", isError: true });
     } finally {
       setUnseeding(false);
     }
@@ -265,9 +338,9 @@ export function DashboardPage() {
           </div>
 
           {seedResult && (
-            <span className="flex items-center gap-1 text-xs text-green-600">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              {seedResult}
+            <span className={`flex items-center gap-1 text-xs ${seedResult.isError ? "text-red-600" : "text-green-600"}`}>
+              {seedResult.isError ? <XCircle className="h-3.5 w-3.5" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+              {seedResult.message}
             </span>
           )}
           {isSeeded ? (

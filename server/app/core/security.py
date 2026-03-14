@@ -1,18 +1,29 @@
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
-from passlib.context import CryptContext
+from passlib.hash import pbkdf2_sha256
+
+try:
+    import bcrypt
+except Exception:  # pragma: no cover - optional dependency in some envs
+    bcrypt = None
 from app.config import get_settings
 
 settings = get_settings()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+    return pbkdf2_sha256.hash(password)
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        if hashed_password.startswith("$2"):
+            if not bcrypt:
+                return False
+            if len(plain_password.encode("utf-8")) > 72:
+                return False
+            return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
+        return pbkdf2_sha256.verify(plain_password, hashed_password)
+    except (ValueError, TypeError):
+        return False
 
 
 def create_access_token(data: dict) -> str:

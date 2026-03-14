@@ -1,17 +1,18 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime, ForeignKey, Text, func
-from app.db.session import Base
-from app.enums import AccountStatus, Marketplace
+"""MarketplaceAccount table schema (DynamoDB).
 
+Table: marketplace_accounts
+PK: id (N) — auto-increment via counters table
+GSI: seller-index (seller_id)
 
-class MarketplaceAccount(Base):
-    __tablename__ = "marketplace_accounts"
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    seller_id = Column(Integer, ForeignKey("sellers.id"), nullable=False, index=True)
-    marketplace = Column(String(50), nullable=False)
-    status = Column(String(30), default=AccountStatus.PENDING, nullable=False)
-    credentials_encrypted = Column(Text, nullable=True)
-    last_sync_at = Column(DateTime, nullable=True)
-    created_at = Column(DateTime, server_default=func.now(), nullable=False)
-    is_demo_data = Column(Boolean, default=False, nullable=False, server_default="0")
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
+Fields:
+    id: int
+    seller_id: int
+    marketplace: str  (amazon | flipkart | shopify | facebook)
+    status: str  (pending | connected | error | disconnected)
+    credentials_encrypted: str | None
+    last_sync_at: str | None (ISO datetime)
+    is_demo_data: bool
+    created_at: str (ISO datetime)
+    updated_at: str (ISO datetime)
+"""
+TABLE_NAME = "marketplace_accounts"

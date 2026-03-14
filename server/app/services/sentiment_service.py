@@ -5,14 +5,14 @@ Falls back to rule-based analysis if Bedrock is unavailable.
 """
 import json
 import logging
+from collections import defaultdict
 from datetime import date
 from decimal import Decimal
+from types import SimpleNamespace
 
-from sqlalchemy.orm import Session
-from sqlalchemy.dialects.mysql import insert as mysql_insert
+from boto3.dynamodb.conditions import Key
 
-from app.models.customer_review import CustomerReview
-from app.models.review_insight import ReviewInsight
+from app.dynamo.helpers import to_dynamo_item, query_all, now_iso, batch_write_items
 from app.services.bedrock_client import invoke_bedrock
 from app.services.report_generator import _extract_json
 
@@ -98,13 +98,19 @@ def _resolve_category(asin: str) -> str | None:
     return None
 
 
-def _rule_based_analysis(reviews: list[CustomerReview], category: str | None = None) -> dict:
-    """Fallback rule-based sentiment when Bedrock is unavailable."""
-    positive = sum(1 for r in reviews if r.rating >= 4)
-    negative = sum(1 for r in reviews if r.rating <= 2)
+def _rule_based_analysis(reviews: list, category: str | None = None) -> dict:
+    """Fallback rule-based sentiment when Bedrock is unavailable.
+
+    Accepts reviews as list of dicts or SimpleNamespace objects.
+    """
+    def _rating(r):
+        return r.rating if hasattr(r, "rating") else r.get("rating", 3)
+
+    positive = sum(1 for r in reviews if _rating(r) >= 4)
+    negative = sum(1 for r in reviews if _rating(r) <= 2)
     neutral = len(reviews) - positive - negative
 
-    avg_rating = sum(r.rating for r in reviews) / len(reviews) if reviews else 3
+    avg_rating = sum(_rating(r) for r in reviews) / len(reviews) if reviews else 3
     avg_sentiment = round((avg_rating - 3) / 2, 2)
 
     cat_topics = _get_category_topics(category)
@@ -137,24 +143,30 @@ def _rule_based_analysis(reviews: list[CustomerReview], category: str | None = N
 
 
 def analyze_reviews_for_product(
-    db: Session,
+    db,
     marketplace_account_id: int,
     asin: str,
 ) -> dict:
     """Analyze all reviews for a specific product."""
-    reviews = (
-        db.query(CustomerReview)
-        .filter(
-            CustomerReview.marketplace_account_id == marketplace_account_id,
-            CustomerReview.asin == asin,
-        )
-        .order_by(CustomerReview.review_date.desc())
-        .limit(50)
-        .all()
+    review_table = db.get_table("customer_reviews")
+
+    # Query reviews by PK (marketplace_account_id) and filter by asin
+    from boto3.dynamodb.conditions import Attr
+    all_reviews = query_all(
+        review_table,
+        KeyConditionExpression=Key("marketplace_account_id").eq(marketplace_account_id),
+        FilterExpression=Attr("asin").eq(asin),
     )
 
-    if not reviews:
+    if not all_reviews:
         return None
+
+    # Sort by review_date descending, limit to 50
+    all_reviews.sort(key=lambda r: r.get("review_date", ""), reverse=True)
+    reviews = all_reviews[:50]
+
+    # Convert to SimpleNamespace for attribute access
+    review_objs = [SimpleNamespace(**r) for r in reviews]
 
     category = _resolve_category(asin)
 
@@ -162,7 +174,7 @@ def analyze_reviews_for_product(
     try:
         reviews_text = "\n".join(
             f"Rating: {r.rating}/5 | Title: {r.title} | Body: {r.body}"
-            for r in reviews[:30]
+            for r in review_objs[:30]
         )
         prompt = SENTIMENT_PROMPT.format(reviews_text=reviews_text)
         response = invoke_bedrock(
@@ -177,57 +189,97 @@ def analyze_reviews_for_product(
         return result
     except Exception as e:
         logger.warning("Bedrock sentiment analysis failed, using rule-based: %s", e)
-        return _rule_based_analysis(reviews, category)
+        return _rule_based_analysis(review_objs, category)
 
 
-def compute_all_insights(db: Session, marketplace_account_id: int):
+def _analyze_reviews_direct(reviews: list, asin: str) -> dict:
+    """Analyze pre-fetched reviews for a product (no DB call)."""
+    if not reviews:
+        return None
+
+    # Sort by review_date descending, limit to 50
+    reviews = sorted(reviews, key=lambda r: r.get("review_date", ""), reverse=True)[:50]
+
+    review_objs = [SimpleNamespace(**r) for r in reviews]
+    category = _resolve_category(asin)
+
+    # Try Bedrock first
+    try:
+        reviews_text = "\n".join(
+            f"Rating: {r.rating}/5 | Title: {r.title} | Body: {r.body}"
+            for r in review_objs[:30]
+        )
+        prompt = SENTIMENT_PROMPT.format(reviews_text=reviews_text)
+        response = invoke_bedrock(
+            "You are a sentiment analysis expert. Return only valid JSON.",
+            [{"role": "user", "content": prompt}],
+            max_tokens=512,
+            temperature=0.1,
+        )
+        result = _extract_json(response)
+        if not result:
+            raise ValueError(f"Could not parse JSON from LLM response: {response[:200]}")
+        return result
+    except Exception as e:
+        logger.warning("Bedrock sentiment analysis failed, using rule-based: %s", e)
+        return _rule_based_analysis(review_objs, category)
+
+
+def compute_all_insights(db, marketplace_account_id: int):
     """Compute sentiment insights for all products with reviews."""
-    asins = (
-        db.query(CustomerReview.asin)
-        .filter(CustomerReview.marketplace_account_id == marketplace_account_id)
-        .distinct()
-        .all()
+    review_table = db.get_table("customer_reviews")
+    insight_table = db.get_table("review_insights")
+
+    # Get all reviews for this account
+    all_reviews = query_all(
+        review_table,
+        KeyConditionExpression=Key("marketplace_account_id").eq(marketplace_account_id),
     )
 
+    # Group reviews by ASIN in Python (fixes N+1 query bug)
+    reviews_by_asin = defaultdict(list)
+    for r in all_reviews:
+        asin = r.get("asin")
+        if asin:
+            reviews_by_asin[asin].append(r)
+
     today = date.today()
-    count = 0
+    today_iso = today.isoformat()
+    insight_batch = []
 
-    for (asin,) in asins:
-        if not asin:
-            continue
-
-        analysis = analyze_reviews_for_product(db, marketplace_account_id, asin)
+    for asin, asin_reviews in reviews_by_asin.items():
+        analysis = _analyze_reviews_direct(asin_reviews, asin)
         if not analysis:
             continue
 
-        values = {
+        asin_date = f"{asin}#{today_iso}"
+        now = now_iso()
+
+        top_topics = analysis.get("top_topics")
+        top_complaints = analysis.get("top_complaints")
+        top_praises = analysis.get("top_praises")
+
+        item = {
             "marketplace_account_id": marketplace_account_id,
+            "asin_date": asin_date,
             "asin": asin,
-            "insight_date": today,
-            "avg_sentiment": max(Decimal("-1"), min(Decimal("1"), Decimal(str(analysis.get("avg_sentiment", 0))))),
+            "insight_date": today_iso,
+            "avg_sentiment": Decimal(str(max(-1, min(1, analysis.get("avg_sentiment", 0))))),
             "positive_count": analysis.get("positive_count", 0),
             "negative_count": analysis.get("negative_count", 0),
             "neutral_count": analysis.get("neutral_count", 0),
-            "top_topics": analysis.get("top_topics"),
-            "top_complaints": analysis.get("top_complaints"),
-            "top_praises": analysis.get("top_praises"),
+            "top_topics": top_topics,
+            "top_complaints": top_complaints,
+            "top_praises": top_praises,
             "summary": analysis.get("summary"),
+            "created_at": now,
+            "updated_at": now,
         }
 
-        stmt = mysql_insert(ReviewInsight).values(**values)
-        stmt = stmt.on_duplicate_key_update(
-            avg_sentiment=stmt.inserted.avg_sentiment,
-            positive_count=stmt.inserted.positive_count,
-            negative_count=stmt.inserted.negative_count,
-            neutral_count=stmt.inserted.neutral_count,
-            top_topics=stmt.inserted.top_topics,
-            top_complaints=stmt.inserted.top_complaints,
-            top_praises=stmt.inserted.top_praises,
-            summary=stmt.inserted.summary,
-        )
-        db.execute(stmt)
-        count += 1
+        insight_batch.append(to_dynamo_item(item))
 
-    db.commit()
-    logger.info("Computed sentiment insights for %d products (account=%d)", count, marketplace_account_id)
-    return count
+    if insight_batch:
+        batch_write_items(insight_table, insight_batch)
+
+    logger.info("Computed sentiment insights for %d products (account=%d)", len(insight_batch), marketplace_account_id)
+    return len(insight_batch)

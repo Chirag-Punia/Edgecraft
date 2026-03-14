@@ -41,7 +41,7 @@ export function ConnectMarketplacesPage() {
 
   // Load already-connected marketplaces on mount
   useEffect(() => {
-    api.get("/marketplaces").then(({ data }) => {
+    api.get("/marketplaces?include_demo=true").then(({ data }) => {
       const ids = new Set<string>(
         data
           .filter((mp: { marketplace: string; status?: string }) => mp.status === "connected")
@@ -57,7 +57,7 @@ export function ConnectMarketplacesPage() {
     let attempt = 0;
     const timer = setInterval(() => {
       attempt++;
-      api.get("/marketplaces").then(({ data }) => {
+      api.get("/marketplaces?include_demo=true").then(({ data }) => {
         const ids = new Set<string>(
           data
             .filter((mp: { marketplace: string; status?: string }) => mp.status === "connected")

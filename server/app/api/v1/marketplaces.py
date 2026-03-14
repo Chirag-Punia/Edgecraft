@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.core.dependencies import get_current_user
-from app.models.user import User
 from app.schemas.marketplace import MarketplaceCreate, MarketplaceResponse
 from app.schemas.auth import MessageResponse
 from app.services import marketplace_service
@@ -14,8 +12,8 @@ router = APIRouter(prefix="/marketplaces", tags=["marketplaces"])
 @router.post("", response_model=MarketplaceResponse)
 def connect_marketplace(
     body: MarketplaceCreate,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+    db=Depends(get_db),
 ):
     if not current_user.seller_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Complete business setup first")
@@ -25,8 +23,8 @@ def connect_marketplace(
 @router.get("", response_model=list[MarketplaceResponse])
 def list_marketplaces(
     include_demo: bool = False,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+    db=Depends(get_db),
 ):
     if not current_user.seller_id:
         return []
@@ -36,8 +34,8 @@ def list_marketplaces(
 @router.delete("/{marketplace_id}", response_model=MessageResponse)
 def disconnect_marketplace(
     marketplace_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+    db=Depends(get_db),
 ):
     if not current_user.seller_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No business profile")

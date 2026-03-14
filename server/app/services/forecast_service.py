@@ -4,17 +4,13 @@ Computes trailing sales velocity, moving averages, and linear trends
 to predict demand and identify stockout risks.
 """
 import logging
+from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
 
-from sqlalchemy import func
-from sqlalchemy.orm import Session
-from sqlalchemy.dialects.mysql import insert as mysql_insert
+from boto3.dynamodb.conditions import Key
 
-from app.models.order import Order
-from app.models.order_item import OrderItem
-from app.models.inventory_snapshot import InventorySnapshot
-from app.models.demand_forecast import DemandForecast
+from app.dynamo.helpers import to_dynamo_item, query_all, now_iso, batch_write_items
 
 logger = logging.getLogger(__name__)
 
@@ -51,62 +47,79 @@ def _linear_trend_predict(daily_units: list[float], horizon: int) -> int:
     return max(0, int(total))
 
 
-def compute_forecasts(db: Session, marketplace_account_id: int):
+def compute_forecasts(db, marketplace_account_id: int):
     """Compute demand forecasts for all products of a marketplace account."""
     today = date.today()
     thirty_days_ago = today - timedelta(days=30)
 
-    # Get daily units sold per ASIN over last 30 days
-    daily_sales = (
-        db.query(
-            OrderItem.asin,
-            func.date(Order.order_date).label("day"),
-            func.sum(OrderItem.quantity_ordered).label("units"),
-        )
-        .join(Order, OrderItem.order_id == Order.id)
-        .filter(
-            Order.marketplace_account_id == marketplace_account_id,
-            Order.order_date >= thirty_days_ago,
-        )
-        .group_by(OrderItem.asin, func.date(Order.order_date))
-        .all()
+    orders_table = db.get_table("orders")
+    order_items_table = db.get_table("order_items")
+    inv_table = db.get_table("inventory_snapshots")
+    forecast_table = db.get_table("demand_forecasts")
+
+    # Get all orders for this account in the last 30 days using account-date-index GSI
+    orders = query_all(
+        orders_table,
+        IndexName="account-date-index",
+        KeyConditionExpression=(
+            Key("marketplace_account_id").eq(marketplace_account_id) &
+            Key("order_date").gte(thirty_days_ago.isoformat())
+        ),
     )
 
-    # Group by ASIN
-    asin_daily: dict[str, dict[date, int]] = {}
-    for row in daily_sales:
-        if not row.asin:
+    # Build order_id -> order_date map
+    order_date_map = {}
+    order_ids = set()
+    for o in orders:
+        order_date_map[o["id"]] = o.get("order_date", "")
+        order_ids.add(o["id"])
+
+    # Get all order items for this account using account-index GSI
+    all_items = query_all(
+        order_items_table,
+        IndexName="account-index",
+        KeyConditionExpression=Key("marketplace_account_id").eq(marketplace_account_id),
+    )
+
+    # Filter items to only those belonging to orders in the last 30 days
+    # Group by ASIN -> date -> total units
+    asin_daily: dict[str, dict[date, int]] = defaultdict(lambda: defaultdict(int))
+    for item in all_items:
+        if item.get("order_id") not in order_ids:
             continue
-        if row.asin not in asin_daily:
-            asin_daily[row.asin] = {}
-        asin_daily[row.asin][row.day] = int(row.units)
+        asin = item.get("asin")
+        if not asin:
+            continue
+        order_date_str = order_date_map.get(item["order_id"], "")
+        if not order_date_str:
+            continue
+        # Parse date (could be ISO datetime or date string)
+        try:
+            day = date.fromisoformat(order_date_str[:10])
+        except (ValueError, TypeError):
+            continue
+        qty = int(item.get("quantity_ordered", 1))
+        asin_daily[asin][day] += qty
 
-    # Get current inventory
-    inventory = {
-        r.asin: r.fulfillable_quantity
-        for r in db.query(InventorySnapshot.asin, InventorySnapshot.fulfillable_quantity)
-        .filter(
-            InventorySnapshot.marketplace_account_id == marketplace_account_id,
-            InventorySnapshot.snapshot_date == today,
-        )
-        .all()
-        if r.asin
-    }
+    # Get current inventory — query all for this account, filter by today's snapshot_date
+    today_iso = today.isoformat()
+    inv_items = query_all(
+        inv_table,
+        KeyConditionExpression=Key("marketplace_account_id").eq(marketplace_account_id),
+    )
+    # Filter for today's date and build maps
+    inventory = {}
+    sku_map = {}
+    for inv in inv_items:
+        if inv.get("snapshot_date") != today_iso:
+            continue
+        asin = inv.get("asin")
+        if asin:
+            inventory[asin] = int(inv.get("fulfillable_quantity", 0))
+            sku_map[asin] = inv.get("seller_sku")
 
-    # Get SKU mapping
-    sku_map = {
-        r.asin: r.seller_sku
-        for r in db.query(InventorySnapshot.asin, InventorySnapshot.seller_sku)
-        .filter(
-            InventorySnapshot.marketplace_account_id == marketplace_account_id,
-            InventorySnapshot.snapshot_date == today,
-        )
-        .all()
-        if r.asin
-    }
-
-    count = 0
     all_asins = set(asin_daily.keys()) | set(inventory.keys())
+    forecast_batch = []
 
     for asin in all_asins:
         # Build daily series (fill missing days with 0)
@@ -128,11 +141,16 @@ def compute_forecasts(db: Session, marketplace_account_id: int):
             days_of_stock = int(current_stock / velocity_7d) if velocity_7d > 0 else 999
             stockout_risk = days_of_stock < horizon
 
-            values = {
+            forecast_date_str = today_iso
+            asin_date_horizon = f"{asin}#{forecast_date_str}#{horizon}"
+            now = now_iso()
+
+            item = {
                 "marketplace_account_id": marketplace_account_id,
+                "asin_date_horizon": asin_date_horizon,
                 "asin": asin,
                 "seller_sku": sku_map.get(asin),
-                "forecast_date": today,
+                "forecast_date": forecast_date_str,
                 "horizon_days": horizon,
                 "predicted_units": predicted,
                 "confidence_lower": confidence_lower,
@@ -142,22 +160,14 @@ def compute_forecasts(db: Session, marketplace_account_id: int):
                 "days_of_stock": min(days_of_stock, 999),
                 "stockout_risk": stockout_risk,
                 "method": "linear_trend",
+                "created_at": now,
+                "updated_at": now,
             }
 
-            stmt = mysql_insert(DemandForecast).values(**values)
-            stmt = stmt.on_duplicate_key_update(
-                predicted_units=stmt.inserted.predicted_units,
-                confidence_lower=stmt.inserted.confidence_lower,
-                confidence_upper=stmt.inserted.confidence_upper,
-                velocity_7d=stmt.inserted.velocity_7d,
-                velocity_30d=stmt.inserted.velocity_30d,
-                days_of_stock=stmt.inserted.days_of_stock,
-                stockout_risk=stmt.inserted.stockout_risk,
-                method=stmt.inserted.method,
-            )
-            db.execute(stmt)
-            count += 1
+            forecast_batch.append(to_dynamo_item(item))
 
-    db.commit()
-    logger.info("Computed %d forecasts (account=%d)", count, marketplace_account_id)
-    return count
+    if forecast_batch:
+        batch_write_items(forecast_table, forecast_batch)
+
+    logger.info("Computed %d forecasts (account=%d)", len(forecast_batch), marketplace_account_id)
+    return len(forecast_batch)

@@ -31,9 +31,9 @@ Dashboard sections: Command Center, Orders, Shipments, Inventory, Listing, Prici
 - **Auth:** Custom email OTP (not Auth0 as originally planned)
 - **Marketplace Connect:** OAuth (Shopify/Meta/Flipkart/Amazon)
 - **Data Sync:** Worker/Cron + Normalization code -> unified entities
-- **Database:** MySQL (with Alembic migrations)
+- **Database:** AWS DynamoDB (PAY_PER_REQUEST billing, 19 tables with prefix `retailsutra_`)
 - **Storage:** S3 (raw payload backup + CSV/PDF exports)
-- **AI:** LLM + Report Spec (JSON) + SQL templates (natural language -> safe report queries)
+- **AI:** LLM + Report Spec (JSON) + DynamoDB query functions (natural language -> safe report queries)
 
 ## Project Structure
 ```
@@ -53,10 +53,9 @@ Edgecraft/
 │   │   ├── schemas/     # auth, seller, dashboard, marketplace, sync
 │   │   ├── services/    # auth_service, seller_service, marketplace_service, email_service, amazon_connector, mock_amazon_data, sync_worker, scheduler
 │   │   ├── core/        # security, dependencies
-│   │   ├── db/          # session (SSL-enabled for RDS)
+│   │   ├── dynamo/      # DynamoDB client, table definitions, helpers
+│   │   ├── db/          # session (DynamoDB client provider)
 │   │   └── config.py
-│   ├── certs/           # AWS RDS CA bundle (global-bundle.pem)
-│   ├── migrations/      # Alembic (0001: all tables including ETL pipeline)
 │   └── pyproject.toml
 ├── ideation/            # PPT, design.md, requirements.md, wireframe PNGs
 └── CLAUDE.md
@@ -65,13 +64,15 @@ Edgecraft/
 ## Conventions
 - Backend API versioned under `/api/v1/`
 - Pydantic schemas for request/response validation
-- SQLAlchemy models with Alembic migrations
+- DynamoDB tables (boto3) — no ORM, plain dicts + SimpleNamespace for attribute access
+- `db.get_table("name")` for table access, `db.next_id("entity")` for auto-increment IDs
+- `to_dynamo_item()` / `from_dynamo_item()` for serialization (handles Decimal, dates, None)
+- Aggregations (SUM, GROUP BY) done in Python with defaultdict/sum
 - Frontend uses shadcn/ui component library
 - API client in `client/src/lib/api.ts`
 
 ## Infrastructure
-- **Database:** AWS RDS MySQL (ap-south-1) — `database-1.cbm446qwo2ps.ap-south-1.rds.amazonaws.com`
-- **SSL:** Required for RDS (`caching_sha2_password`). CA cert at `server/certs/global-bundle.pem`
+- **Database:** AWS DynamoDB — tables prefixed with `retailsutra_` (configurable via DYNAMODB_TABLE_PREFIX)
 - **Frontend:** http://localhost:5173 (Vite dev)
 - **Backend:** http://localhost:8000 (Uvicorn with reload)
 
@@ -82,12 +83,11 @@ Edgecraft/
 - Dashboard with real KPI queries (GMV, orders, units, return rate, stockout risks)
 - **Amazon SP-API ETL pipeline** fully implemented:
   - MockAmazonConnector (18 Indian products, deterministic seed=42) + real AmazonConnector
-  - Sync worker with MySQL upserts (INSERT ON DUPLICATE KEY UPDATE) for idempotent syncs
+  - Sync worker with DynamoDB put_item for idempotent upserts
   - APScheduler background sync every 6h
   - API: `POST /sync/trigger`, `GET /sync/runs`, `GET /sync/runs/{id}`, `POST /sync/seed-demo`
-  - 7 new models: orders, order_items, inventory_snapshots, price_snapshots, listing_map, product_master, sync_runs
+  - 18 DynamoDB tables (auto-created on startup)
   - Raw JSON dumps saved to `./raw_dumps/` for audit
-- Alembic migration `0001` applied to RDS (all 11 tables)
 
 ## MVP Cost Target
 INR 5,200 - 10,300/month (compute + DB + storage + AI usage)

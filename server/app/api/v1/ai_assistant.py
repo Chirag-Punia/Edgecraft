@@ -5,14 +5,11 @@ import logging
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+from boto3.dynamodb.conditions import Key
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.models.chat_session import ChatSession
-from app.models.chat_message import ChatMessage
-from app.models.user import User
+from app.dynamo.helpers import query_all, from_dynamo_item
 from app.schemas.ai_assistant import (
     ChatRequest, ChatResponse, ReportData, ChartData, WebSource,
     ChatSessionResponse, ChatMessageResponse,
@@ -27,8 +24,8 @@ router = APIRouter(prefix="/ai", tags=["ai-assistant"])
 @router.post("/chat", response_model=ChatResponse)
 def chat(
     req: ChatRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """Send a message to the AI assistant."""
     if not current_user.seller_id:
@@ -69,67 +66,71 @@ def chat(
 
 @router.get("/sessions", response_model=list[ChatSessionResponse])
 def list_sessions(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """List chat sessions for the current user."""
-    sessions = (
-        db.query(
-            ChatSession,
-            func.count(ChatMessage.id).label("message_count"),
-        )
-        .outerjoin(ChatMessage, ChatMessage.session_id == ChatSession.id)
-        .filter(ChatSession.user_id == current_user.id)
-        .group_by(ChatSession.id)
-        .order_by(ChatSession.updated_at.desc())
-        .limit(50)
-        .all()
-    )
+    sessions_table = db.get_table("chat_sessions")
+    messages_table = db.get_table("chat_messages")
 
-    return [
-        ChatSessionResponse(
-            id=s.ChatSession.id,
-            title=s.ChatSession.title,
-            language=s.ChatSession.language or "en",
-            created_at=s.ChatSession.created_at,
-            updated_at=s.ChatSession.updated_at,
-            message_count=s.message_count,
+    sessions = query_all(sessions_table, IndexName="user-index",
+                         KeyConditionExpression=Key("user_id").eq(current_user.id))
+
+    result = []
+    for s in sorted(sessions, key=lambda x: x.get("updated_at", ""), reverse=True)[:50]:
+        # Count messages for this session
+        msg_response = messages_table.query(
+            KeyConditionExpression=Key("session_id").eq(s["id"]),
+            Select="COUNT",
         )
-        for s in sessions
-    ]
+        msg_count = msg_response.get("Count", 0)
+
+        result.append(ChatSessionResponse(
+            id=s["id"],
+            title=s.get("title"),
+            language=s.get("language", "en"),
+            created_at=s.get("created_at"),
+            updated_at=s.get("updated_at"),
+            message_count=msg_count,
+        ))
+    return result
 
 
 @router.get("/sessions/{session_id}/messages", response_model=list[ChatMessageResponse])
 def get_session_messages(
     session_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """Get all messages in a chat session."""
-    session = db.query(ChatSession).filter(
-        ChatSession.id == session_id,
-        ChatSession.user_id == current_user.id,
-    ).first()
+    sessions_table = db.get_table("chat_sessions")
+    messages_table = db.get_table("chat_messages")
 
-    if not session:
+    # Verify session ownership
+    session_response = sessions_table.get_item(Key={"id": session_id})
+    session_item = session_response.get("Item")
+    if not session_item:
+        raise HTTPException(status_code=404, detail="Session not found")
+    session = from_dynamo_item(session_item)
+    if session.get("user_id") != current_user.id:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    messages = (
-        db.query(ChatMessage)
-        .filter(ChatMessage.session_id == session_id)
-        .order_by(ChatMessage.created_at.asc())
-        .all()
-    )
+    # Get all messages for this session, sorted by id (SK)
+    messages = query_all(messages_table,
+                         KeyConditionExpression=Key("session_id").eq(session_id))
+
+    # Sort by created_at ascending
+    messages.sort(key=lambda m: m.get("created_at", ""))
 
     return [
         ChatMessageResponse(
-            id=m.id,
-            role=m.role,
-            content=m.content,
-            report_data=ReportData(**m.report_data) if m.report_data else None,
-            chart_data=ChartData(**m.metadata_["chart_data"]) if m.metadata_ and m.metadata_.get("chart_data") else None,
-            web_sources=[WebSource(**s) for s in m.metadata_.get("web_sources", [])] if m.metadata_ else [],
-            created_at=m.created_at,
+            id=m["id"],
+            role=m.get("role"),
+            content=m.get("content"),
+            report_data=ReportData(**m["report_data"]) if m.get("report_data") else None,
+            chart_data=ChartData(**m["metadata_"]["chart_data"]) if m.get("metadata_") and m["metadata_"].get("chart_data") else None,
+            web_sources=[WebSource(**s) for s in m["metadata_"].get("web_sources", [])] if m.get("metadata_") else [],
+            created_at=m.get("created_at"),
         )
         for m in messages
     ]
@@ -138,48 +139,72 @@ def get_session_messages(
 @router.delete("/sessions/{session_id}")
 def delete_session(
     session_id: int,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """Delete a chat session and all its messages."""
-    session = db.query(ChatSession).filter(
-        ChatSession.id == session_id,
-        ChatSession.user_id == current_user.id,
-    ).first()
+    sessions_table = db.get_table("chat_sessions")
+    messages_table = db.get_table("chat_messages")
 
-    if not session:
+    # Verify session ownership
+    session_response = sessions_table.get_item(Key={"id": session_id})
+    session_item = session_response.get("Item")
+    if not session_item:
+        raise HTTPException(status_code=404, detail="Session not found")
+    session = from_dynamo_item(session_item)
+    if session.get("user_id") != current_user.id:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    # Messages cascade-delete via FK
-    db.delete(session)
-    db.commit()
+    # Delete all messages for this session first
+    messages = query_all(messages_table,
+                         KeyConditionExpression=Key("session_id").eq(session_id))
+    for m in messages:
+        messages_table.delete_item(Key={"session_id": m["session_id"], "id": m["id"]})
+
+    # Delete the session itself
+    sessions_table.delete_item(Key={"id": session_id})
+
     return {"message": "Session deleted"}
 
 
 @router.post("/export", response_model=ExportResponse)
 def export_report(
     req: ExportRequest,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     """Export report data from a chat message as CSV."""
-    # Single query with ownership check to avoid info leakage
-    msg = (
-        db.query(ChatMessage)
-        .join(ChatSession, ChatSession.id == ChatMessage.session_id)
-        .filter(
-            ChatMessage.id == req.message_id,
-            ChatSession.user_id == current_user.id,
+    sessions_table = db.get_table("chat_sessions")
+    messages_table = db.get_table("chat_messages")
+
+    # We need to find the message and verify ownership.
+    # Chat messages PK is session_id, SK is id — but we only have message_id.
+    # We need to figure out which session the message belongs to.
+    # Strategy: if req has session_id we can use it, otherwise we need to scan.
+    # Since we don't have a GSI on message id, let's check user's sessions.
+
+    # Get all sessions for this user
+    user_sessions = query_all(sessions_table, IndexName="user-index",
+                              KeyConditionExpression=Key("user_id").eq(current_user.id))
+
+    msg = None
+    for session in user_sessions:
+        # Try to get the message from this session
+        msg_response = messages_table.get_item(
+            Key={"session_id": session["id"], "id": req.message_id}
         )
-        .first()
-    )
+        item = msg_response.get("Item")
+        if item:
+            msg = from_dynamo_item(item)
+            break
+
     if not msg:
         raise HTTPException(status_code=404, detail="Message not found")
 
-    if not msg.report_data:
+    if not msg.get("report_data"):
         raise HTTPException(status_code=400, detail="No report data in this message")
 
-    report = msg.report_data
+    report = msg["report_data"]
     columns = report.get("columns", [])
     rows = report.get("rows", [])
 

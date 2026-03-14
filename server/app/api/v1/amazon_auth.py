@@ -3,12 +3,10 @@ from urllib.parse import urlencode
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import RedirectResponse
-from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.models.user import User
 from app.services import amazon_auth_service, marketplace_service
 
 logger = logging.getLogger(__name__)
@@ -19,7 +17,7 @@ router = APIRouter(prefix="/amazon", tags=["amazon-auth"])
 
 @router.get("/authorize-url")
 def get_authorize_url(
-    current_user: User = Depends(get_current_user),
+    current_user=Depends(get_current_user),
 ):
     """Return the Amazon Seller Central OAuth URL for the current user."""
     logger.info("[API /amazon/authorize-url] Called by user_id=%s, email=%s", current_user.id, current_user.email)
@@ -41,7 +39,7 @@ async def oauth_callback(
     spapi_oauth_code: str | None = Query(None),
     error: str | None = Query(None),
     error_description: str | None = Query(None),
-    db: Session = Depends(get_db),
+    db=Depends(get_db),
 ):
     """Handle the OAuth redirect from Amazon Seller Central. No auth required — state JWT provides identity."""
     frontend_url = f"{settings.FRONTEND_URL}/dashboard/marketplaces"
@@ -68,7 +66,7 @@ async def oauth_callback(
         return RedirectResponse(url=f"{frontend_url}?{params}")
 
     try:
-        # 1. Verify state token → extract user_id, seller_id
+        # 1. Verify state token -> extract user_id, seller_id
         logger.info("[API /amazon/callback] Step 1: Verifying state token...")
         token_data = amazon_auth_service.verify_state_token(state)
         logger.info("[API /amazon/callback] State verified: user_id=%s, seller_id=%s", token_data["user_id"], token_data["seller_id"])
@@ -87,7 +85,9 @@ async def oauth_callback(
             selling_partner_id=selling_partner_id,
             refresh_token=tokens["refresh_token"],
         )
-        logger.info("[API /amazon/callback] Marketplace account saved: id=%s, status=%s", account.id, account.status)
+        logger.info("[API /amazon/callback] Marketplace account saved: id=%s, status=%s",
+                    account.id if hasattr(account, 'id') else account.get('id'),
+                    account.status if hasattr(account, 'status') else account.get('status'))
 
         logger.info("[API /amazon/callback] SUCCESS — redirecting to frontend")
         logger.info("=" * 60)

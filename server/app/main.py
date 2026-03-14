@@ -14,13 +14,18 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 logger = logging.getLogger(__name__)
-
 settings = get_settings()
 
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     logger.info("Starting RetailSutra backend")
+    # Create DynamoDB tables if they don't exist
+    try:
+        from app.dynamo.tables import create_all_tables
+        create_all_tables()
+    except Exception as e:
+        logger.warning("DynamoDB table creation: %s", e)
     start_scheduler()
     yield
     shutdown_scheduler()
@@ -29,11 +34,7 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(title="RetailSutra", version="0.1.0", lifespan=lifespan)
 
-allowed_origins = [
-    settings.FRONTEND_URL,
-    "http://localhost:5173",
-]
-# Accept all Vercel preview URLs for your project
+allowed_origins = [settings.FRONTEND_URL, "http://localhost:5173"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,

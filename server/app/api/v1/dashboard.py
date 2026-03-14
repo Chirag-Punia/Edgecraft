@@ -1,24 +1,16 @@
-"""Dashboard KPIs — real queries against synced marketplace data."""
+"""Dashboard KPIs — real queries against synced marketplace data (DynamoDB)."""
 import logging
+from collections import defaultdict
 from datetime import date, timedelta
 from decimal import Decimal
 
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func
-from sqlalchemy.orm import Session
+from boto3.dynamodb.conditions import Key, Attr
 
 from app.core.dependencies import get_current_user
 from app.db.session import get_db
-from app.enums import ChangeType, OrderStatus
-from app.models.marketplace_account import MarketplaceAccount
-from app.models.order import Order
-from app.models.order_item import OrderItem
-from app.models.inventory_snapshot import InventorySnapshot
-from app.models.price_snapshot import PriceSnapshot
-from app.models.demand_forecast import DemandForecast
-from app.models.review_insight import ReviewInsight
-from app.models.listing_map import ListingMap
-from app.models.user import User
+from app.dynamo.helpers import query_all
+from app.enums import AccountStatus, ChangeType, OrderStatus
 from app.schemas.dashboard import (
     DashboardKPIs, KPIData,
     SalesTrendResponse, SalesTrendPoint,
@@ -38,17 +30,22 @@ router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 # ── Helpers ──────────────────────────────────────────────────────
 
-def _get_account_ids(db: Session, seller_id: int | None) -> list[int]:
+def _get_account_ids(db, seller_id: int | None) -> list[int]:
     if not seller_id:
         return []
-    return [
-        a.id for a in db.query(MarketplaceAccount.id)
-        .filter(MarketplaceAccount.seller_id == seller_id)
-        .all()
-    ]
+    table = db.get_table("marketplace_accounts")
+    connected = AccountStatus.CONNECTED.value
+    # Get ALL connected accounts (real + demo)
+    items = query_all(
+        table,
+        IndexName="seller-index",
+        KeyConditionExpression=Key("seller_id").eq(int(seller_id)),
+        FilterExpression=Attr("status").eq(connected),
+    )
+    return [item["id"] for item in items]
 
 
-def _fmt_inr(amount: Decimal | None) -> str:
+def _fmt_inr(amount: float | Decimal | None) -> str:
     if amount is None:
         return "₹0"
     amt = int(amount)
@@ -66,9 +63,9 @@ def _fmt_inr(amount: Decimal | None) -> str:
     return f"₹{'-' if amt < 0 else ''}{formatted}"
 
 
-def _pct_change(current: Decimal | None, previous: Decimal | None) -> tuple[str, ChangeType]:
-    current = current or Decimal(0)
-    previous = previous or Decimal(0)
+def _pct_change(current: float | Decimal | None, previous: float | Decimal | None) -> tuple[str, ChangeType]:
+    current = float(current or 0)
+    previous = float(previous or 0)
     if previous == 0:
         if current > 0:
             return "+100%", ChangeType.POSITIVE
@@ -79,32 +76,84 @@ def _pct_change(current: Decimal | None, previous: Decimal | None) -> tuple[str,
     return f"{sign}{change:.1f}%", change_type
 
 
-def _latest_snapshot(db: Session, account_ids: list[int], model, date_col) -> date:
-    """Get latest available snapshot date using ORM."""
+def _query_orders_by_date(db, account_ids: list[int], start: date, end: date) -> list[dict]:
+    """Query orders across account_ids within a date range using account-date-index GSI."""
+    table = db.get_table("orders")
+    orders = []
+    for aid in account_ids:
+        items = query_all(
+            table,
+            IndexName="account-date-index",
+            KeyConditionExpression=(
+                Key("marketplace_account_id").eq(aid)
+                & Key("order_date").between(start.isoformat(), end.isoformat())
+            ),
+        )
+        orders.extend(items)
+    return orders
+
+
+def _latest_snapshot_date(db, account_ids: list[int], table_name: str, sk_field: str) -> date:
+    """Get latest available snapshot date by scanning partitions and extracting dates from sort keys."""
     if not account_ids:
         return date.today()
     try:
-        result = db.query(func.max(date_col)).filter(
-            model.marketplace_account_id.in_(account_ids)
-        ).scalar()
-        if result:
-            return result
+        table = db.get_table(table_name)
+        dates = set()
+        for aid in account_ids:
+            items = query_all(
+                table,
+                KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+                ProjectionExpression=sk_field,
+            )
+            for item in items:
+                sk = item.get(sk_field, "")
+                parts = sk.split("#")
+                for part in parts:
+                    try:
+                        date.fromisoformat(part)
+                        dates.add(part)
+                        break
+                    except (ValueError, TypeError):
+                        continue
+        if dates:
+            return date.fromisoformat(max(dates))
     except Exception as e:
-        logger.warning("Snapshot date lookup failed for %s: %s", model.__tablename__, e)
+        logger.warning("Snapshot date lookup failed for %s: %s", table_name, e)
     return date.today()
 
 
-def _product_names(db: Session, account_ids: list[int], asins: list[str]) -> dict[str, str]:
-    """Batch lookup product names. Returns {asin: name}."""
+def _get_snapshot_items(db, account_ids: list[int], table_name: str, sk_field: str, snap_date: date) -> list[dict]:
+    """Get snapshot items for a given date by filtering sort keys that contain the date string."""
+    table = db.get_table(table_name)
+    date_str = snap_date.isoformat()
+    items = []
+    for aid in account_ids:
+        all_items = query_all(
+            table,
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+        )
+        items.extend([i for i in all_items if date_str in i.get(sk_field, "")])
+    return items
+
+
+def _product_names(db, account_ids: list[int], asins: list[str]) -> dict[str, str]:
+    """Batch lookup product names from listing_map. Returns {asin: name}."""
     if not asins or not account_ids:
         return {}
     unique = list(set(a for a in asins if a))
-    rows = (
-        db.query(ListingMap.asin, ListingMap.listing_title)
-        .filter(ListingMap.marketplace_account_id.in_(account_ids), ListingMap.asin.in_(unique))
-        .all()
-    )
-    lookup = {r.asin: r.listing_title for r in rows if r.listing_title}
+    if not unique:
+        return {}
+    table = db.get_table("listing_map")
+    lookup = {}
+    for aid in account_ids:
+        items = query_all(
+            table,
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+        )
+        for item in items:
+            if item.get("asin") in unique and item.get("listing_title"):
+                lookup[item["asin"]] = item["listing_title"]
     return {asin: lookup.get(asin, asin or "Unknown") for asin in asins}
 
 
@@ -121,8 +170,8 @@ def _period_end() -> date:
 @router.get("/kpis", response_model=DashboardKPIs)
 def get_kpis(
     days: int = Query(30, description="Time window: 7, 30, or 90"),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     days = days if days in ALLOWED_DAYS else 30
     account_ids = _get_account_ids(db, current_user.seller_id)
@@ -141,71 +190,56 @@ def get_kpis(
     end = _period_end()
     period_start = date.today() - timedelta(days=days)
     prev_start = period_start - timedelta(days=days)
-    base = Order.marketplace_account_id.in_(account_ids)
 
     # 1. Revenue with comparison
-    revenue_current = db.query(func.coalesce(func.sum(Order.total_amount), 0)).filter(
-        base, Order.order_date >= period_start, Order.order_date < end,
-    ).scalar()
-    revenue_prev = db.query(func.coalesce(func.sum(Order.total_amount), 0)).filter(
-        base, Order.order_date >= prev_start, Order.order_date < period_start,
-    ).scalar()
+    orders_current_list = _query_orders_by_date(db, account_ids, period_start, end)
+    orders_prev_list = _query_orders_by_date(db, account_ids, prev_start, period_start - timedelta(days=1))
+
+    revenue_current = sum(float(o.get("total_amount", 0) or 0) for o in orders_current_list)
+    revenue_prev = sum(float(o.get("total_amount", 0) or 0) for o in orders_prev_list)
     rev_change, rev_type = _pct_change(revenue_current, revenue_prev)
 
     # 2. Orders with comparison
-    orders_current = db.query(func.count(Order.id)).filter(
-        base, Order.order_date >= period_start, Order.order_date < end,
-    ).scalar() or 0
-    orders_prev = db.query(func.count(Order.id)).filter(
-        base, Order.order_date >= prev_start, Order.order_date < period_start,
-    ).scalar() or 0
-    orders_change, orders_type = _pct_change(Decimal(orders_current), Decimal(orders_prev))
+    orders_current = len(orders_current_list)
+    orders_prev = len(orders_prev_list)
+    orders_change, orders_type = _pct_change(orders_current, orders_prev)
 
     # 3. AOV
-    aov = round(float(revenue_current) / orders_current, 0) if orders_current > 0 else 0
+    aov = round(revenue_current / orders_current, 0) if orders_current > 0 else 0
 
     # 4. Cancel Rate
-    cancelled = db.query(func.count(Order.id)).filter(
-        base, Order.order_date >= period_start, Order.order_date < end,
-        Order.status.in_([OrderStatus.CANCELLED, OrderStatus.CANCELED]),
-    ).scalar() or 0
+    cancel_statuses = {OrderStatus.CANCELLED.value, OrderStatus.CANCELED.value}
+    cancelled = sum(1 for o in orders_current_list if o.get("status") in cancel_statuses)
     cancel_rate = round(cancelled / orders_current * 100, 1) if orders_current > 0 else 0.0
 
     # 5. Buy Box Win Rate
-    snap_date = _latest_snapshot(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    total_priced = db.query(func.count(PriceSnapshot.id)).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == snap_date,
-    ).scalar() or 0
-    winning = db.query(func.count(PriceSnapshot.id)).filter(
-        PriceSnapshot.marketplace_account_id.in_(account_ids),
-        PriceSnapshot.snapshot_date == snap_date,
-        PriceSnapshot.is_buybox_winner == True,
-    ).scalar() or 0
+    snap_date = _latest_snapshot_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", snap_date)
+    total_priced = len(price_items)
+    winning = sum(1 for p in price_items if p.get("is_buybox_winner"))
     buybox_rate = round(winning / total_priced * 100, 1) if total_priced > 0 else 0.0
 
     # 6. Stockout Risks
-    forecast_date = _latest_snapshot(db, account_ids, DemandForecast, DemandForecast.forecast_date)
-    stockout_count = db.query(func.count(DemandForecast.id)).filter(
-        DemandForecast.marketplace_account_id.in_(account_ids),
-        DemandForecast.forecast_date == forecast_date,
-        DemandForecast.horizon_days == 7,
-        DemandForecast.stockout_risk == True,
-    ).scalar() or 0
+    fc_date = _latest_snapshot_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
+    stockout_count = sum(
+        1 for f in fc_items
+        if int(f.get("horizon_days", 0)) == 7 and f.get("stockout_risk")
+    )
     if stockout_count == 0:
-        inv_date = _latest_snapshot(db, account_ids, InventorySnapshot, InventorySnapshot.snapshot_date)
-        stockout_count = db.query(func.count(InventorySnapshot.id)).filter(
-            InventorySnapshot.marketplace_account_id.in_(account_ids),
-            InventorySnapshot.snapshot_date == inv_date,
-            InventorySnapshot.fulfillable_quantity <= 5,
-        ).scalar() or 0
+        inv_date = _latest_snapshot_date(db, account_ids, "inventory_snapshots", "sku_date")
+        inv_items = _get_snapshot_items(db, account_ids, "inventory_snapshots", "sku_date", inv_date)
+        stockout_count = sum(
+            1 for i in inv_items
+            if int(i.get("fulfillable_quantity", 0) or 0) <= 5
+        )
 
     return DashboardKPIs(kpis=[
         KPIData(title=f"Revenue ({label})", value=_fmt_inr(revenue_current),
                 change=f"{rev_change} vs prev {label}", change_type=rev_type),
         KPIData(title=f"Orders ({label})", value=str(orders_current),
                 change=f"{orders_change} vs prev {label}", change_type=orders_type),
-        KPIData(title="Avg Order Value", value=_fmt_inr(Decimal(aov)),
+        KPIData(title="Avg Order Value", value=_fmt_inr(aov),
                 change=f"Based on {orders_current} orders", change_type=ChangeType.NEUTRAL),
         KPIData(title="Cancel Rate", value=f"{cancel_rate}%",
                 change=f"{cancelled} cancelled of {orders_current}",
@@ -225,8 +259,8 @@ def get_kpis(
 @router.get("/sales-trend", response_model=SalesTrendResponse)
 def get_sales_trend(
     days: int = Query(30),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     days = days if days in ALLOWED_DAYS else 30
     account_ids = _get_account_ids(db, current_user.seller_id)
@@ -234,20 +268,21 @@ def get_sales_trend(
         return SalesTrendResponse(data=[])
 
     start = date.today() - timedelta(days=days)
-    rows = (
-        db.query(
-            func.date(Order.order_date).label("day"),
-            func.coalesce(func.sum(Order.total_amount), 0).label("gmv"),
-            func.count(Order.id).label("order_count"),
-        )
-        .filter(Order.marketplace_account_id.in_(account_ids), Order.order_date >= start)
-        .group_by(func.date(Order.order_date))
-        .order_by(func.date(Order.order_date))
-        .all()
+    end = _period_end()
+    orders = _query_orders_by_date(db, account_ids, start, end)
+
+    daily = defaultdict(lambda: {"gmv": 0.0, "order_count": 0})
+    for o in orders:
+        day = str(o.get("order_date", ""))[:10]
+        daily[day]["gmv"] += float(o.get("total_amount", 0) or 0)
+        daily[day]["order_count"] += 1
+
+    data = sorted(
+        [SalesTrendPoint(day=day, gmv=round(d["gmv"], 2), order_count=d["order_count"])
+         for day, d in daily.items()],
+        key=lambda x: x.day,
     )
-    return SalesTrendResponse(
-        data=[SalesTrendPoint(day=str(r.day), gmv=float(r.gmv), order_count=int(r.order_count)) for r in rows]
-    )
+    return SalesTrendResponse(data=data)
 
 
 # ── Order Status ─────────────────────────────────────────────────
@@ -255,8 +290,8 @@ def get_sales_trend(
 @router.get("/order-status", response_model=OrderStatusResponse)
 def get_order_status(
     days: int = Query(30),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     days = days if days in ALLOWED_DAYS else 30
     account_ids = _get_account_ids(db, current_user.seller_id)
@@ -264,14 +299,15 @@ def get_order_status(
         return OrderStatusResponse(data=[])
 
     start = date.today() - timedelta(days=days)
-    rows = (
-        db.query(Order.status, func.count(Order.id).label("count"))
-        .filter(Order.marketplace_account_id.in_(account_ids), Order.order_date >= start)
-        .group_by(Order.status)
-        .all()
-    )
+    end = _period_end()
+    orders = _query_orders_by_date(db, account_ids, start, end)
+
+    status_counts = defaultdict(int)
+    for o in orders:
+        status_counts[o.get("status", "Unknown")] += 1
+
     return OrderStatusResponse(
-        data=[OrderStatusItem(status=r.status, count=r.count) for r in rows]
+        data=[OrderStatusItem(status=s, count=c) for s, c in status_counts.items()]
     )
 
 
@@ -280,8 +316,8 @@ def get_order_status(
 @router.get("/top-products", response_model=TopProductsResponse)
 def get_top_products(
     days: int = Query(30),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     days = days if days in ALLOWED_DAYS else 30
     account_ids = _get_account_ids(db, current_user.seller_id)
@@ -289,25 +325,43 @@ def get_top_products(
         return TopProductsResponse(data=[])
 
     start = date.today() - timedelta(days=days)
-    rows = (
-        db.query(
-            OrderItem.asin,
-            OrderItem.title,
-            func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).label("revenue"),
-            func.sum(OrderItem.quantity_ordered).label("units_sold"),
+    end = _period_end()
+    orders = _query_orders_by_date(db, account_ids, start, end)
+    order_id_set = set(o["id"] for o in orders)
+
+    # Query order items for these accounts, filter by order_ids in range
+    oi_table = db.get_table("order_items")
+    order_items = []
+    for aid in account_ids:
+        items = query_all(
+            oi_table,
+            IndexName="account-index",
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
         )
-        .join(Order, OrderItem.order_id == Order.id)
-        .filter(Order.marketplace_account_id.in_(account_ids), Order.order_date >= start)
-        .group_by(OrderItem.asin, OrderItem.title)
-        .order_by(func.sum(OrderItem.unit_price * OrderItem.quantity_ordered).desc())
-        .limit(10)
-        .all()
-    )
+        order_items.extend([i for i in items if i.get("order_id") in order_id_set])
+
+    # Aggregate by asin
+    asin_data = defaultdict(lambda: {"title": None, "revenue": 0.0, "units_sold": 0})
+    for it in order_items:
+        asin = it.get("asin", "")
+        asin_data[asin]["title"] = asin_data[asin]["title"] or it.get("title")
+        price = float(it.get("unit_price", 0) or 0)
+        qty = int(it.get("quantity_ordered", 0) or 0)
+        asin_data[asin]["revenue"] += price * qty
+        asin_data[asin]["units_sold"] += qty
+
+    # Sort by revenue desc, take top 10
+    sorted_products = sorted(asin_data.items(), key=lambda x: x[1]["revenue"], reverse=True)[:10]
+
     return TopProductsResponse(
         data=[
-            TopProduct(asin=r.asin or "", title=r.title or "Unknown",
-                       revenue=float(r.revenue or 0), units_sold=int(r.units_sold or 0))
-            for r in rows
+            TopProduct(
+                asin=asin or "",
+                title=data["title"] or "Unknown",
+                revenue=round(data["revenue"], 2),
+                units_sold=data["units_sold"],
+            )
+            for asin, data in sorted_products
         ]
     )
 
@@ -316,8 +370,8 @@ def get_top_products(
 
 @router.get("/inventory-health", response_model=InventoryHealthResponse)
 def get_inventory_health(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     account_ids = _get_account_ids(db, current_user.seller_id)
     if not account_ids:
@@ -326,35 +380,31 @@ def get_inventory_health(
             flagged_items=[],
         )
 
-    snap_date = _latest_snapshot(db, account_ids, InventorySnapshot, InventorySnapshot.snapshot_date)
-    snapshots = (
-        db.query(InventorySnapshot)
-        .filter(InventorySnapshot.marketplace_account_id.in_(account_ids),
-                InventorySnapshot.snapshot_date == snap_date)
-        .all()
-    )
+    snap_date = _latest_snapshot_date(db, account_ids, "inventory_snapshots", "sku_date")
+    snapshots = _get_snapshot_items(db, account_ids, "inventory_snapshots", "sku_date", snap_date)
 
     total = len(snapshots)
-    low = sum(1 for s in snapshots if s.fulfillable_quantity <= 10)
-    over = sum(1 for s in snapshots if s.fulfillable_quantity >= 150)
+    low = sum(1 for s in snapshots if int(s.get("fulfillable_quantity", 0) or 0) <= 10)
+    over = sum(1 for s in snapshots if int(s.get("fulfillable_quantity", 0) or 0) >= 150)
     healthy = total - low - over
 
     flagged = sorted(
-        [s for s in snapshots if s.fulfillable_quantity <= 10],
-        key=lambda s: s.fulfillable_quantity,
+        [s for s in snapshots if int(s.get("fulfillable_quantity", 0) or 0) <= 10],
+        key=lambda s: int(s.get("fulfillable_quantity", 0) or 0),
     )
 
-    # Batch product name lookup
-    names = _product_names(db, account_ids, [s.asin for s in flagged if s.asin])
+    names = _product_names(db, account_ids, [s.get("asin") for s in flagged if s.get("asin")])
 
     return InventoryHealthResponse(
         summary=InventoryHealthSummary(total_skus=total, low_stock=low, healthy=healthy, overstocked=over),
         flagged_items=[
             InventoryItem(
-                seller_sku=s.seller_sku, asin=s.asin,
-                product_name=names.get(s.asin) if s.asin else None,
-                fulfillable=s.fulfillable_quantity,
-                inbound=s.inbound_quantity, total=s.total_quantity,
+                seller_sku=s.get("seller_sku", ""),
+                asin=s.get("asin"),
+                product_name=names.get(s.get("asin")) if s.get("asin") else None,
+                fulfillable=int(s.get("fulfillable_quantity", 0) or 0),
+                inbound=int(s.get("inbound_quantity", 0) or 0),
+                total=int(s.get("total_quantity", 0) or 0),
             )
             for s in flagged
         ],
@@ -365,39 +415,39 @@ def get_inventory_health(
 
 @router.get("/pricing-overview", response_model=PricingOverviewResponse)
 def get_pricing_overview(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     account_ids = _get_account_ids(db, current_user.seller_id)
     if not account_ids:
         return PricingOverviewResponse(total_products=0, winning_count=0, win_rate=0.0, losing_items=[])
 
-    snap_date = _latest_snapshot(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    snapshots = (
-        db.query(PriceSnapshot)
-        .filter(PriceSnapshot.marketplace_account_id.in_(account_ids),
-                PriceSnapshot.snapshot_date == snap_date)
-        .all()
-    )
+    snap_date = _latest_snapshot_date(db, account_ids, "price_snapshots", "asin_date")
+    snapshots = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", snap_date)
 
     total = len(snapshots)
-    winning_count = sum(1 for s in snapshots if s.is_buybox_winner)
+    winning_count = sum(1 for s in snapshots if s.get("is_buybox_winner"))
     win_rate = round(winning_count / total * 100, 1) if total > 0 else 0.0
 
-    losers = [s for s in snapshots if not s.is_buybox_winner and s.your_price and s.buybox_price]
-    names = _product_names(db, account_ids, [s.asin for s in losers])
+    losers = [
+        s for s in snapshots
+        if not s.get("is_buybox_winner") and s.get("your_price") and s.get("buybox_price")
+    ]
+    names = _product_names(db, account_ids, [s.get("asin") for s in losers])
 
     losing = sorted(
         [
             PricingLostItem(
-                asin=s.asin, product_name=names.get(s.asin),
-                your_price=float(s.your_price or 0),
-                buybox_price=float(s.buybox_price or 0),
-                gap=round(float((s.your_price or 0) - (s.buybox_price or 0)), 2),
+                asin=s.get("asin", ""),
+                product_name=names.get(s.get("asin")),
+                your_price=float(s.get("your_price", 0) or 0),
+                buybox_price=float(s.get("buybox_price", 0) or 0),
+                gap=round(float(s.get("your_price", 0) or 0) - float(s.get("buybox_price", 0) or 0), 2),
             )
             for s in losers
         ],
-        key=lambda x: x.gap, reverse=True,
+        key=lambda x: x.gap,
+        reverse=True,
     )
 
     return PricingOverviewResponse(
@@ -410,8 +460,8 @@ def get_pricing_overview(
 
 @router.get("/action-items", response_model=ActionItemsResponse)
 def get_action_items(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     account_ids = _get_account_ids(db, current_user.seller_id)
     items: list[ActionItem] = []
@@ -419,90 +469,97 @@ def get_action_items(
         return ActionItemsResponse(items=items)
 
     # 1. Stockout risks from demand forecasts
-    forecast_date = _latest_snapshot(db, account_ids, DemandForecast, DemandForecast.forecast_date)
-    stockout_products = (
-        db.query(DemandForecast.asin, DemandForecast.days_of_stock, DemandForecast.predicted_units)
-        .filter(
-            DemandForecast.marketplace_account_id.in_(account_ids),
-            DemandForecast.forecast_date == forecast_date,
-            DemandForecast.horizon_days == 7,
-            DemandForecast.stockout_risk == True,
-        )
-        .order_by(DemandForecast.days_of_stock.asc())
-        .limit(5)
-        .all()
-    )
+    fc_date = _latest_snapshot_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
+    stockout_products = [
+        f for f in fc_items
+        if int(f.get("horizon_days", 0)) == 7 and f.get("stockout_risk")
+    ]
+    stockout_products.sort(key=lambda x: int(x.get("days_of_stock", 9999) or 9999))
+    stockout_products = stockout_products[:5]
+
     if stockout_products:
-        names = _product_names(db, account_ids, [p.asin for p in stockout_products])
+        names = _product_names(db, account_ids, [p.get("asin") for p in stockout_products])
         for p in stockout_products:
-            dos = p.days_of_stock or 0
+            dos = int(p.get("days_of_stock", 0) or 0)
+            asin = p.get("asin", "")
             items.append(ActionItem(
                 severity="critical" if dos <= 3 else "warning",
                 category="inventory",
-                title=f"Restock {names.get(p.asin, p.asin)}",
-                detail=f"{dos} days of stock left — predicted demand: {p.predicted_units} units/week",
+                title=f"Restock {names.get(asin, asin)}",
+                detail=f"{dos} days of stock left — predicted demand: {p.get('predicted_units', 0)} units/week",
             ))
 
     # 2. Products losing buy box with large gap
-    snap_date = _latest_snapshot(db, account_ids, PriceSnapshot, PriceSnapshot.snapshot_date)
-    losing_buybox = (
-        db.query(PriceSnapshot.asin, PriceSnapshot.your_price, PriceSnapshot.buybox_price)
-        .filter(
-            PriceSnapshot.marketplace_account_id.in_(account_ids),
-            PriceSnapshot.snapshot_date == snap_date,
-            PriceSnapshot.is_buybox_winner == False,
-            PriceSnapshot.your_price.isnot(None),
-            PriceSnapshot.buybox_price.isnot(None),
-        )
-        .all()
-    )
+    snap_date = _latest_snapshot_date(db, account_ids, "price_snapshots", "asin_date")
+    price_items = _get_snapshot_items(db, account_ids, "price_snapshots", "asin_date", snap_date)
+    losing_buybox = [
+        s for s in price_items
+        if not s.get("is_buybox_winner")
+        and s.get("your_price") is not None
+        and s.get("buybox_price") is not None
+    ]
     big_gap = sorted(
-        [s for s in losing_buybox if s.your_price and s.buybox_price and float(s.your_price - s.buybox_price) > 20],
-        key=lambda s: float(s.your_price - s.buybox_price),
+        [
+            s for s in losing_buybox
+            if s.get("your_price") and s.get("buybox_price")
+            and float(s["your_price"]) - float(s["buybox_price"]) > 20
+        ],
+        key=lambda s: float(s["your_price"]) - float(s["buybox_price"]),
         reverse=True,
     )[:3]
+
     if big_gap:
-        names = _product_names(db, account_ids, [s.asin for s in big_gap])
+        names = _product_names(db, account_ids, [s.get("asin") for s in big_gap])
         for s in big_gap:
-            gap = float(s.your_price - s.buybox_price)
+            gap = float(s["your_price"]) - float(s["buybox_price"])
+            asin = s.get("asin", "")
             items.append(ActionItem(
                 severity="warning", category="pricing",
-                title=f"Reprice {names.get(s.asin, s.asin)}",
-                detail=f"₹{gap:.0f} above buy box — lower to ₹{float(s.buybox_price):.0f} to win",
+                title=f"Reprice {names.get(asin, asin)}",
+                detail=f"₹{gap:.0f} above buy box — lower to ₹{float(s['buybox_price']):.0f} to win",
             ))
 
     # 3. Negative sentiment alerts
-    insight_date = _latest_snapshot(db, account_ids, ReviewInsight, ReviewInsight.insight_date)
-    negative_products = (
-        db.query(ReviewInsight.asin, ReviewInsight.negative_count,
-                 ReviewInsight.positive_count, ReviewInsight.top_complaints)
-        .filter(
-            ReviewInsight.marketplace_account_id.in_(account_ids),
-            ReviewInsight.insight_date == insight_date,
-            ReviewInsight.negative_count > ReviewInsight.positive_count,
-        )
-        .order_by(ReviewInsight.negative_count.desc())
-        .limit(3)
-        .all()
-    )
+    insight_date = _latest_snapshot_date(db, account_ids, "review_insights", "asin_date")
+    insight_items = _get_snapshot_items(db, account_ids, "review_insights", "asin_date", insight_date)
+    negative_products = [
+        ri for ri in insight_items
+        if int(ri.get("negative_count", 0) or 0) > int(ri.get("positive_count", 0) or 0)
+    ]
+    negative_products.sort(key=lambda x: int(x.get("negative_count", 0) or 0), reverse=True)
+    negative_products = negative_products[:3]
+
     if negative_products:
-        names = _product_names(db, account_ids, [ri.asin for ri in negative_products])
+        names = _product_names(db, account_ids, [ri.get("asin") for ri in negative_products])
         for ri in negative_products:
-            complaints = ri.top_complaints[:2] if ri.top_complaints else []
-            detail = f"{ri.negative_count} negative vs {ri.positive_count} positive reviews"
+            asin = ri.get("asin", "")
+            complaints = (ri.get("top_complaints") or [])[:2]
+            neg_count = int(ri.get("negative_count", 0) or 0)
+            pos_count = int(ri.get("positive_count", 0) or 0)
+            detail = f"{neg_count} negative vs {pos_count} positive reviews"
             if complaints:
-                detail += f" — top issues: {', '.join(complaints)}"
+                detail += f" — top issues: {', '.join(str(c) for c in complaints)}"
             items.append(ActionItem(
                 severity="warning", category="sentiment",
-                title=f"Address reviews for {names.get(ri.asin, ri.asin)}",
+                title=f"Address reviews for {names.get(asin, asin)}",
                 detail=detail,
             ))
 
     # 4. Pending/unshipped orders
-    pending_count = db.query(func.count(Order.id)).filter(
-        Order.marketplace_account_id.in_(account_ids),
-        Order.status.in_([OrderStatus.PENDING, OrderStatus.UNSHIPPED]),
-    ).scalar() or 0
+    orders_table = db.get_table("orders")
+    pending_statuses = {OrderStatus.PENDING.value, OrderStatus.UNSHIPPED.value}
+    all_pending = []
+    for aid in account_ids:
+        acct_orders = query_all(
+            orders_table,
+            IndexName="account-date-index",
+            KeyConditionExpression=Key("marketplace_account_id").eq(aid),
+            FilterExpression=Attr("status").is_in(list(pending_statuses)),
+        )
+        all_pending.extend(acct_orders)
+    pending_count = len(all_pending)
+
     if pending_count > 0:
         items.append(ActionItem(
             severity="critical" if pending_count > 10 else "info",
@@ -518,36 +575,37 @@ def get_action_items(
 
 @router.get("/demand-forecast", response_model=DemandForecastResponse)
 def get_demand_forecast(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     account_ids = _get_account_ids(db, current_user.seller_id)
     if not account_ids:
         return DemandForecastResponse(data=[])
 
-    forecast_date = _latest_snapshot(db, account_ids, DemandForecast, DemandForecast.forecast_date)
-    rows = (
-        db.query(DemandForecast)
-        .filter(
-            DemandForecast.marketplace_account_id.in_(account_ids),
-            DemandForecast.forecast_date == forecast_date,
-            DemandForecast.horizon_days == 7,
-        )
-        .order_by(DemandForecast.stockout_risk.desc(), DemandForecast.days_of_stock.asc())
-        .limit(15)
-        .all()
-    )
+    fc_date = _latest_snapshot_date(db, account_ids, "demand_forecasts", "asin_date_horizon")
+    fc_items = _get_snapshot_items(db, account_ids, "demand_forecasts", "asin_date_horizon", fc_date)
 
-    names = _product_names(db, account_ids, [r.asin for r in rows])
+    # Filter to horizon_days=7
+    rows = [f for f in fc_items if int(f.get("horizon_days", 0)) == 7]
+
+    # Sort: stockout_risk desc, days_of_stock asc
+    rows.sort(key=lambda x: (
+        -(1 if x.get("stockout_risk") else 0),
+        int(x.get("days_of_stock", 9999) or 9999),
+    ))
+    rows = rows[:15]
+
+    names = _product_names(db, account_ids, [r.get("asin") for r in rows])
 
     return DemandForecastResponse(
         data=[
             DemandForecastItem(
-                asin=r.asin, product_name=names.get(r.asin, r.asin),
-                predicted_units=r.predicted_units,
-                velocity_7d=float(r.velocity_7d or 0),
-                days_of_stock=r.days_of_stock,
-                stockout_risk=bool(r.stockout_risk),
+                asin=r.get("asin", ""),
+                product_name=names.get(r.get("asin", ""), r.get("asin", "")),
+                predicted_units=int(r.get("predicted_units", 0) or 0),
+                velocity_7d=float(r.get("velocity_7d", 0) or 0),
+                days_of_stock=r.get("days_of_stock"),
+                stockout_risk=bool(r.get("stockout_risk")),
             )
             for r in rows
         ]
@@ -558,43 +616,45 @@ def get_demand_forecast(
 
 @router.get("/sentiment-overview", response_model=SentimentOverviewResponse)
 def get_sentiment_overview(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     account_ids = _get_account_ids(db, current_user.seller_id)
     if not account_ids:
         return SentimentOverviewResponse(avg_sentiment=None, total_reviews=0, data=[])
 
-    insight_date = _latest_snapshot(db, account_ids, ReviewInsight, ReviewInsight.insight_date)
-    rows = (
-        db.query(ReviewInsight)
-        .filter(
-            ReviewInsight.marketplace_account_id.in_(account_ids),
-            ReviewInsight.insight_date == insight_date,
-        )
-        .order_by(ReviewInsight.avg_sentiment.asc())
-        .limit(20)
-        .all()
-    )
+    insight_date = _latest_snapshot_date(db, account_ids, "review_insights", "asin_date")
+    rows = _get_snapshot_items(db, account_ids, "review_insights", "asin_date", insight_date)
 
     if not rows:
         return SentimentOverviewResponse(avg_sentiment=None, total_reviews=0, data=[])
 
-    total_reviews = sum(r.positive_count + r.negative_count + r.neutral_count for r in rows)
-    avg_sent = sum(float(r.avg_sentiment or 0) for r in rows) / len(rows)
+    # Sort by avg_sentiment ASC, take top 20
+    rows.sort(key=lambda x: float(x.get("avg_sentiment", 0) or 0))
+    rows = rows[:20]
 
-    names = _product_names(db, account_ids, [r.asin for r in rows])
+    total_reviews = sum(
+        int(r.get("positive_count", 0) or 0)
+        + int(r.get("negative_count", 0) or 0)
+        + int(r.get("neutral_count", 0) or 0)
+        for r in rows
+    )
+    avg_sent = sum(float(r.get("avg_sentiment", 0) or 0) for r in rows) / len(rows)
+
+    names = _product_names(db, account_ids, [r.get("asin") for r in rows])
 
     return SentimentOverviewResponse(
         avg_sentiment=round(avg_sent, 2),
         total_reviews=total_reviews,
         data=[
             SentimentItem(
-                asin=r.asin, product_name=names.get(r.asin, r.asin),
-                avg_sentiment=float(r.avg_sentiment or 0),
-                positive=r.positive_count, negative=r.negative_count,
-                neutral=r.neutral_count,
-                top_complaints=r.top_complaints[:3] if r.top_complaints else [],
+                asin=r.get("asin", ""),
+                product_name=names.get(r.get("asin", ""), r.get("asin", "")),
+                avg_sentiment=float(r.get("avg_sentiment", 0) or 0),
+                positive=int(r.get("positive_count", 0) or 0),
+                negative=int(r.get("negative_count", 0) or 0),
+                neutral=int(r.get("neutral_count", 0) or 0),
+                top_complaints=(r.get("top_complaints") or [])[:3],
             )
             for r in rows
         ],
@@ -606,8 +666,8 @@ def get_sentiment_overview(
 @router.get("/city-sales", response_model=CitySalesResponse)
 def get_city_sales(
     days: int = Query(30),
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    db=Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
     days = days if days in ALLOWED_DAYS else 30
     account_ids = _get_account_ids(db, current_user.seller_id)
@@ -615,27 +675,28 @@ def get_city_sales(
         return CitySalesResponse(data=[])
 
     start = date.today() - timedelta(days=days)
-    rows = (
-        db.query(
-            Order.ship_city,
-            Order.ship_state,
-            func.count(Order.id).label("order_count"),
-            func.coalesce(func.sum(Order.total_amount), 0).label("revenue"),
-        )
-        .filter(
-            Order.marketplace_account_id.in_(account_ids),
-            Order.order_date >= start,
-            Order.ship_city.isnot(None),
-        )
-        .group_by(Order.ship_city, Order.ship_state)
-        .order_by(func.sum(Order.total_amount).desc())
-        .limit(10)
-        .all()
-    )
+    end = _period_end()
+    orders = _query_orders_by_date(db, account_ids, start, end)
+
+    city_data = defaultdict(lambda: {"state": None, "order_count": 0, "revenue": 0.0})
+    for o in orders:
+        city = o.get("ship_city")
+        if not city:
+            continue
+        city_data[city]["state"] = city_data[city]["state"] or o.get("ship_state")
+        city_data[city]["order_count"] += 1
+        city_data[city]["revenue"] += float(o.get("total_amount", 0) or 0)
+
+    sorted_cities = sorted(city_data.items(), key=lambda x: x[1]["revenue"], reverse=True)[:10]
+
     return CitySalesResponse(
         data=[
-            CitySalesItem(city=r.ship_city, state=r.ship_state,
-                          revenue=float(r.revenue), order_count=r.order_count)
-            for r in rows
+            CitySalesItem(
+                city=city,
+                state=d["state"],
+                revenue=round(d["revenue"], 2),
+                order_count=d["order_count"],
+            )
+            for city, d in sorted_cities
         ]
     )
