@@ -17,12 +17,10 @@ def _get_resource():
         }
         if settings.DYNAMODB_ENDPOINT_URL:
             kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL
-        # Use SP-API credentials if explicit AWS credentials are not set
-        access_key = settings.AWS_ACCESS_KEY_ID or settings.SP_API_AWS_ACCESS_KEY
-        secret_key = settings.AWS_SECRET_ACCESS_KEY or settings.SP_API_AWS_SECRET_KEY
-        if access_key:
-            kwargs["aws_access_key_id"] = access_key
-            kwargs["aws_secret_access_key"] = secret_key
+        # Only override credentials for local dev (on Lambda, IAM role is used)
+        if settings.AWS_ACCESS_KEY_ID:
+            kwargs["aws_access_key_id"] = settings.AWS_ACCESS_KEY_ID
+            kwargs["aws_secret_access_key"] = settings.AWS_SECRET_ACCESS_KEY
         _dynamo_resource = boto3.resource("dynamodb", **kwargs)
     return _dynamo_resource
 
