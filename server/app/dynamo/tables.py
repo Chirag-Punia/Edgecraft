@@ -307,7 +307,7 @@ TABLE_DEFINITIONS = [
 
 def create_all_tables():
     """Create all DynamoDB tables. Idempotent — skips existing tables."""
-    kwargs = {"region_name": settings.AWS_REGION}
+    kwargs = {"region_name": settings.AWS_REGION or "us-east-1"}
     if settings.DYNAMODB_ENDPOINT_URL:
         kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL
     kwargs["aws_access_key_id"] = _AK

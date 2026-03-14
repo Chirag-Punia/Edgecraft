@@ -22,7 +22,7 @@ def _get_resource():
     global _dynamo_resource
     if _dynamo_resource is None:
         kwargs = {
-            "region_name": settings.AWS_REGION,
+            "region_name": settings.AWS_REGION or "us-east-1",
         }
         if settings.DYNAMODB_ENDPOINT_URL:
             kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL

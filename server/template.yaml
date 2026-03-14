@@ -30,6 +30,7 @@ Resources:
           SMTP_PASSWORD: !Ref SmtpPassword
           FROM_EMAIL: !Ref FromEmail
           USE_MOCK_DATA: "true"
+          AWS_REGION: "us-east-1"
           SP_API_APP_ID: !Ref SpApiAppId
           SP_API_REDIRECT_URI: !Ref SpApiRedirectUri
           SP_API_LWA_APP_ID: !Ref SpApiLwaAppId
