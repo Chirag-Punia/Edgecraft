@@ -1,5 +1,6 @@
 """DynamoDB client setup and dependency injection for FastAPI."""
 import base64
+import os
 import boto3
 from typing import Generator
 
@@ -22,7 +23,7 @@ def _get_resource():
     global _dynamo_resource
     if _dynamo_resource is None:
         kwargs = {
-            "region_name": settings.AWS_REGION or "us-east-1",
+            "region_name": os.environ.get("DYNAMO_REGION") or settings.AWS_REGION or "us-east-1",
         }
         if settings.DYNAMODB_ENDPOINT_URL:
             kwargs["endpoint_url"] = settings.DYNAMODB_ENDPOINT_URL
